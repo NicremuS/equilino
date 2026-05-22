@@ -1,0 +1,1037 @@
+{
+  "user": {
+    "id": "user-001",
+    "name": "Lucas Oliveira",
+    "email": "lucas@equilino.com.br",
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas",
+    "role": "admin",
+    "plan": "pro",
+    "createdAt": "2024-01-15T10:00:00Z"
+  },
+  "properties": [
+    {
+      "id": "prop-001",
+      "name": "Apto 301 - Vila Madalena",
+      "address": "Rua Harmonia, 301",
+      "city": "São Paulo, SP",
+      "type": "apartment",
+      "status": "occupied",
+      "rentAmount": 3800,
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "area": 68,
+      "floor": 3,
+      "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80",
+      "tenantId": "tenant-001",
+      "contractId": "contract-001",
+      "amenities": [
+        "Garagem",
+        "Varanda",
+        "Academia"
+      ],
+      "occupancyRate": 100
+    },
+    {
+      "id": "prop-002",
+      "name": "Casa - Moema",
+      "address": "Alameda dos Arapanés, 145",
+      "city": "São Paulo, SP",
+      "type": "house",
+      "status": "occupied",
+      "rentAmount": 6500,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "area": 150,
+      "image": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&q=80",
+      "tenantId": "tenant-002",
+      "contractId": "contract-002",
+      "amenities": [
+        "Garagem",
+        "Jardim",
+        "Churrasqueira",
+        "Piscina"
+      ],
+      "occupancyRate": 100
+    },
+    {
+      "id": "prop-003",
+      "name": "Studio 12 - Pinheiros",
+      "address": "Rua dos Pinheiros, 812",
+      "city": "São Paulo, SP",
+      "type": "studio",
+      "status": "vacant",
+      "rentAmount": 2200,
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "area": 35,
+      "floor": 1,
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=80",
+      "amenities": [
+        "Ar Condicionado",
+        "Internet"
+      ],
+      "occupancyRate": 0
+    },
+    {
+      "id": "prop-004",
+      "name": "Apto 52 - Itaim Bibi",
+      "address": "Rua Joaquim Floriano, 52",
+      "city": "São Paulo, SP",
+      "type": "apartment",
+      "status": "occupied",
+      "rentAmount": 4200,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "area": 82,
+      "floor": 5,
+      "image": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&q=80",
+      "tenantId": "tenant-003",
+      "contractId": "contract-003",
+      "amenities": [
+        "Garagem",
+        "Academia",
+        "Portaria 24h"
+      ],
+      "occupancyRate": 100
+    },
+    {
+      "id": "prop-005",
+      "name": "Comercial - Faria Lima",
+      "address": "Av. Brigadeiro Faria Lima, 2232",
+      "city": "São Paulo, SP",
+      "type": "commercial",
+      "status": "occupied",
+      "rentAmount": 8900,
+      "area": 120,
+      "floor": 8,
+      "image": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80",
+      "tenantId": "tenant-004",
+      "contractId": "contract-004",
+      "amenities": [
+        "Estacionamento",
+        "Recepção",
+        "Sala de Reunião"
+      ],
+      "occupancyRate": 100
+    },
+    {
+      "id": "prop-006",
+      "name": "Apto 203 - Brooklin",
+      "address": "Rua das Olimpíadas, 203",
+      "city": "São Paulo, SP",
+      "type": "apartment",
+      "status": "maintenance",
+      "rentAmount": 3400,
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "area": 70,
+      "floor": 2,
+      "image": "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&q=80",
+      "amenities": [
+        "Garagem",
+        "Churrasqueira"
+      ],
+      "occupancyRate": 0
+    }
+  ],
+  "tenants": [
+    {
+      "id": "tenant-001",
+      "name": "Ana Carolina Silva",
+      "email": "ana.silva@email.com",
+      "phone": "(11) 99123-4567",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Ana",
+      "cpf": "123.456.789-00",
+      "score": 92,
+      "propertyId": "prop-001",
+      "contractId": "contract-001",
+      "joinedAt": "2023-03-01T10:00:00Z",
+      "paymentHistory": [
+        "paid",
+        "paid",
+        "paid",
+        "paid",
+        "paid",
+        "paid"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "tenant-002",
+      "name": "Roberto Fernandes",
+      "email": "roberto.f@email.com",
+      "phone": "(11) 98765-4321",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Roberto",
+      "cpf": "987.654.321-00",
+      "score": 78,
+      "propertyId": "prop-002",
+      "contractId": "contract-002",
+      "joinedAt": "2022-08-15T10:00:00Z",
+      "paymentHistory": [
+        "paid",
+        "paid",
+        "overdue",
+        "paid",
+        "paid",
+        "pending"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "tenant-003",
+      "name": "Juliana Martins",
+      "email": "juliana.m@email.com",
+      "phone": "(11) 91234-5678",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Juliana",
+      "cpf": "456.789.123-00",
+      "score": 95,
+      "propertyId": "prop-004",
+      "contractId": "contract-003",
+      "joinedAt": "2023-07-10T10:00:00Z",
+      "paymentHistory": [
+        "paid",
+        "paid",
+        "paid",
+        "paid",
+        "paid",
+        "paid"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "tenant-004",
+      "name": "Tech Solutions Ltda",
+      "email": "financeiro@techsolutions.com",
+      "phone": "(11) 3456-7890",
+      "avatar": "https://api.dicebear.com/7.x/identicon/svg?seed=Tech",
+      "cpf": "12.345.678/0001-90",
+      "score": 88,
+      "propertyId": "prop-005",
+      "contractId": "contract-004",
+      "joinedAt": "2022-01-05T10:00:00Z",
+      "paymentHistory": [
+        "paid",
+        "paid",
+        "paid",
+        "paid",
+        "paid",
+        "paid"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "tenant-005",
+      "name": "Marcos Souza",
+      "email": "marcos.souza@email.com",
+      "phone": "(11) 97654-3210",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcos",
+      "cpf": "321.654.987-00",
+      "score": 65,
+      "joinedAt": "2021-11-20T10:00:00Z",
+      "paymentHistory": [
+        "paid",
+        "overdue",
+        "partial",
+        "paid",
+        "overdue",
+        "pending"
+      ],
+      "status": "inactive"
+    },
+    {
+      "name": "KEILIANE FERREIRA",
+      "email": "lucasnu2@gmail.com",
+      "phone": "11989208482",
+      "cpf": "25789547852",
+      "score": 50,
+      "propertyId": "prop-001",
+      "joinedAt": "2026-05-22T22:07:48.418Z",
+      "paymentHistory": [],
+      "status": "active",
+      "id": "d6dd71c4-7ccc-4922-90bc-02772a5a0afd"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-001",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "contractId": "contract-001",
+      "amount": 3800,
+      "dueDate": "2026-05-10",
+      "paidDate": "2026-05-08",
+      "status": "paid",
+      "month": "Maio 2026",
+      "description": "Aluguel - Apto 301 Vila Madalena"
+    },
+    {
+      "id": "pay-002",
+      "tenantId": "tenant-002",
+      "propertyId": "prop-002",
+      "contractId": "contract-002",
+      "amount": 6500,
+      "dueDate": "2026-05-10",
+      "status": "overdue",
+      "month": "Maio 2026",
+      "description": "Aluguel - Casa Moema",
+      "paidDate": null
+    },
+    {
+      "id": "pay-003",
+      "tenantId": "tenant-003",
+      "propertyId": "prop-004",
+      "contractId": "contract-003",
+      "amount": 4200,
+      "dueDate": "2026-05-15",
+      "paidDate": "2026-05-14",
+      "status": "paid",
+      "month": "Maio 2026",
+      "description": "Aluguel - Apto 52 Itaim Bibi"
+    },
+    {
+      "id": "pay-004",
+      "tenantId": "tenant-004",
+      "propertyId": "prop-005",
+      "contractId": "contract-004",
+      "amount": 8900,
+      "dueDate": "2026-05-05",
+      "paidDate": "2026-05-05",
+      "status": "paid",
+      "month": "Maio 2026",
+      "description": "Aluguel - Comercial Faria Lima"
+    },
+    {
+      "id": "pay-005",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "contractId": "contract-001",
+      "amount": 3800,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-09",
+      "status": "paid",
+      "month": "Abril 2026",
+      "description": "Aluguel - Apto 301 Vila Madalena"
+    },
+    {
+      "id": "pay-006",
+      "tenantId": "tenant-002",
+      "propertyId": "prop-002",
+      "contractId": "contract-002",
+      "amount": 6500,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-18",
+      "status": "paid",
+      "month": "Abril 2026",
+      "description": "Aluguel - Casa Moema"
+    },
+    {
+      "id": "pay-007",
+      "tenantId": "tenant-003",
+      "propertyId": "prop-004",
+      "contractId": "contract-003",
+      "amount": 4200,
+      "dueDate": "2026-06-15",
+      "status": "pending",
+      "month": "Junho 2026",
+      "description": "Aluguel - Apto 52 Itaim Bibi"
+    },
+    {
+      "id": "pay-008",
+      "tenantId": "tenant-004",
+      "propertyId": "prop-005",
+      "contractId": "contract-004",
+      "amount": 8900,
+      "dueDate": "2026-06-05",
+      "status": "pending",
+      "month": "Junho 2026",
+      "description": "Aluguel - Comercial Faria Lima"
+    }
+  ],
+  "contracts": [
+    {
+      "id": "contract-001",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "startDate": "2023-03-01",
+      "endDate": "2025-03-01",
+      "rentAmount": 3800,
+      "adjustmentIndex": "IGPM",
+      "status": "active",
+      "depositAmount": 7600,
+      "guaranteeType": "deposit",
+      "clauses": [
+        "Proibido animais",
+        "Reformas apenas com autorização"
+      ],
+      "signedAt": "2023-02-28T15:30:00Z"
+    },
+    {
+      "id": "contract-002",
+      "tenantId": "tenant-002",
+      "propertyId": "prop-002",
+      "startDate": "2022-08-15",
+      "endDate": "2026-06-15",
+      "rentAmount": 6500,
+      "adjustmentIndex": "IPCA",
+      "status": "expiring",
+      "depositAmount": 13000,
+      "guaranteeType": "guarantor",
+      "clauses": [
+        "Permite animais de pequeno porte"
+      ],
+      "signedAt": "2022-08-10T09:00:00Z"
+    },
+    {
+      "id": "contract-003",
+      "tenantId": "tenant-003",
+      "propertyId": "prop-004",
+      "startDate": "2023-07-10",
+      "endDate": "2025-07-10",
+      "rentAmount": 4200,
+      "adjustmentIndex": "IGPM",
+      "status": "active",
+      "depositAmount": 8400,
+      "guaranteeType": "insurance",
+      "clauses": [],
+      "signedAt": "2023-07-08T11:00:00Z"
+    },
+    {
+      "id": "contract-004",
+      "tenantId": "tenant-004",
+      "propertyId": "prop-005",
+      "startDate": "2022-01-05",
+      "endDate": "2027-01-05",
+      "rentAmount": 8900,
+      "adjustmentIndex": "IPCA",
+      "status": "active",
+      "depositAmount": 0,
+      "guaranteeType": "insurance",
+      "clauses": [
+        "Horário comercial",
+        "Placa autorizada"
+      ],
+      "signedAt": "2022-01-04T14:00:00Z"
+    },
+    {
+      "tenantId": "d6dd71c4-7ccc-4922-90bc-02772a5a0afd",
+      "propertyId": "prop-001",
+      "startDate": "2026-05-22",
+      "endDate": "2027-05-22",
+      "rentAmount": 3800,
+      "adjustmentIndex": "IGPM",
+      "status": "active",
+      "depositAmount": 7600,
+      "guaranteeType": "deposit",
+      "clauses": [],
+      "signedAt": "2026-05-22T22:07:48.509Z",
+      "id": "1cdcf3cb-7f2b-45d6-93cc-1af989f2f2e3"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "ticket-001",
+      "propertyId": "prop-001",
+      "tenantId": "tenant-001",
+      "title": "Torneira da cozinha vazando",
+      "description": "A torneira da pia da cozinha está com vazamento constante, causando desperdício de água.",
+      "priority": "high",
+      "status": "in_progress",
+      "createdAt": "2026-05-18T10:30:00Z",
+      "updatedAt": "2026-05-19T14:00:00Z",
+      "category": "plumbing",
+      "assignedTo": "João Encanador",
+      "cost": 250
+    },
+    {
+      "id": "ticket-002",
+      "propertyId": "prop-002",
+      "tenantId": "tenant-002",
+      "title": "Ar condicionado não resfria",
+      "description": "O ar condicionado do quarto principal não está funcionando corretamente, apenas ventila.",
+      "priority": "medium",
+      "status": "open",
+      "createdAt": "2026-05-20T08:00:00Z",
+      "updatedAt": "2026-05-20T08:00:00Z",
+      "category": "appliance"
+    },
+    {
+      "id": "ticket-003",
+      "propertyId": "prop-006",
+      "title": "Pintura geral do apartamento",
+      "description": "Necessário realizar pintura completa antes de novo locatário.",
+      "priority": "low",
+      "status": "in_progress",
+      "createdAt": "2026-05-10T09:00:00Z",
+      "updatedAt": "2026-05-15T16:00:00Z",
+      "category": "structural",
+      "assignedTo": "Pintor Express",
+      "cost": 1800
+    },
+    {
+      "id": "ticket-004",
+      "propertyId": "prop-004",
+      "tenantId": "tenant-003",
+      "title": "Tomada com faísca",
+      "description": "Tomada do banheiro fazendo faísca ao ligar aparelhos. Risco elétrico.",
+      "priority": "urgent",
+      "status": "open",
+      "createdAt": "2026-05-21T07:15:00Z",
+      "updatedAt": "2026-05-21T07:15:00Z",
+      "category": "electrical"
+    },
+    {
+      "id": "ticket-005",
+      "propertyId": "prop-001",
+      "tenantId": "tenant-001",
+      "title": "Infiltração no teto da sala",
+      "description": "Mancha de infiltração apareceu no teto da sala após chuvas fortes.",
+      "priority": "high",
+      "status": "resolved",
+      "createdAt": "2026-04-05T11:00:00Z",
+      "updatedAt": "2026-04-12T17:00:00Z",
+      "resolvedAt": "2026-04-12T17:00:00Z",
+      "category": "structural",
+      "assignedTo": "Manutenção SP",
+      "cost": 650
+    },
+    {
+      "title": "Choveiro",
+      "description": "chaveiro parou e começou a sai fogo ",
+      "category": "other",
+      "priority": "medium",
+      "propertyId": "prop-001",
+      "status": "open",
+      "createdAt": "2026-05-22T21:17:50.894Z",
+      "updatedAt": "2026-05-22T21:17:50.894Z",
+      "id": "95639dc8-78ba-4b2d-a626-1a4e56e420da"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-001",
+      "type": "payment",
+      "title": "Pagamento recebido",
+      "message": "Ana Carolina pagou R$ 3.800,00 referente a Maio/2026",
+      "read": true,
+      "createdAt": "2026-05-08T14:30:00Z",
+      "relatedId": "pay-001"
+    },
+    {
+      "id": "notif-002",
+      "type": "alert",
+      "title": "Pagamento em atraso",
+      "message": "Roberto Fernandes está com aluguel vencido há 11 dias — R$ 6.500,00",
+      "read": true,
+      "createdAt": "2026-05-21T09:00:00Z",
+      "relatedId": "pay-002"
+    },
+    {
+      "id": "notif-003",
+      "type": "maintenance",
+      "title": "Novo chamado aberto",
+      "message": "Tomada com faísca no Apto 52 - Itaim Bibi. Prioridade urgente.",
+      "read": true,
+      "createdAt": "2026-05-21T07:15:00Z",
+      "relatedId": "ticket-004"
+    },
+    {
+      "id": "notif-004",
+      "type": "contract",
+      "title": "Contrato próximo do vencimento",
+      "message": "Contrato de Roberto Fernandes vence em 25 dias (15/06/2026)",
+      "read": true,
+      "createdAt": "2026-05-20T08:00:00Z",
+      "relatedId": "contract-002"
+    },
+    {
+      "id": "notif-005",
+      "type": "payment",
+      "title": "Pagamento recebido",
+      "message": "Tech Solutions pagou R$ 8.900,00 referente a Maio/2026",
+      "read": true,
+      "createdAt": "2026-05-05T10:00:00Z",
+      "relatedId": "pay-004"
+    },
+    {
+      "id": "notif-006",
+      "type": "system",
+      "title": "Relatório mensal disponível",
+      "message": "Seu relatório financeiro de Abril/2026 está pronto para download",
+      "read": true,
+      "createdAt": "2026-05-01T08:00:00Z"
+    },
+    {
+      "id": "notif-007",
+      "type": "maintenance",
+      "title": "Chamado resolvido",
+      "message": "Infiltração no teto da Apto 301 foi resolvida com sucesso",
+      "read": true,
+      "createdAt": "2026-04-12T17:00:00Z",
+      "relatedId": "ticket-005"
+    }
+  ],
+  "inspections": [
+    {
+      "id": "insp-001",
+      "propertyId": "prop-001",
+      "tenantId": "tenant-001",
+      "type": "entrada",
+      "status": "concluida",
+      "scheduledDate": "2023-03-01T10:00:00Z",
+      "completedDate": "2023-03-01T11:30:00Z",
+      "inspector": "Carlos Vistoriador",
+      "generalScore": 92,
+      "generalObservations": "Imóvel em excelente estado. Pequeno arranhão na porta do quarto foi registrado.",
+      "signedByTenant": true,
+      "signedByOwner": true,
+      "createdAt": "2023-02-28T09:00:00Z",
+      "rooms": [
+        {
+          "id": "room-001-1",
+          "name": "Sala de Estar",
+          "condition": "otimo",
+          "observations": "Pintura nova, piso sem avarias.",
+          "photos": [
+            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=70",
+            "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=70"
+          ],
+          "items": [
+            {
+              "id": "i1",
+              "name": "Piso",
+              "condition": "otimo"
+            },
+            {
+              "id": "i2",
+              "name": "Paredes",
+              "condition": "otimo"
+            },
+            {
+              "id": "i3",
+              "name": "Teto",
+              "condition": "otimo"
+            },
+            {
+              "id": "i4",
+              "name": "Janelas",
+              "condition": "bom"
+            },
+            {
+              "id": "i5",
+              "name": "Tomadas",
+              "condition": "otimo"
+            }
+          ]
+        },
+        {
+          "id": "room-001-2",
+          "name": "Cozinha",
+          "condition": "bom",
+          "observations": "Armários em bom estado. Torneira com leve gotejamento registrado.",
+          "photos": [
+            "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=70"
+          ],
+          "items": [
+            {
+              "id": "i6",
+              "name": "Armários",
+              "condition": "bom"
+            },
+            {
+              "id": "i7",
+              "name": "Pia e torneira",
+              "condition": "regular",
+              "observation": "Leve gotejamento"
+            },
+            {
+              "id": "i8",
+              "name": "Azulejos",
+              "condition": "otimo"
+            },
+            {
+              "id": "i9",
+              "name": "Fogão (incluso)",
+              "condition": "bom"
+            }
+          ]
+        },
+        {
+          "id": "room-001-3",
+          "name": "Quarto Principal",
+          "condition": "bom",
+          "observations": "Arranhão de ~5cm na face interna da porta registrado em foto.",
+          "photos": [
+            "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400&q=70"
+          ],
+          "items": [
+            {
+              "id": "i10",
+              "name": "Piso",
+              "condition": "otimo"
+            },
+            {
+              "id": "i11",
+              "name": "Paredes",
+              "condition": "otimo"
+            },
+            {
+              "id": "i12",
+              "name": "Porta",
+              "condition": "regular",
+              "observation": "Arranhão na face interna"
+            },
+            {
+              "id": "i13",
+              "name": "Janela",
+              "condition": "bom"
+            },
+            {
+              "id": "i14",
+              "name": "Closet",
+              "condition": "otimo"
+            }
+          ]
+        },
+        {
+          "id": "room-001-4",
+          "name": "Banheiro",
+          "condition": "otimo",
+          "observations": "Sem avarias. Rejunte limpo e íntegro.",
+          "photos": [],
+          "items": [
+            {
+              "id": "i15",
+              "name": "Piso",
+              "condition": "otimo"
+            },
+            {
+              "id": "i16",
+              "name": "Azulejos",
+              "condition": "otimo"
+            },
+            {
+              "id": "i17",
+              "name": "Vaso sanitário",
+              "condition": "otimo"
+            },
+            {
+              "id": "i18",
+              "name": "Chuveiro",
+              "condition": "otimo"
+            },
+            {
+              "id": "i19",
+              "name": "Pia",
+              "condition": "otimo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insp-002",
+      "propertyId": "prop-002",
+      "tenantId": "tenant-002",
+      "type": "periodica",
+      "status": "concluida",
+      "scheduledDate": "2024-08-15T14:00:00Z",
+      "completedDate": "2024-08-15T15:45:00Z",
+      "inspector": "Márcia Inspetora",
+      "generalScore": 74,
+      "generalObservations": "Desgaste natural em alguns ambientes. Jardim necessita de atenção.",
+      "signedByTenant": true,
+      "signedByOwner": false,
+      "createdAt": "2024-08-10T10:00:00Z",
+      "rooms": [
+        {
+          "id": "room-002-1",
+          "name": "Sala de Estar",
+          "condition": "bom",
+          "observations": "Mancha pequena na parede lateral direita.",
+          "photos": [
+            "https://images.unsplash.com/photo-1571508601891-ca5e7a713859?w=400&q=70"
+          ],
+          "items": [
+            {
+              "id": "j1",
+              "name": "Piso",
+              "condition": "bom"
+            },
+            {
+              "id": "j2",
+              "name": "Paredes",
+              "condition": "regular",
+              "observation": "Mancha pequena lateral"
+            },
+            {
+              "id": "j3",
+              "name": "Teto",
+              "condition": "bom"
+            },
+            {
+              "id": "j4",
+              "name": "Janelas",
+              "condition": "bom"
+            }
+          ]
+        },
+        {
+          "id": "room-002-2",
+          "name": "Jardim / Área externa",
+          "condition": "ruim",
+          "observations": "Grama alta, plantas sem poda. Responsabilidade do locatário.",
+          "photos": [
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70"
+          ],
+          "items": [
+            {
+              "id": "j5",
+              "name": "Gramado",
+              "condition": "ruim",
+              "observation": "Grama acima de 20cm"
+            },
+            {
+              "id": "j6",
+              "name": "Poda de arbustos",
+              "condition": "pessimo",
+              "observation": "Sem manutenção há meses"
+            },
+            {
+              "id": "j7",
+              "name": "Calçamento",
+              "condition": "bom"
+            }
+          ]
+        },
+        {
+          "id": "room-002-3",
+          "name": "Cozinha",
+          "condition": "bom",
+          "observations": "",
+          "photos": [],
+          "items": [
+            {
+              "id": "j8",
+              "name": "Armários",
+              "condition": "bom"
+            },
+            {
+              "id": "j9",
+              "name": "Bancada",
+              "condition": "bom"
+            },
+            {
+              "id": "j10",
+              "name": "Azulejos",
+              "condition": "otimo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insp-003",
+      "propertyId": "prop-003",
+      "type": "saida",
+      "status": "agendada",
+      "scheduledDate": "2026-06-05T09:00:00Z",
+      "inspector": "Carlos Vistoriador",
+      "generalScore": 0,
+      "generalObservations": "",
+      "signedByTenant": false,
+      "signedByOwner": false,
+      "createdAt": "2026-05-20T10:00:00Z",
+      "rooms": []
+    },
+    {
+      "id": "insp-004",
+      "propertyId": "prop-004",
+      "tenantId": "tenant-003",
+      "type": "entrada",
+      "status": "concluida",
+      "scheduledDate": "2023-07-10T10:00:00Z",
+      "completedDate": "2023-07-10T11:15:00Z",
+      "inspector": "Márcia Inspetora",
+      "generalScore": 88,
+      "generalObservations": "Imóvel em ótimo estado geral. Pequenos retoques na pintura da varanda.",
+      "signedByTenant": true,
+      "signedByOwner": true,
+      "createdAt": "2023-07-09T08:00:00Z",
+      "rooms": [
+        {
+          "id": "room-004-1",
+          "name": "Sala / Varanda",
+          "condition": "bom",
+          "observations": "Retoque de pintura necessário na varanda.",
+          "photos": [
+            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=70"
+          ],
+          "items": [
+            {
+              "id": "k1",
+              "name": "Piso sala",
+              "condition": "otimo"
+            },
+            {
+              "id": "k2",
+              "name": "Piso varanda",
+              "condition": "bom"
+            },
+            {
+              "id": "k3",
+              "name": "Pintura varanda",
+              "condition": "regular",
+              "observation": "Retoque necessário"
+            },
+            {
+              "id": "k4",
+              "name": "Portas de vidro",
+              "condition": "otimo"
+            }
+          ]
+        },
+        {
+          "id": "room-004-2",
+          "name": "Quarto 1",
+          "condition": "otimo",
+          "observations": "",
+          "photos": [],
+          "items": [
+            {
+              "id": "k5",
+              "name": "Piso",
+              "condition": "otimo"
+            },
+            {
+              "id": "k6",
+              "name": "Paredes",
+              "condition": "otimo"
+            },
+            {
+              "id": "k7",
+              "name": "Armário embutido",
+              "condition": "otimo"
+            }
+          ]
+        },
+        {
+          "id": "room-004-3",
+          "name": "Quarto 2",
+          "condition": "otimo",
+          "observations": "",
+          "photos": [],
+          "items": [
+            {
+              "id": "k8",
+              "name": "Piso",
+              "condition": "otimo"
+            },
+            {
+              "id": "k9",
+              "name": "Paredes",
+              "condition": "otimo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insp-005",
+      "propertyId": "prop-001",
+      "tenantId": "tenant-001",
+      "type": "saida",
+      "status": "em_andamento",
+      "scheduledDate": "2026-05-20T14:00:00Z",
+      "inspector": "Carlos Vistoriador",
+      "generalScore": 0,
+      "generalObservations": "",
+      "signedByTenant": false,
+      "signedByOwner": false,
+      "createdAt": "2026-05-18T08:00:00Z",
+      "rooms": []
+    }
+  ],
+  "chartData": [
+    {
+      "month": "Dez",
+      "revenue": 18200,
+      "expenses": 3200,
+      "occupancy": 78
+    },
+    {
+      "month": "Jan",
+      "revenue": 19400,
+      "expenses": 2800,
+      "occupancy": 80
+    },
+    {
+      "month": "Fev",
+      "revenue": 20100,
+      "expenses": 4100,
+      "occupancy": 82
+    },
+    {
+      "month": "Mar",
+      "revenue": 21500,
+      "expenses": 3500,
+      "occupancy": 85
+    },
+    {
+      "month": "Abr",
+      "revenue": 22900,
+      "expenses": 2900,
+      "occupancy": 83
+    },
+    {
+      "month": "Mai",
+      "revenue": 23400,
+      "expenses": 3800,
+      "occupancy": 87
+    }
+  ],
+  "occupancyData": [
+    {
+      "name": "Ocupado",
+      "value": 4,
+      "color": "#7C3AED"
+    },
+    {
+      "name": "Vago",
+      "value": 1,
+      "color": "#374151"
+    },
+    {
+      "name": "Manutenção",
+      "value": 1,
+      "color": "#F59E0B"
+    }
+  ],
+  "paymentStatusData": [
+    {
+      "name": "Pago",
+      "value": 3,
+      "color": "#22C55E"
+    },
+    {
+      "name": "Pendente",
+      "value": 1,
+      "color": "#F59E0B"
+    },
+    {
+      "name": "Atrasado",
+      "value": 1,
+      "color": "#EF4444"
+    }
+  ],
+  "users": [
+    {
+      "id": "demo-user-001",
+      "name": "Demo Admin",
+      "email": "demo@equilino.app",
+      "password": "demo1234",
+      "role": "admin",
+      "plan": "pro",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}

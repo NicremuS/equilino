@@ -1,0 +1,17 @@
+{
+  "name": "Equilino",
+  "short_name": "Equilino",
+  "description": "Gestão Imobiliária Premium",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0F1A",
+  "theme_color": "#0B0F1A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "256x256",
+      "type": "image/x-icon"
+    }
+  ]
+}

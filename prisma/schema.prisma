@@ -1,0 +1,208 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?
+  role      String   @default("manager")
+  plan      String   @default("starter")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  properties   Property[]
+  contracts    Contract[]
+  payments     Payment[]
+  tickets      MaintenanceTicket[]
+  inspections  Inspection[]
+  notifications Notification[]
+}
+
+model Property {
+  id            String   @id @default(uuid())
+  name          String
+  address       String
+  city          String
+  type          String
+  status        String   @default("vacant")
+  rentAmount    Float
+  bedrooms      Int?
+  bathrooms     Int?
+  area          Float
+  image         String?
+  floor         Int?
+  amenities     String[]
+  occupancyRate Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  ownerId    String
+  owner      User     @relation(fields: [ownerId], references: [id])
+  tenantId   String?
+  contractId String?
+
+  contracts   Contract[]
+  payments    Payment[]
+  tickets     MaintenanceTicket[]
+  inspections Inspection[]
+}
+
+model Tenant {
+  id             String   @id @default(uuid())
+  name           String
+  email          String
+  phone          String
+  avatar         String?
+  cpf            String   @unique
+  score          Int      @default(0)
+  propertyId     String?
+  contractId     String?
+  joinedAt       DateTime @default(now())
+  paymentHistory String[]
+  status         String   @default("active")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  contracts   Contract[]
+  payments    Payment[]
+  tickets     MaintenanceTicket[]
+  inspections Inspection[]
+}
+
+model Payment {
+  id          String    @id @default(uuid())
+  amount      Float
+  dueDate     DateTime
+  paidDate    DateTime?
+  status      String
+  month       String
+  description String
+  receiptUrl  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tenantId   String
+  propertyId String
+  contractId String
+  ownerId    String
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+  contract Contract @relation(fields: [contractId], references: [id])
+  owner    User     @relation(fields: [ownerId], references: [id])
+}
+
+model Contract {
+  id              String    @id @default(uuid())
+  startDate       DateTime
+  endDate         DateTime
+  rentAmount      Float
+  adjustmentIndex String
+  status          String    @default("active")
+  depositAmount   Float
+  guaranteeType   String
+  clauses         String[]
+  signedAt        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  tenantId   String
+  propertyId String
+  ownerId    String
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+  owner    User     @relation(fields: [ownerId], references: [id])
+  payments Payment[]
+}
+
+model MaintenanceTicket {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  priority    String
+  status      String    @default("open")
+  category    String
+  assignedTo  String?
+  cost        Float?
+  images      String[]
+  resolvedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  propertyId String
+  tenantId   String?
+  ownerId    String
+
+  property Property @relation(fields: [propertyId], references: [id])
+  tenant   Tenant?  @relation(fields: [tenantId], references: [id])
+  owner    User     @relation(fields: [ownerId], references: [id])
+}
+
+model Inspection {
+  id                   String    @id @default(uuid())
+  type                 String
+  status               String    @default("agendada")
+  scheduledDate        DateTime
+  completedDate        DateTime?
+  inspector            String
+  generalScore         Float     @default(0)
+  generalObservations  String?
+  signedByTenant       Boolean   @default(false)
+  signedByOwner        Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  propertyId String
+  tenantId   String?
+  ownerId    String
+
+  property Property @relation(fields: [propertyId], references: [id])
+  tenant   Tenant?  @relation(fields: [tenantId], references: [id])
+  owner    User     @relation(fields: [ownerId], references: [id])
+  rooms    InspectionRoom[]
+}
+
+model InspectionRoom {
+  id           String  @id @default(uuid())
+  name         String
+  condition    String
+  observations String
+  photos       String[]
+
+  inspectionId String
+  inspection   Inspection      @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  items        InspectionItem[]
+}
+
+model InspectionItem {
+  id          String  @id @default(uuid())
+  name        String
+  condition   String
+  observation String?
+
+  roomId String
+  room   InspectionRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  actionUrl String?
+  relatedId String?
+  createdAt DateTime @default(now())
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+}
