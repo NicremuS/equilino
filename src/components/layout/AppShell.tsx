@@ -16,6 +16,7 @@ import { ReportsScreen } from '@/components/screens/ReportsScreen';
 import { InspectionScreen } from '@/components/screens/InspectionScreen';
 import { NoticesScreen } from '@/components/screens/NoticesScreen';
 import { OwnerProfileScreen } from '@/components/screens/OwnerProfileScreen';
+import { NotificationToast } from '@/components/shared/NotificationToast';
 
 type ScreenComponent = React.ComponentType;
 
@@ -63,6 +64,7 @@ export function AppShell() {
       </div>
 
       <BottomNav />
+      <NotificationToast />
     </div>
   );
 }

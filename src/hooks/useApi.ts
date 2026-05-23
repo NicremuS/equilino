@@ -50,7 +50,12 @@ export const usePaymentStatusData = () =>
   useQuery({ ...chartsQueryBase, select: (d) => d.paymentStatusData });
 
 export const useNotifications = () =>
-  useQuery({ queryKey: ['notifications'], queryFn: api.getNotifications });
+  useQuery({
+    queryKey: ['notifications'],
+    queryFn: api.getNotifications,
+    refetchInterval: 8000,
+    refetchIntervalInBackground: false,
+  });
 
 // ── Mutations ─────────────────────────────────────────────────────────────────
 
@@ -237,7 +242,35 @@ export function useUpdateNotification() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Notification> }) => api.updateNotification(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+    onMutate: async ({ id, data }) => {
+      await qc.cancelQueries({ queryKey: ['notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['notifications']);
+      qc.setQueryData<Notification[]>(['notifications'], old =>
+        old?.map(n => n.id === id ? { ...n, ...data } : n) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
+export function useDeleteNotification() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteNotification(id),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['notifications']);
+      qc.setQueryData<Notification[]>(['notifications'], old => old?.filter(n => n.id !== id) ?? []);
+      return { prev };
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
   });
 }
 
@@ -249,7 +282,18 @@ export function useMarkAllNotificationsRead() {
       if (!r.ok) throw new Error(`mark-all-read failed: ${r.status}`);
       return r.json() as Promise<{ ok: boolean }>;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+    onMutate: async () => {
+      await qc.cancelQueries({ queryKey: ['notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['notifications']);
+      qc.setQueryData<Notification[]>(['notifications'], old =>
+        old?.map(n => ({ ...n, read: true })) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
   });
 }
 

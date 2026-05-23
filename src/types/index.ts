@@ -106,6 +106,8 @@ export interface Notification {
   createdAt: string;
   actionUrl?: string;
   relatedId?: string;
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  metadata?: Record<string, unknown>;
 }
 
 export interface DashboardStats {
