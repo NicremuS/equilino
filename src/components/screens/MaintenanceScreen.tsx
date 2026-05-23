@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wrench, Zap, Droplets, Package, ChevronRight, Plus, X, CheckCircle2, AlertCircle, Clock, XCircle, Calendar, User } from 'lucide-react';
+import { Wrench, Zap, Droplets, Package, ChevronRight, Plus, X, CheckCircle2, AlertCircle, Clock, XCircle, Calendar, User, ImageIcon } from 'lucide-react';
 import { useTickets, useProperties, useTenants, useCreateTicket } from '@/hooks/useApi';
 import { formatRelativeTime, formatCurrency, formatDate } from '@/lib/utils';
 import { StatusBadge } from '@/components/shared/StatusBadge';
@@ -136,6 +136,28 @@ export function MaintenanceScreen() {
           </div>
 
           <p className="text-muted-foreground text-sm leading-relaxed">{selected.description}</p>
+
+          {selected.images && selected.images.length > 0 && (
+            <div>
+              <p className="text-muted-foreground text-[10px] uppercase tracking-wider font-semibold mb-2 flex items-center gap-1">
+                <ImageIcon size={9} /> Fotos do chamado ({selected.images.length})
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                {selected.images.map((src, i) => (
+                  <a
+                    key={i}
+                    href={src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-20 h-20 rounded-xl overflow-hidden border border-border flex-shrink-0 hover:opacity-80 transition-opacity"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`Foto ${i + 1}`} className="w-full h-full object-cover" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -359,6 +381,11 @@ export function MaintenanceScreen() {
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
                         <StatusBadge type="ticket" status={ticket.status} />
                         <StatusBadge type="priority" status={ticket.priority} />
+                        {ticket.images && ticket.images.length > 0 && (
+                          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                            <ImageIcon size={11} /> {ticket.images.length}
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center justify-between mt-2">
                         <div>

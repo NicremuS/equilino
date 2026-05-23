@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCollection, createItem } from '@/lib/db.server';
 import { CreateTicketSchema } from '@/lib/schemas';
-import type { MaintenanceTicket } from '@/types';
+import type { MaintenanceTicket, Tenant, Property, Notification } from '@/types';
+
+const PRIORITY_PT: Record<string, string> = {
+  low: 'Baixa', medium: 'Média', high: 'Alta', urgent: 'Urgente',
+};
 
 export async function GET(req: NextRequest) {
   const tenantId = req.headers.get('x-tenant-id');
@@ -36,5 +40,20 @@ export async function POST(req: NextRequest) {
   };
 
   createItem<MaintenanceTicket>('tickets', ticket);
+
+  const tenant = getCollection<Tenant>('tenants').find(t => t.id === tenantId);
+  const property = getCollection<Property>('properties').find(p => p.id === ticket.propertyId);
+  const priorityLabel = PRIORITY_PT[ticket.priority] ?? ticket.priority;
+  const notification: Notification = {
+    id: crypto.randomUUID(),
+    type: 'maintenance',
+    title: 'Novo chamado de manutenção',
+    message: `${tenant?.name ?? 'Inquilino'} abriu um chamado em ${property?.name ?? 'imóvel'}: "${ticket.title}" — Prioridade: ${priorityLabel}`,
+    read: false,
+    createdAt: now,
+    relatedId: ticket.id,
+  };
+  createItem<Notification>('notifications', notification);
+
   return NextResponse.json(ticket, { status: 201 });
 }
