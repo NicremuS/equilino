@@ -1,0 +1,27 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { getCollection, updateItem } from '@/lib/db.server';
+import type { Payment } from '@/types';
+
+const ReceiptSchema = z.object({
+  receiptData: z.string().min(1),
+});
+
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const tenantId = req.headers.get('x-tenant-id');
+  if (!tenantId) return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+
+  const { id } = await params;
+  const payments = getCollection<Payment>('payments');
+  const payment = payments.find(p => p.id === id);
+
+  if (!payment) return NextResponse.json({ error: 'Pagamento não encontrado' }, { status: 404 });
+  if (payment.tenantId !== tenantId) return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+
+  const body = await req.json();
+  const result = ReceiptSchema.safeParse(body);
+  if (!result.success) return NextResponse.json({ error: 'Dados inválidos' }, { status: 422 });
+
+  const updated = updateItem<Payment>('payments', id, { receiptUrl: result.data.receiptData });
+  return NextResponse.json(updated);
+}

@@ -71,6 +71,13 @@ export const tenantApi = {
     post<MaintenanceTicket>('/tickets', data),
   getNotifications: () => get<Notification[]>('/notifications'),
 
+  uploadReceipt: (id: string, receiptData: string) =>
+    request<Payment>(`/payments/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ receiptData }),
+    }),
+
   getNotices: () => get<Notice[]>('/notices'),
   markNoticeRead: (id: string) =>
     request<Notice>(`/notices/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{}' }),

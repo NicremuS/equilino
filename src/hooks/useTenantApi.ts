@@ -32,6 +32,15 @@ export function useTenantNotifications() {
   return useQuery({ queryKey: ['tenant', 'notifications'], queryFn: tenantApi.getNotifications });
 }
 
+export function useUploadPaymentReceipt() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, receiptData }: { id: string; receiptData: string }) =>
+      tenantApi.uploadReceipt(id, receiptData),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tenant', 'payments'] }),
+  });
+}
+
 export function useTenantNotices() {
   return useQuery({ queryKey: ['tenant', 'notices'], queryFn: tenantApi.getNotices });
 }
