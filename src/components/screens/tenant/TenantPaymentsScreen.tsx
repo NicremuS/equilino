@@ -212,8 +212,10 @@ export function TenantPaymentsScreen() {
                   <p className="text-foreground font-semibold text-sm">{payment.month}</p>
                   <p className="text-muted-foreground text-xs">
                     Vence {formatDate(payment.dueDate)}
-                    {payment.paidDate && ` · Pago ${formatDate(payment.paidDate)}`}
                   </p>
+                  {payment.paidDate && (
+                    <p className="text-muted-foreground text-xs">Pago {formatDate(payment.paidDate)}</p>
+                  )}
                 </div>
                 <div className="text-right flex-shrink-0 flex flex-col items-end gap-1.5">
                   <p className="text-foreground font-bold">{formatCurrency(payment.amount)}</p>
