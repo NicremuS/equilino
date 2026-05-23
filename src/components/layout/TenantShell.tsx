@@ -12,6 +12,8 @@ import { TenantNoticesScreen } from '@/components/screens/tenant/TenantNoticesSc
 import { TenantUserProfileScreen } from '@/components/screens/tenant/TenantUserProfileScreen';
 import { ChangePasswordModal } from '@/components/screens/tenant/ChangePasswordModal';
 import { useTenantNotices } from '@/hooks/useTenantApi';
+import { TenantNotificationBell } from '@/components/shared/TenantNotificationBell';
+import { TenantNotificationToast } from '@/components/shared/TenantNotificationToast';
 import type React from 'react';
 
 type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract' | 'notices';
@@ -65,6 +67,8 @@ export function TenantShell() {
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
+        <TenantNotificationBell />
+
         <button
           onClick={() => setProfileOpen(true)}
           className="w-8 h-8 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 flex items-center justify-center text-xs font-bold text-emerald-400 transition-colors"
@@ -93,6 +97,8 @@ export function TenantShell() {
           )}
         </AnimatePresence>
       </main>
+
+      <TenantNotificationToast />
 
       {/* Bottom navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 glass border-t border-border px-2 pb-safe">

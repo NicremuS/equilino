@@ -83,6 +83,13 @@ export const tenantApi = {
   markNoticeRead: (id: string) =>
     request<Notice>(`/notices/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
 
+  markNotificationRead: (id: string) =>
+    request<Notification>(`/notifications/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
+  markAllNotificationsRead: () =>
+    request<{ ok: boolean; count: number }>('/notifications', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
+  deleteNotification: (id: string) =>
+    request<{ ok: boolean }>(`/notifications/${id}`, { method: 'DELETE' }),
+
   changePassword: (newPassword: string) =>
     request<{ ok: boolean }>('/change-password', {
       method: 'POST',

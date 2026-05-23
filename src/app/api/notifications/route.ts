@@ -4,7 +4,9 @@ import { NotificationSchema } from '@/lib/schemas';
 import type { Notification } from '@/types';
 
 export async function GET() {
-  return NextResponse.json(getCollection<Notification>('notifications'));
+  // Exclude tenant-targeted notifications — those belong to the tenant portal
+  const all = getCollection<Notification>('notifications');
+  return NextResponse.json(all.filter(n => !n.targetTenantId));
 }
 
 export async function POST(req: NextRequest) {

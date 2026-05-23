@@ -118,6 +118,20 @@ export interface Notification {
   relatedId?: string;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   metadata?: Record<string, unknown>;
+  // When set, this notification belongs to the tenant (not the landlord)
+  targetTenantId?: string;
+}
+
+export type RentReminderType =
+  | 'due_3d' | 'due_2d' | 'due_1d' | 'due_today'
+  | 'overdue_1d' | 'overdue_3d' | 'overdue_7d' | 'overdue_14d';
+
+export interface RentReminder {
+  id: string;
+  tenantId: string;
+  paymentId: string;
+  reminderType: RentReminderType;
+  sentAt: string;
 }
 
 export interface DashboardStats {

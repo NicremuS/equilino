@@ -38,6 +38,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   const property = getCollection<Property>('properties').find(p => p.id === payment.propertyId);
   const amountStr = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(payment.amount);
 
+  // Landlord notification
   createItem<Notification>('notifications', {
     id:        crypto.randomUUID(),
     type:      'alert',
@@ -47,6 +48,19 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     createdAt: now,
     relatedId: id,
     priority:  'high',
+  });
+
+  // Tenant notification
+  createItem<Notification>('notifications', {
+    id:             crypto.randomUUID(),
+    type:           'alert',
+    title:          'Comprovante rejeitado',
+    message:        `Seu comprovante de ${amountStr} (${payment.month}) foi rejeitado. Motivo: ${result.data.reason}. Envie um novo comprovante.`,
+    read:           false,
+    createdAt:      now,
+    relatedId:      id,
+    priority:       'high',
+    targetTenantId: payment.tenantId,
   });
 
   return NextResponse.json(updated);

@@ -12,6 +12,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Cron endpoint: protected only by optional CRON_SECRET, not JWT
+  if (pathname.startsWith('/api/cron/')) {
+    return NextResponse.next();
+  }
+
   const authHeader = req.headers.get('Authorization');
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 

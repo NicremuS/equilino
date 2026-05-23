@@ -282,7 +282,7 @@
       "propertyId": "prop-002",
       "contractId": "contract-002",
       "amount": 6500,
-      "dueDate": "2026-05-10",
+      "dueDate": "2026-05-26T03:00:00.000Z",
       "status": "overdue",
       "month": "Maio 2026",
       "description": "Aluguel - Casa Moema",
@@ -609,6 +609,17 @@
       "read": true,
       "createdAt": "2026-04-12T17:00:00Z",
       "relatedId": "ticket-005"
+    },
+    {
+      "id": "1e5fe400-face-4cb8-ae94-a6bfe7d9b167",
+      "type": "payment",
+      "title": "Aluguel vence em 3 dias",
+      "message": "Seu aluguel de R$ 6.500,00 (Maio 2026) em Casa - Moema vence em 3 dias. Organize-se para realizar o pagamento em tempo.",
+      "read": false,
+      "createdAt": "2026-05-23T22:28:24.187Z",
+      "relatedId": "pay-002",
+      "priority": "low",
+      "targetTenantId": "tenant-002"
     }
   ],
   "inspections": [
@@ -1108,5 +1119,14 @@
       "createdAt": "2026-05-23T17:02:23.454Z"
     }
   ],
-  "payment_logs": []
+  "payment_logs": [],
+  "rent_reminders": [
+    {
+      "id": "d1bc048c-808b-4a1c-9142-45032b55f885",
+      "tenantId": "tenant-002",
+      "paymentId": "pay-002",
+      "reminderType": "due_3d",
+      "sentAt": "2026-05-23T22:28:24.187Z"
+    }
+  ]
 }

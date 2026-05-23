@@ -1,7 +1,7 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tenantApi } from '@/services/tenantApi';
-import type { MaintenanceTicket, Payment } from '@/types';
+import type { MaintenanceTicket, Notification, Payment } from '@/types';
 
 export function useTenantProfile() {
   return useQuery({ queryKey: ['tenant', 'profile'], queryFn: tenantApi.getProfile });
@@ -33,7 +33,74 @@ export function useCreateTenantTicket() {
 }
 
 export function useTenantNotifications() {
-  return useQuery({ queryKey: ['tenant', 'notifications'], queryFn: tenantApi.getNotifications });
+  return useQuery({
+    queryKey: ['tenant', 'notifications'],
+    queryFn: tenantApi.getNotifications,
+    refetchInterval: 8000,
+    refetchIntervalInBackground: false,
+  });
+}
+
+export function useTenantUnreadCount() {
+  const { data } = useTenantNotifications();
+  return data?.filter(n => !n.read).length ?? 0;
+}
+
+export function useMarkTenantNotificationRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => tenantApi.markNotificationRead(id),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['tenant', 'notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['tenant', 'notifications']);
+      qc.setQueryData<Notification[]>(['tenant', 'notifications'],
+        old => old?.map(n => n.id === id ? { ...n, read: true } : n) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['tenant', 'notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['tenant', 'notifications'] }),
+  });
+}
+
+export function useMarkAllTenantNotificationsRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => tenantApi.markAllNotificationsRead(),
+    onMutate: async () => {
+      await qc.cancelQueries({ queryKey: ['tenant', 'notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['tenant', 'notifications']);
+      qc.setQueryData<Notification[]>(['tenant', 'notifications'],
+        old => old?.map(n => ({ ...n, read: true })) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['tenant', 'notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['tenant', 'notifications'] }),
+  });
+}
+
+export function useDeleteTenantNotification() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => tenantApi.deleteNotification(id),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['tenant', 'notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['tenant', 'notifications']);
+      qc.setQueryData<Notification[]>(['tenant', 'notifications'],
+        old => old?.filter(n => n.id !== id) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['tenant', 'notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['tenant', 'notifications'] }),
+  });
 }
 
 type UploadReceiptArgs = { id: string; receiptData: string; notes?: string; paymentMethod?: string; paymentDate?: string };
