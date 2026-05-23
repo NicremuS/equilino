@@ -1,7 +1,8 @@
 'use client';
 import { motion } from 'framer-motion';
-import { FileText, Calendar, DollarSign, Shield, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { FileText, Calendar, DollarSign, Shield, CheckCircle2, Clock, AlertTriangle, User, Home, Hash } from 'lucide-react';
 import { useTenantContract, useTenantProperty } from '@/hooks/useTenantApi';
+import { useAppStore } from '@/store/useAppStore';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';
 
@@ -21,6 +22,7 @@ const GUARANTEE_LABELS = {
 export function TenantContractScreen() {
   const { data: contract, isLoading: loadingCon, isError, refetch } = useTenantContract();
   const { data: property, isLoading: loadingProp } = useTenantProperty();
+  const user = useAppStore(s => s.user);
 
   if (loadingCon || loadingProp) return <ListItemSkeleton count={4} />;
   if (isError) return <ApiErrorState onRetry={refetch} />;
@@ -52,9 +54,46 @@ export function TenantContractScreen() {
         Contrato
       </motion.h1>
 
-      {/* Status card */}
+      {/* Contract ID + parties */}
       <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+        className="premium-surface rounded-2xl divide-y divide-border overflow-hidden"
+      >
+        <div className="flex items-center gap-3 p-4">
+          <div className="w-8 h-8 rounded-lg bg-muted/60 flex items-center justify-center flex-shrink-0">
+            <Hash size={15} className="text-violet-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-muted-foreground text-xs">Número do contrato</p>
+            <p className="text-foreground font-semibold text-sm font-mono">{contract.id.toUpperCase()}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 p-4">
+          <div className="w-8 h-8 rounded-lg bg-muted/60 flex items-center justify-center flex-shrink-0">
+            <User size={15} className="text-emerald-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-muted-foreground text-xs">Locatário</p>
+            <p className="text-foreground font-semibold text-sm">{user?.name ?? '—'}</p>
+          </div>
+        </div>
+        {property && (
+          <div className="flex items-center gap-3 p-4">
+            <div className="w-8 h-8 rounded-lg bg-muted/60 flex items-center justify-center flex-shrink-0">
+              <Home size={15} className="text-blue-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-muted-foreground text-xs">Imóvel locado</p>
+              <p className="text-foreground font-semibold text-sm truncate">{property.name}</p>
+              <p className="text-muted-foreground text-xs truncate">{property.address} · {property.city}</p>
+            </div>
+          </div>
+        )}
+      </motion.div>
+
+      {/* Status card */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
         className="premium-surface rounded-2xl p-5"
       >
         <div className="flex items-center gap-3 mb-4">
@@ -85,7 +124,7 @@ export function TenantContractScreen() {
 
       {/* Details */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
         className="premium-surface rounded-2xl divide-y divide-border overflow-hidden"
       >
         {[
@@ -109,19 +148,6 @@ export function TenantContractScreen() {
           </div>
         ))}
       </motion.div>
-
-      {/* Property */}
-      {property && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-          className="premium-surface rounded-2xl p-4"
-        >
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-3">Imóvel</p>
-          <p className="text-foreground font-semibold">{property.name}</p>
-          <p className="text-muted-foreground text-sm">{property.address}</p>
-          <p className="text-muted-foreground text-sm">{property.city}</p>
-        </motion.div>
-      )}
 
       {/* Clauses */}
       {contract.clauses.length > 0 && (

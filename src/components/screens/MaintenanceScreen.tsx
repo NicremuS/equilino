@@ -71,15 +71,17 @@ export function MaintenanceScreen() {
   const filtered = (tickets ?? []).filter(t => active === 'all' || t.status === active);
   const urgent = (tickets ?? []).filter(t => t.priority === 'urgent' && t.status !== 'resolved').length;
 
+  const resetDraft = () => setDraft({ title: '', description: '', category: 'other', priority: 'medium', propertyId: '' });
+
   function submitTicket() {
-    if (!draft.title.trim()) return;
+    if (!draft.title.trim() || !draft.propertyId) return;
     createTicket.mutate(
       {
         title: draft.title,
         description: draft.description,
         category: draft.category,
         priority: draft.priority,
-        propertyId: draft.propertyId || (properties[0]?.id ?? ''),
+        propertyId: draft.propertyId,
         status: 'open',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -87,7 +89,7 @@ export function MaintenanceScreen() {
       {
         onSuccess: () => {
           setIsCreating(false);
-          setDraft({ title: '', description: '', category: 'other', priority: 'medium', propertyId: '' });
+          resetDraft();
         },
       }
     );
@@ -217,7 +219,7 @@ export function MaintenanceScreen() {
               <div className="overflow-y-auto flex-1 min-h-0 px-6 space-y-4 pt-1 pb-4">
                 <div className="flex items-center justify-between">
                   <p className="text-foreground font-bold text-base">Novo chamado</p>
-                  <button onClick={() => setIsCreating(false)} className="w-8 h-8 rounded-full bg-muted/70 dark:bg-white/5 flex items-center justify-center text-muted-foreground hover:text-foreground">
+                  <button onClick={() => { setIsCreating(false); resetDraft(); }} className="w-8 h-8 rounded-full bg-muted/70 dark:bg-white/5 flex items-center justify-center text-muted-foreground hover:text-foreground">
                     <X size={14} />
                   </button>
                 </div>
@@ -269,13 +271,13 @@ export function MaintenanceScreen() {
               </div>
 
               <div className="flex gap-3 px-6 pt-4 flex-shrink-0 border-t border-border/40">
-                <button onClick={() => setIsCreating(false)}
+                <button onClick={() => { setIsCreating(false); resetDraft(); }}
                   className="flex-1 py-3.5 rounded-2xl bg-muted/70 dark:bg-white/5 border border-border text-muted-foreground text-sm font-semibold hover:text-foreground transition-colors">
                   Cancelar
                 </button>
                 <button
                   onClick={submitTicket}
-                  disabled={!draft.title.trim() || createTicket.isPending}
+                  disabled={!draft.title.trim() || !draft.propertyId || createTicket.isPending}
                   className="flex-1 py-3.5 rounded-2xl gradient-accent text-white text-sm font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity"
                 >
                   {createTicket.isPending ? 'Salvando…' : 'Abrir chamado'}

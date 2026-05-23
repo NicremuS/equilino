@@ -5,9 +5,10 @@ import {
   ChevronLeft, ChevronRight, Check, Plus, Trash2, Camera,
   Home, Calendar, User, ClipboardList, Star, MapPin,
   CheckCircle2, MinusCircle, AlertCircle, XCircle, X,
-  Building2, FileSignature, Shield, Pencil,
+  FileSignature, Shield, Pencil,
 } from 'lucide-react';
 import { useProperties, useTenants } from '@/hooks/useApi';
+import { useAppStore } from '@/store/useAppStore';
 import { formatCurrency, getInitials } from '@/lib/utils';
 import type { InspectionType, RoomCondition, InspectionRoom, InspectionItem, Property } from '@/types';
 
@@ -257,14 +258,22 @@ function RoomEditor({ room, index, onChange, onRemove }: {
     onChange({ ...room, items: room.items.filter(it => it.id !== id) });
 
   const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    const previews = files.map(f => ({ id: `ph-${Date.now()}-${Math.random()}`, preview: URL.createObjectURL(f) }));
+    const files = Array.from(e.target.files ?? []).filter(f =>
+      f.type.startsWith('image/') && f.size <= 10 * 1024 * 1024
+    );
+    if (room.photos.length + files.length > 10) {
+      files.splice(10 - room.photos.length);
+    }
+    const previews = files.map(f => ({ id: crypto.randomUUID(), preview: URL.createObjectURL(f) }));
     onChange({ ...room, photos: [...room.photos, ...previews] });
     e.target.value = '';
   };
 
-  const removePhoto = (id: string) =>
+  const removePhoto = (id: string) => {
+    const photo = room.photos.find(p => p.id === id);
+    if (photo?.preview.startsWith('blob:')) URL.revokeObjectURL(photo.preview);
     onChange({ ...room, photos: room.photos.filter(p => p.id !== id) });
+  };
 
   return (
     <motion.div
@@ -748,13 +757,14 @@ interface NewInspectionScreenProps {
 export function NewInspectionScreen({ onBack, onSave }: NewInspectionScreenProps) {
   const { data: properties = [] } = useProperties();
   const { data: tenants = [] } = useTenants();
+  const userName = useAppStore(s => s.user?.name ?? '');
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<FormState>({
     propertyId: '',
     type: '',
     scheduledDate: new Date().toISOString().split('T')[0],
-    inspector: 'Carlos Vistoriador',
+    inspector: userName,
     tenantId: '',
     rooms: [],
     generalObservations: '',

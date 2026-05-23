@@ -468,6 +468,10 @@ html.dark body {
     border-color: var(--sidebar-primary);
   }
 
+  html:not(.dark) select {
+    color-scheme: light;
+    background-color: #F8FAFF;
+  }
   html.dark select {
     background-color: #111827;
     color: #f8fafc;

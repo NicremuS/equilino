@@ -49,3 +49,17 @@ export function getInitials(name: string): string {
     .toUpperCase();
 }
 
+export function todayInputValue(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function daysUntil(dateStr: string): number {
+  return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86_400_000);
+}
+
+export function scoreColor(score: number): string {
+  if (score >= 80) return 'text-green-400';
+  if (score >= 55) return 'text-yellow-400';
+  return 'text-red-400';
+}
+

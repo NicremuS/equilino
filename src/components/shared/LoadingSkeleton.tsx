@@ -38,7 +38,7 @@ export function StatsCardSkeleton() {
 
 export function ListItemSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="status" aria-label="Carregando…">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="premium-surface rounded-2xl p-4 flex items-center gap-3">
           <Skeleton className="h-10 w-10 rounded-full bg-muted" />
@@ -49,6 +49,7 @@ export function ListItemSkeleton({ count = 4 }: { count?: number }) {
           <Skeleton className="h-6 w-16 rounded-full bg-muted" />
         </div>
       ))}
+      <span className="sr-only">Carregando conteúdo</span>
     </div>
   );
 }
