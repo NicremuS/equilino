@@ -1,4 +1,4 @@
-import type { Property, Contract, Payment, MaintenanceTicket, Notification } from '@/types';
+import type { Property, Contract, Payment, MaintenanceTicket, Notification, Notice } from '@/types';
 import { useAppStore } from '@/store/useAppStore';
 
 const BASE = '/api/tenant';
@@ -58,4 +58,8 @@ export const tenantApi = {
   createTicket: (data: Omit<MaintenanceTicket, 'id' | 'tenantId' | 'status' | 'createdAt' | 'updatedAt'>) =>
     post<MaintenanceTicket>('/tickets', data),
   getNotifications: () => get<Notification[]>('/notifications'),
+
+  getNotices: () => get<Notice[]>('/notices'),
+  markNoticeRead: (id: string) =>
+    request<Notice>(`/notices/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
 };

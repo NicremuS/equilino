@@ -117,6 +117,14 @@ export const InspectionSchema = z.object({
   signedByOwner: z.boolean().optional(),
 });
 
+export const NoticeSchema = z.object({
+  tenantId: z.string().min(1),
+  propertyId: z.string().min(1),
+  category: z.enum(['aviso', 'recomendacao', 'obrigacao']),
+  title: z.string().min(1).max(200),
+  message: z.string().min(1).max(2000),
+});
+
 export const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(128),

@@ -1,7 +1,7 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
-import type { Property, Tenant, Payment, Contract, MaintenanceTicket, Inspection, Notification } from '@/types';
+import type { Property, Tenant, Payment, Contract, MaintenanceTicket, Inspection, Notification, Notice } from '@/types';
 
 // ── Queries ──────────────────────────────────────────────────────────────────
 
@@ -250,6 +250,26 @@ export function useMarkAllNotificationsRead() {
       return r.json() as Promise<{ ok: boolean }>;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
+export function useNotices() {
+  return useQuery({ queryKey: ['notices'], queryFn: api.getNotices });
+}
+
+export function useCreateNotice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Omit<Notice, 'id' | 'read' | 'createdAt'>) => api.createNotice(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['notices'] }),
+  });
+}
+
+export function useDeleteNotice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteNotice(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['notices'] }),
   });
 }
 

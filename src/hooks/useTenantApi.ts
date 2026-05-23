@@ -31,3 +31,15 @@ export function useCreateTenantTicket() {
 export function useTenantNotifications() {
   return useQuery({ queryKey: ['tenant', 'notifications'], queryFn: tenantApi.getNotifications });
 }
+
+export function useTenantNotices() {
+  return useQuery({ queryKey: ['tenant', 'notices'], queryFn: tenantApi.getNotices });
+}
+
+export function useMarkTenantNoticeRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => tenantApi.markNoticeRead(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tenant', 'notices'] }),
+  });
+}

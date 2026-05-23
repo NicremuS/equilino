@@ -1,6 +1,6 @@
 import type {
   Property, Tenant, Payment, Contract, MaintenanceTicket,
-  Inspection, Notification, DashboardStats, ChartDataPoint,
+  Inspection, Notification, Notice, DashboardStats, ChartDataPoint,
 } from '@/types';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -125,6 +125,11 @@ export const api = {
   createNotification: (data: Omit<Notification, 'id' | 'createdAt' | 'read'>) => post<Notification>('/notifications', data),
   updateNotification: (id: string, data: Partial<Notification>) => put<Notification>(`/notifications/${id}`, data),
   deleteNotification: (id: string) => del(`/notifications/${id}`),
+
+  // Notices (owner → tenant direct messages)
+  getNotices: () => get<Notice[]>('/notices'),
+  createNotice: (data: Omit<Notice, 'id' | 'read' | 'createdAt'>) => post<Notice>('/notices', data),
+  deleteNotice: (id: string) => del(`/notices/${id}`),
 
   // Charts — single request, all data returned together
   getCharts: () =>

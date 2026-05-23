@@ -1023,6 +1023,38 @@
       "color": "#EF4444"
     }
   ],
+  "notices": [
+    {
+      "id": "notice-001",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "category": "obrigacao",
+      "title": "Limpeza semestral do filtro do ar condicionado",
+      "message": "Lembramos que é obrigação contratual do locatário realizar a limpeza e manutenção semestral dos filtros dos aparelhos de ar condicionado. O próximo prazo é 15/06/2026. Guarde o comprovante do serviço.",
+      "read": true,
+      "createdAt": "2026-05-01T09:00:00.000Z"
+    },
+    {
+      "id": "notice-002",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "category": "recomendacao",
+      "title": "Revisão dos pontos elétricos",
+      "message": "Recomendamos que você verifique periodicamente o estado dos pontos elétricos do imóvel, especialmente tomadas e interruptores. Caso perceba aquecimento, faíscas ou barulhos, abra um chamado de manutenção imediatamente.",
+      "read": true,
+      "createdAt": "2026-05-10T14:00:00.000Z"
+    },
+    {
+      "id": "notice-003",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "category": "aviso",
+      "title": "Vistoria anual agendada para Junho",
+      "message": "Informamos que a vistoria anual do imóvel está agendada para a primeira semana de Junho de 2026. O vistoriador entrará em contato para confirmar o horário exato. Por favor, certifique-se de que há acesso a todos os cômodos.",
+      "read": false,
+      "createdAt": "2026-05-20T11:30:00.000Z"
+    }
+  ],
   "users": [
     {
       "id": "demo-user-001",

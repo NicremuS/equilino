@@ -6,10 +6,13 @@ import {
   AlertTriangle, CheckCircle2, Volume2, Building2,
   Calendar, Clock, Users, Info, ChevronDown,
   Phone, Shield, Flame, Recycle, Bug, Dumbbell,
-  Bell, Send, X,
+  Bell, Send, X, Plus, AlertCircle, Lightbulb, ShieldAlert, Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCreateNotification } from '@/hooks/useApi';
+import { formatDate } from '@/lib/utils';
+import { useCreateNotification, useNotices, useCreateNotice, useDeleteNotice } from '@/hooks/useApi';
+import { useTenants, useProperties } from '@/hooks/useApi';
+import type { NoticeCategory } from '@/types';
 
 type Section = 'coletas' | 'saude' | 'convivencia' | 'areas';
 
@@ -648,6 +651,290 @@ function AreasSection() {
   );
 }
 
+// ─── Direct Notices Section ───────────────────────────────────────────────────
+
+const CATEGORY_CONFIG: Record<NoticeCategory, {
+  label: string; icon: React.ElementType;
+  color: string; bg: string; border: string;
+}> = {
+  aviso:       { label: 'Aviso',        icon: AlertCircle, color: 'text-blue-400',   bg: 'bg-blue-500/10',   border: 'border-blue-500/20' },
+  recomendacao:{ label: 'Recomendação', icon: Lightbulb,   color: 'text-amber-400',  bg: 'bg-amber-500/10',  border: 'border-amber-500/20' },
+  obrigacao:   { label: 'Obrigação',    icon: ShieldAlert, color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20' },
+};
+
+function DirectNoticesSection() {
+  const { data: notices = [], isLoading } = useNotices();
+  const { data: tenants = [] } = useTenants();
+  const { data: properties = [] } = useProperties();
+  const createNotice = useCreateNotice();
+  const deleteNotice = useDeleteNotice();
+
+  const [showForm, setShowForm] = useState(false);
+  const [category, setCategory] = useState<NoticeCategory>('aviso');
+  const [tenantId, setTenantId] = useState('');
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [formError, setFormError] = useState('');
+  const [sent, setSent] = useState(false);
+
+  const activeTenantsWithProperty = tenants.filter(t => t.status === 'active' && t.propertyId);
+
+  function getPropertyName(tenantId: string) {
+    const tenant = tenants.find(t => t.id === tenantId);
+    const property = properties.find(p => p.id === tenant?.propertyId);
+    return property?.name ?? '';
+  }
+
+  async function handleSend() {
+    if (!tenantId || !title.trim() || !message.trim()) {
+      setFormError('Preencha todos os campos.');
+      return;
+    }
+    const tenant = tenants.find(t => t.id === tenantId);
+    if (!tenant?.propertyId) {
+      setFormError('Locatário sem imóvel associado.');
+      return;
+    }
+    setFormError('');
+    try {
+      await createNotice.mutateAsync({ category, tenantId, propertyId: tenant.propertyId, title: title.trim(), message: message.trim() });
+      setSent(true);
+      setTimeout(() => {
+        setSent(false);
+        setShowForm(false);
+        setTitle('');
+        setMessage('');
+        setTenantId('');
+        setCategory('aviso');
+      }, 1500);
+    } catch {
+      setFormError('Erro ao enviar aviso. Tente novamente.');
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Send button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-foreground font-semibold text-sm">Avisos enviados</p>
+          <p className="text-muted-foreground text-xs">{notices.length} {notices.length === 1 ? 'aviso' : 'avisos'} no total</p>
+        </div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl gradient-accent text-white text-xs font-semibold glow-accent hover:opacity-90 transition-opacity"
+        >
+          <Plus size={14} />
+          Novo aviso
+        </button>
+      </div>
+
+      {/* New notice modal */}
+      <AnimatePresence>
+        {showForm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 z-[55] backdrop-blur-sm"
+              onClick={() => !sent && setShowForm(false)}
+            />
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+              className="fixed bottom-0 left-0 right-0 z-[60] premium-surface rounded-t-3xl flex flex-col"
+              style={{ maxHeight: '92dvh' }}
+            >
+              <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
+                <div className="w-10 h-1 rounded-full bg-border" />
+              </div>
+
+              {sent ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center gap-3 px-6 py-10"
+                >
+                  <div className="w-14 h-14 rounded-full bg-green-500/15 flex items-center justify-center">
+                    <CheckCircle2 size={28} className="text-green-400" />
+                  </div>
+                  <p className="text-foreground font-bold text-base">Aviso enviado!</p>
+                  <p className="text-muted-foreground text-sm text-center">
+                    O locatário receberá a notificação.
+                  </p>
+                </motion.div>
+              ) : (
+                <>
+                  <div className="overflow-y-auto flex-1 min-h-0 px-5 pt-2 pb-2 space-y-4">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl gradient-accent flex items-center justify-center glow-accent">
+                          <Megaphone size={16} className="text-white" />
+                        </div>
+                        <div>
+                          <p className="text-foreground font-bold text-sm">Novo aviso ao locatário</p>
+                          <p className="text-muted-foreground text-xs">Selecione a categoria e o destinatário</p>
+                        </div>
+                      </div>
+                      <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground">
+                        <X size={18} />
+                      </button>
+                    </div>
+
+                    {/* Category picker */}
+                    <div>
+                      <label className="text-xs text-muted-foreground font-medium mb-2 block">Tipo de aviso</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(Object.entries(CATEGORY_CONFIG) as [NoticeCategory, typeof CATEGORY_CONFIG[NoticeCategory]][]).map(([key, cfg]) => {
+                          const Icon = cfg.icon;
+                          const active = category === key;
+                          return (
+                            <button
+                              key={key}
+                              onClick={() => setCategory(key)}
+                              className={cn(
+                                'flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all',
+                                active ? `${cfg.bg} ${cfg.border}` : 'border-border bg-card hover:border-border/60'
+                              )}
+                            >
+                              <Icon size={18} className={active ? cfg.color : 'text-muted-foreground'} />
+                              <span className={`text-xs font-semibold ${active ? cfg.color : 'text-muted-foreground'}`}>
+                                {cfg.label}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Tenant selector */}
+                    <div>
+                      <label className="text-xs text-muted-foreground font-medium mb-2 block">Destinatário</label>
+                      <div className="relative">
+                        <select
+                          value={tenantId}
+                          onChange={e => { setTenantId(e.target.value); setFormError(''); }}
+                          className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-white/5 border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-violet-500/60 transition-all pr-8"
+                        >
+                          <option value="">Selecionar locatário…</option>
+                          {activeTenantsWithProperty.map(t => (
+                            <option key={t.id} value={t.id}>{t.name} — {getPropertyName(t.id)}</option>
+                          ))}
+                        </select>
+                        <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                      <label className="text-xs text-muted-foreground font-medium mb-2 block">Título</label>
+                      <input
+                        value={title}
+                        onChange={e => { setTitle(e.target.value); setFormError(''); }}
+                        placeholder="Ex: Vistoria agendada para Junho"
+                        className="w-full px-4 py-3 bg-muted/70 dark:bg-white/5 border border-border rounded-2xl text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/60 transition-all"
+                      />
+                    </div>
+
+                    {/* Message */}
+                    <div>
+                      <label className="text-xs text-muted-foreground font-medium mb-2 block">Mensagem</label>
+                      <textarea
+                        value={message}
+                        onChange={e => { setMessage(e.target.value); setFormError(''); }}
+                        placeholder="Escreva o conteúdo do aviso…"
+                        rows={4}
+                        className="w-full px-4 py-3 bg-muted/70 dark:bg-white/5 border border-border rounded-2xl text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-violet-500/60 transition-all resize-none"
+                      />
+                    </div>
+
+                    {formError && (
+                      <p className="text-red-400 text-xs flex items-center gap-1.5">
+                        <AlertCircle size={12} /> {formError}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div
+                    className="flex gap-3 px-5 pt-3 flex-shrink-0 border-t border-border/40"
+                    style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)' }}
+                  >
+                    <button
+                      onClick={() => setShowForm(false)}
+                      className="flex-1 py-3.5 rounded-2xl bg-muted/70 dark:bg-white/5 border border-border text-muted-foreground text-sm font-semibold hover:text-foreground transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleSend}
+                      disabled={createNotice.isPending}
+                      className="flex-1 py-3.5 rounded-2xl gradient-accent text-white text-sm font-semibold flex items-center justify-center gap-2 glow-accent disabled:opacity-50 hover:opacity-90 transition-opacity"
+                    >
+                      {createNotice.isPending ? <Loader2 size={15} className="animate-spin" /> : <><Send size={14} /> Enviar</>}
+                    </button>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Notices list */}
+      {isLoading ? (
+        <div className="space-y-2">
+          {[1, 2].map(i => <div key={i} className="h-16 rounded-2xl bg-muted/60 animate-pulse" />)}
+        </div>
+      ) : notices.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <Megaphone size={36} className="mx-auto mb-3 opacity-30" />
+          <p className="text-sm">Nenhum aviso enviado ainda.</p>
+          <p className="text-xs mt-1">Use o botão acima para enviar o primeiro aviso.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {notices.map((notice, i) => {
+            const cfg = CATEGORY_CONFIG[notice.category];
+            const Icon = cfg.icon;
+            const tenantName = tenants.find(t => t.id === notice.tenantId)?.name ?? 'Locatário';
+            return (
+              <motion.div
+                key={notice.id}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                className={`rounded-2xl border p-4 flex items-start gap-3 ${cfg.bg} ${cfg.border}`}
+              >
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${cfg.bg}`}>
+                  <Icon size={16} className={cfg.color} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider ${cfg.color}`}>{cfg.label}</span>
+                    <span className="text-muted-foreground text-[10px]">→ {tenantName}</span>
+                  </div>
+                  <p className="text-foreground font-semibold text-sm">{notice.title}</p>
+                  <p className="text-muted-foreground text-xs mt-0.5 line-clamp-2">{notice.message}</p>
+                  <p className="text-muted-foreground text-[10px] mt-1.5">
+                    {notice.read ? '✓ Lido' : '○ Não lido'} · {formatDate(notice.createdAt)}
+                  </p>
+                </div>
+                <button
+                  onClick={() => deleteNotice.mutate(notice.id)}
+                  className="text-muted-foreground hover:text-red-400 transition-colors flex-shrink-0"
+                  title="Remover"
+                >
+                  <X size={15} />
+                </button>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main screen ─────────────────────────────────────────────────────────────
 
 const sections: { id: Section; label: string; icon: React.ElementType }[] = [
@@ -665,6 +952,7 @@ const NOTIFY_TOPICS = [
 ];
 
 export function NoticesScreen() {
+  const [mainTab, setMainTab] = useState<'diretos' | 'regras'>('diretos');
   const [activeSection, setActiveSection] = useState<Section>('coletas');
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set(NOTIFY_TOPICS.map(t => t.id)));
@@ -690,21 +978,41 @@ export function NoticesScreen() {
   return (
     <div className="space-y-5 pb-2">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
-      >
-        <div>
-          <h2 className="text-foreground text-xl font-bold">Avisos & Deveres</h2>
-          <p className="text-muted-foreground text-sm mt-0.5">Regras e informações do condomínio</p>
-        </div>
-        <button
-          onClick={() => setNotifyOpen(true)}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl gradient-accent text-white text-xs font-semibold glow-accent hover:opacity-90 transition-opacity"
-        >
-          <Bell size={13} />
-          Notificar
-        </button>
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
+        <h2 className="text-foreground text-xl font-bold">Avisos & Deveres</h2>
+        <p className="text-muted-foreground text-sm mt-0.5">Gerencie avisos e regras do condomínio</p>
       </motion.div>
+
+      {/* Main tab switcher */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+        className="flex gap-2 p-1 rounded-2xl bg-muted/60 dark:bg-white/5"
+      >
+        {[
+          { id: 'diretos' as const, label: 'Avisos Diretos', icon: Megaphone },
+          { id: 'regras'  as const, label: 'Regras do Condomínio', icon: Building2 },
+        ].map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => setMainTab(id)}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all',
+              mainTab === id
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <Icon size={13} />
+            {label}
+          </button>
+        ))}
+      </motion.div>
+
+      {/* Diretos tab */}
+      {mainTab === 'diretos' && <DirectNoticesSection />}
+
+      {/* Regras tab */}
+      {mainTab === 'regras' && <>
 
       {/* Notify modal */}
       <AnimatePresence>
@@ -865,6 +1173,8 @@ export function NoticesScreen() {
           {activeSection === 'areas'       && <AreasSection />}
         </motion.div>
       </AnimatePresence>
+
+      </>}
     </div>
   );
 }

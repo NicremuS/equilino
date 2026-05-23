@@ -146,6 +146,19 @@ export interface InspectionRoom {
   items: InspectionItem[];
 }
 
+export type NoticeCategory = 'aviso' | 'recomendacao' | 'obrigacao';
+
+export interface Notice {
+  id: string;
+  tenantId: string;
+  propertyId: string;
+  category: NoticeCategory;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface Inspection {
   id: string;
   propertyId: string;

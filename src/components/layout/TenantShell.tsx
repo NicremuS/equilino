@@ -1,15 +1,17 @@
 'use client';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Home, CreditCard, Wrench, FileText, LogOut, Sun, Moon } from 'lucide-react';
+import { Home, CreditCard, Wrench, FileText, Megaphone, LogOut, Sun, Moon } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { getInitials } from '@/lib/utils';
 import { TenantHomeScreen } from '@/components/screens/tenant/TenantHomeScreen';
 import { TenantPaymentsScreen } from '@/components/screens/tenant/TenantPaymentsScreen';
 import { TenantMaintenanceScreen } from '@/components/screens/tenant/TenantMaintenanceScreen';
 import { TenantContractScreen } from '@/components/screens/tenant/TenantContractScreen';
+import { TenantNoticesScreen } from '@/components/screens/tenant/TenantNoticesScreen';
+import { useTenantNotices } from '@/hooks/useTenantApi';
 import type React from 'react';
 
-type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract';
+type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract' | 'notices';
 
 type ScreenComponent = React.ComponentType;
 
@@ -18,6 +20,7 @@ const SCREENS: Record<TenantTab, ScreenComponent> = {
   payments:    TenantPaymentsScreen,
   maintenance: TenantMaintenanceScreen,
   contract:    TenantContractScreen,
+  notices:     TenantNoticesScreen,
 };
 
 const NAV_ITEMS: { tab: TenantTab; icon: React.ElementType; label: string }[] = [
@@ -25,10 +28,13 @@ const NAV_ITEMS: { tab: TenantTab; icon: React.ElementType; label: string }[] = 
   { tab: 'payments',    icon: CreditCard, label: 'Pagamentos' },
   { tab: 'maintenance', icon: Wrench,     label: 'Manutenção' },
   { tab: 'contract',    icon: FileText,   label: 'Contrato' },
+  { tab: 'notices',     icon: Megaphone,  label: 'Avisos' },
 ];
 
 export function TenantShell() {
   const { user, activeTab, setActiveTab, theme, toggleTheme, logout } = useAppStore();
+  const { data: notices } = useTenantNotices();
+  const unreadNotices = notices?.filter(n => !n.read).length ?? 0;
 
   const currentTab = (SCREENS[activeTab as TenantTab] ? activeTab : 'home') as TenantTab;
   const ActiveScreen = SCREENS[currentTab];
@@ -94,11 +100,12 @@ export function TenantShell() {
         <div className="flex items-center justify-around max-w-lg mx-auto">
           {NAV_ITEMS.map(({ tab, icon: Icon, label }) => {
             const active = currentTab === tab;
+            const hasBadge = tab === 'notices' && unreadNotices > 0;
             return (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="flex flex-col items-center gap-1 py-3 px-5 relative"
+                className="flex flex-col items-center gap-1 py-3 px-4 relative"
               >
                 {active && (
                   <motion.div
@@ -106,11 +113,18 @@ export function TenantShell() {
                     className="absolute inset-x-2 top-0 h-0.5 bg-emerald-500 rounded-full"
                   />
                 )}
-                <Icon
-                  size={22}
-                  className={active ? 'text-emerald-400' : 'text-muted-foreground'}
-                  strokeWidth={active ? 2.2 : 1.8}
-                />
+                <div className="relative">
+                  <Icon
+                    size={22}
+                    className={active ? 'text-emerald-400' : 'text-muted-foreground'}
+                    strokeWidth={active ? 2.2 : 1.8}
+                  />
+                  {hasBadge && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
+                      {unreadNotices > 9 ? '9+' : unreadNotices}
+                    </span>
+                  )}
+                </div>
                 <span className={`text-[10px] font-medium ${active ? 'text-emerald-400' : 'text-muted-foreground'}`}>
                   {label}
                 </span>
