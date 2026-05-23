@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, CheckCircle2, Clock, AlertCircle, Receipt, Upload, Eye, X, Loader2, ImageIcon } from 'lucide-react';
-import { useTenantPayments, useUploadPaymentReceipt } from '@/hooks/useTenantApi';
+import { useTenantPayments, useTenantProperty, useUploadPaymentReceipt } from '@/hooks/useTenantApi';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';
 import type { Payment, PaymentStatus } from '@/types';
@@ -151,6 +151,7 @@ function ReceiptModal({ payment, onClose }: { payment: Payment; onClose: () => v
 
 export function TenantPaymentsScreen() {
   const { data: payments, isLoading, isError, refetch } = useTenantPayments();
+  const { data: property } = useTenantProperty();
   const [selected, setSelected] = useState<Payment | null>(null);
 
   if (isLoading) return <ListItemSkeleton count={4} />;
@@ -210,6 +211,9 @@ export function TenantPaymentsScreen() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-foreground font-semibold text-sm">{payment.month}</p>
+                  {property && (
+                    <p className="text-muted-foreground text-xs truncate">{property.name}</p>
+                  )}
                   <p className="text-muted-foreground text-xs">
                     Vence {formatDate(payment.dueDate)}
                   </p>
