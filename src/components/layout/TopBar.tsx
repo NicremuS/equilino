@@ -121,9 +121,9 @@ export function TopBar() {
         </button>
 
         <button
-          onClick={() => setActiveTab('settings')}
+          onClick={() => setActiveTab('profile')}
           className="w-8 h-8 rounded-full gradient-accent flex items-center justify-center text-xs font-bold text-white"
-          aria-label="Configurações do perfil"
+          aria-label="Meu perfil"
         >
           {user ? getInitials(user.name) : 'U'}
         </button>

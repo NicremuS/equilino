@@ -15,6 +15,7 @@ import { SettingsScreen } from '@/components/screens/SettingsScreen';
 import { ReportsScreen } from '@/components/screens/ReportsScreen';
 import { InspectionScreen } from '@/components/screens/InspectionScreen';
 import { NoticesScreen } from '@/components/screens/NoticesScreen';
+import { OwnerProfileScreen } from '@/components/screens/OwnerProfileScreen';
 
 type ScreenComponent = React.ComponentType;
 
@@ -30,6 +31,7 @@ const screenMap: Record<string, ScreenComponent> = {
   settings: SettingsScreen,
   inspections: InspectionScreen,
   notices: NoticesScreen,
+  profile: OwnerProfileScreen,
 };
 
 export function AppShell() {

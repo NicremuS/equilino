@@ -110,22 +110,24 @@ export function Sidebar() {
         })}
 
         {/* User */}
-        <div className="mt-2 pt-2 border-t border-border flex items-center gap-3 px-3 py-2">
-          <div className="w-8 h-8 rounded-full gradient-accent flex items-center justify-center text-xs font-bold text-white">
+        <button
+          onClick={() => setActiveTab('profile')}
+          className="mt-2 pt-2 border-t border-border flex items-center gap-3 px-3 py-2 w-full hover:bg-muted/60 rounded-xl transition-colors group"
+          aria-label="Meu perfil"
+        >
+          <div className="w-8 h-8 rounded-full gradient-accent flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
             {user ? getInitials(user.name) : 'U'}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-left">
             <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
-          <button
-            onClick={logout}
-            aria-label="Sair da conta"
-            className="text-muted-foreground hover:text-red-400 transition-colors"
-          >
-            <LogOut size={16} aria-hidden="true" />
-          </button>
-        </div>
+          <LogOut
+            size={16}
+            aria-hidden="true"
+            className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0"
+          />
+        </button>
       </div>
     </aside>
   );
