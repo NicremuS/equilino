@@ -7,10 +7,12 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';
 
 const STATUS_MAP = {
-  paid:    { label: 'Pago',     color: 'text-emerald-400', bg: 'bg-emerald-500/10', icon: CheckCircle2 },
-  pending: { label: 'Pendente', color: 'text-amber-400',   bg: 'bg-amber-500/10',   icon: Clock },
-  overdue: { label: 'Atrasado', color: 'text-red-400',     bg: 'bg-red-500/10',     icon: AlertCircle },
-  partial: { label: 'Parcial',  color: 'text-blue-400',    bg: 'bg-blue-500/10',    icon: Clock },
+  paid:              { label: 'Pago',               color: 'text-emerald-400', bg: 'bg-emerald-500/10', icon: CheckCircle2 },
+  pending:           { label: 'Pendente',            color: 'text-amber-400',   bg: 'bg-amber-500/10',   icon: Clock        },
+  overdue:           { label: 'Atrasado',            color: 'text-red-400',     bg: 'bg-red-500/10',     icon: AlertCircle  },
+  partial:           { label: 'Parcial',             color: 'text-blue-400',    bg: 'bg-blue-500/10',    icon: Clock        },
+  awaiting_approval: { label: 'Aguardando',          color: 'text-violet-400',  bg: 'bg-violet-500/10',  icon: Clock        },
+  rejected:          { label: 'Rejeitado',           color: 'text-red-400',     bg: 'bg-red-500/10',     icon: AlertCircle  },
 };
 
 export function TenantHomeScreen() {

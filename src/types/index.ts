@@ -1,5 +1,6 @@
 export type UserRole = 'admin' | 'manager' | 'owner' | 'tenant';
-export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial';
+export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial' | 'awaiting_approval' | 'rejected';
+export type PaymentMethod  = 'pix' | 'transfer' | 'boleto' | 'cash' | 'other';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance' | 'reserved';
 export type ContractStatus = 'active' | 'expiring' | 'expired' | 'terminated';
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
@@ -63,6 +64,15 @@ export interface Payment {
   month: string;
   description: string;
   receiptUrl?: string;
+  // Tenant submission fields
+  receiptNotes?: string;
+  paymentMethod?: PaymentMethod;
+  paymentDate?: string;
+  submittedAt?: string;
+  // Landlord decision fields
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectionReason?: string;
 }
 
 export interface Contract {

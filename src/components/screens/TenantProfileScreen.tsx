@@ -22,10 +22,12 @@ import type {
 // ─── Configs ──────────────────────────────────────────────────────────────────
 
 const paymentStatusConfig: Record<PaymentStatus, { label: string; icon: React.ElementType; color: string; bg: string; border: string }> = {
-  paid:    { label: 'Pago',     icon: CheckCircle2, color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20'  },
-  pending: { label: 'Pendente', icon: Clock,        color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
-  overdue: { label: 'Atrasado', icon: AlertCircle,  color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20'    },
-  partial: { label: 'Parcial',  icon: MinusCircle,  color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+  paid:              { label: 'Pago',               icon: CheckCircle2, color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20'  },
+  pending:           { label: 'Pendente',            icon: Clock,        color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+  overdue:           { label: 'Atrasado',            icon: AlertCircle,  color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20'    },
+  partial:           { label: 'Parcial',             icon: MinusCircle,  color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+  awaiting_approval: { label: 'Aguard. aprovação',  icon: Clock,        color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/20' },
+  rejected:          { label: 'Rejeitado',           icon: AlertCircle,  color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20'    },
 };
 
 const ticketPriorityConfig: Record<TicketPriority, { label: string; color: string; bg: string }> = {

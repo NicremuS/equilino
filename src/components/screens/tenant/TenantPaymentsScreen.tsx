@@ -3,36 +3,49 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   CreditCard, CheckCircle2, Clock, AlertCircle, Receipt,
-  Upload, Eye, X, Loader2, ImageIcon, Download, ZapIcon,
+  Upload, Eye, X, Loader2, ImageIcon, Download, ZapIcon, XCircle,
 } from 'lucide-react';
 import { useTenantPayments, useTenantProperty, useUploadPaymentReceipt } from '@/hooks/useTenantApi';
 import { formatCurrency, formatDate, compressImage, formatBytes } from '@/lib/utils';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';
 import type { Payment, PaymentStatus } from '@/types';
 
-const MAX_FILE_BYTES = 20 * 1024 * 1024; // 20 MB hard limit
+const MAX_FILE_BYTES = 20 * 1024 * 1024;
 
-const STATUS = {
-  paid:    { label: 'Pago',     color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', icon: CheckCircle2 },
-  pending: { label: 'Pendente', color: 'text-amber-400',   bg: 'bg-amber-500/10',   border: 'border-amber-500/20',   icon: Clock        },
-  overdue: { label: 'Atrasado', color: 'text-red-400',     bg: 'bg-red-500/10',     border: 'border-red-500/20',     icon: AlertCircle  },
-  partial: { label: 'Parcial',  color: 'text-blue-400',    bg: 'bg-blue-500/10',    border: 'border-blue-500/20',    icon: Clock        },
-} satisfies Record<PaymentStatus, { label: string; color: string; bg: string; border: string; icon: React.ElementType }>;
+const STATUS: Record<PaymentStatus, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
+  paid:              { label: 'Pago',               color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', icon: CheckCircle2 },
+  pending:           { label: 'Pendente',            color: 'text-amber-400',   bg: 'bg-amber-500/10',   border: 'border-amber-500/20',   icon: Clock        },
+  overdue:           { label: 'Atrasado',            color: 'text-red-400',     bg: 'bg-red-500/10',     border: 'border-red-500/20',     icon: AlertCircle  },
+  partial:           { label: 'Parcial',             color: 'text-blue-400',    bg: 'bg-blue-500/10',    border: 'border-blue-500/20',    icon: Clock        },
+  awaiting_approval: { label: 'Aguardando revisão',  color: 'text-violet-400',  bg: 'bg-violet-500/10',  border: 'border-violet-500/20',  icon: Clock        },
+  rejected:          { label: 'Rejeitado',           color: 'text-red-400',     bg: 'bg-red-500/10',     border: 'border-red-500/20',     icon: XCircle      },
+};
+
+const METHODS = [
+  { value: 'pix',      label: 'Pix'      },
+  { value: 'transfer', label: 'TED'      },
+  { value: 'boleto',   label: 'Boleto'   },
+  { value: 'cash',     label: 'Dinheiro' },
+  { value: 'other',    label: 'Outro'    },
+] as const;
 
 type UploadStep = 'idle' | 'compressing' | 'ready' | 'uploading' | 'done' | 'error';
 
 function ReceiptModal({ payment, onClose }: { payment: Payment; onClose: () => void }) {
   const uploadReceipt = useUploadPaymentReceipt();
 
-  const [preview,     setPreview]     = useState<string | null>(null);
-  const [rawSize,     setRawSize]     = useState(0);
-  const [finalSize,   setFinalSize]   = useState(0);
-  const [step,        setStep]        = useState<UploadStep>('idle');
-  const [error,       setError]       = useState('');
-  const [lightbox,    setLightbox]    = useState(false);
+  const [preview,       setPreview]       = useState<string | null>(null);
+  const [rawSize,       setRawSize]       = useState(0);
+  const [finalSize,     setFinalSize]     = useState(0);
+  const [step,          setStep]          = useState<UploadStep>('idle');
+  const [error,         setError]         = useState('');
+  const [lightbox,      setLightbox]      = useState(false);
+  const [notes,         setNotes]         = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentDate,   setPaymentDate]   = useState('');
 
-  const existing   = payment.receiptUrl;
-  const canUpload  = payment.status === 'pending' || payment.status === 'overdue' || payment.status === 'partial';
+  const existing  = payment.receiptUrl;
+  const canUpload = ['pending', 'overdue', 'partial', 'rejected'].includes(payment.status);
 
   const handleFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +84,13 @@ function ReceiptModal({ payment, onClose }: { payment: Payment; onClose: () => v
     setError('');
     setStep('uploading');
     try {
-      await uploadReceipt.mutateAsync({ id: payment.id, receiptData: preview });
+      await uploadReceipt.mutateAsync({
+        id: payment.id,
+        receiptData: preview,
+        notes: notes.trim() || undefined,
+        paymentMethod: paymentMethod || undefined,
+        paymentDate: paymentDate || undefined,
+      });
       setStep('done');
     } catch (err) {
       setStep('error');
@@ -132,7 +151,9 @@ function ReceiptModal({ payment, onClose }: { payment: Payment; onClose: () => v
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-foreground font-bold text-base">Comprovante</h2>
+              <h2 className="text-foreground font-bold text-base">
+                {canUpload ? 'Enviar comprovante' : 'Comprovante'}
+              </h2>
               <p className="text-muted-foreground text-xs mt-0.5">
                 {payment.month} · {formatCurrency(payment.amount)}
               </p>
@@ -173,7 +194,7 @@ function ReceiptModal({ payment, onClose }: { payment: Payment; onClose: () => v
             </div>
           )}
 
-          {/* Compression step */}
+          {/* Compressing */}
           {step === 'compressing' && (
             <div className="flex flex-col items-center gap-3 py-6">
               <div className="w-12 h-12 rounded-2xl bg-violet-500/10 flex items-center justify-center">
@@ -224,7 +245,57 @@ function ReceiptModal({ payment, onClose }: { payment: Payment; onClose: () => v
             </label>
           )}
 
-          {/* Upload progress bar */}
+          {/* Extra fields (method / date / notes) */}
+          {canUpload && step !== 'compressing' && step !== 'uploading' && (
+            <div className="space-y-3">
+              {/* Payment method */}
+              <div>
+                <p className="text-muted-foreground text-xs mb-2">Forma de pagamento</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {METHODS.map(m => (
+                    <button
+                      key={m.value}
+                      type="button"
+                      onClick={() => setPaymentMethod(prev => prev === m.value ? '' : m.value)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                        paymentMethod === m.value
+                          ? 'bg-violet-500 border-violet-500 text-white'
+                          : 'border-border text-muted-foreground hover:border-violet-500/30 hover:text-foreground'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Payment date */}
+              <div>
+                <p className="text-muted-foreground text-xs mb-1.5">Data do pagamento</p>
+                <input
+                  type="date"
+                  value={paymentDate}
+                  onChange={e => setPaymentDate(e.target.value)}
+                  className="w-full rounded-xl border border-border bg-muted/50 dark:bg-white/3 px-3 py-2 text-sm text-foreground focus:outline-none focus:border-violet-500/50 transition-colors"
+                />
+              </div>
+
+              {/* Notes */}
+              <div>
+                <p className="text-muted-foreground text-xs mb-1.5">Observação (opcional)</p>
+                <textarea
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                  placeholder="Ex: Pagamento referente ao mês de maio…"
+                  maxLength={500}
+                  rows={2}
+                  className="w-full rounded-xl border border-border bg-muted/50 dark:bg-white/3 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-violet-500/50 resize-none transition-colors"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Upload progress */}
           {step === 'uploading' && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
@@ -352,10 +423,9 @@ export function TenantPaymentsScreen() {
       {/* List */}
       <div className="space-y-2">
         {(payments ?? []).map((payment, i) => {
-          const s         = STATUS[payment.status];
-          const Icon      = s.icon;
+          const s        = STATUS[payment.status];
+          const Icon     = s.icon;
           const hasReceipt = !!payment.receiptUrl;
-          const canAct    = payment.status === 'pending' || payment.status === 'overdue' || payment.status === 'partial' || hasReceipt;
 
           return (
             <motion.div
@@ -381,7 +451,41 @@ export function TenantPaymentsScreen() {
                 </div>
               </div>
 
-              {canAct && (
+              {/* Status-specific footer */}
+              {payment.status === 'awaiting_approval' && (
+                <div className="mt-3 pt-3 border-t border-border/40">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex-shrink-0">
+                      <span className="flex w-2 h-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-60" />
+                        <span className="relative inline-flex rounded-full w-2 h-2 bg-violet-400" />
+                      </span>
+                    </span>
+                    <p className="text-violet-400 text-xs font-medium">Aguardando revisão do locador</p>
+                  </div>
+                  {payment.submittedAt && (
+                    <p className="text-muted-foreground text-[10px] mt-1 ml-4">
+                      Enviado {formatDate(payment.submittedAt)}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {payment.status === 'rejected' && (
+                <div className="mt-3 pt-3 border-t border-border/40 space-y-2">
+                  {payment.rejectionReason && (
+                    <p className="text-red-400/80 text-xs leading-relaxed">{payment.rejectionReason}</p>
+                  )}
+                  <button
+                    onClick={() => setSelected(payment)}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-colors"
+                  >
+                    <Upload size={11} /> Reenviar comprovante
+                  </button>
+                </div>
+              )}
+
+              {['pending', 'overdue', 'partial'].includes(payment.status) && (
                 <div className="mt-3 pt-3 border-t border-border/40 flex items-center justify-between">
                   {hasReceipt ? (
                     <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
@@ -399,6 +503,20 @@ export function TenantPaymentsScreen() {
                     }`}
                   >
                     {hasReceipt ? <><Eye size={11} /> Ver</> : <><Upload size={11} /> Enviar</>}
+                  </button>
+                </div>
+              )}
+
+              {payment.status === 'paid' && hasReceipt && (
+                <div className="mt-3 pt-3 border-t border-border/40 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                    <CheckCircle2 size={12} /> Pagamento confirmado
+                  </span>
+                  <button
+                    onClick={() => setSelected(payment)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors"
+                  >
+                    <Eye size={11} /> Ver comprovante
                   </button>
                 </div>
               )}

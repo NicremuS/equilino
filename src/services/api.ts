@@ -142,6 +142,12 @@ export const api = {
   updateInspection: (id: string, data: Partial<Inspection>) => put<Inspection>(`/inspections/${id}`, data),
   deleteInspection: (id: string) => del(`/inspections/${id}`),
 
+  // Payment approval
+  approvePayment: (id: string) =>
+    request<Payment>(`/payments/${id}/approve`, { method: 'POST' }),
+  rejectPayment: (id: string, reason: string) =>
+    post<Payment>(`/payments/${id}/reject`, { reason }),
+
   // Notifications
   getNotifications: () => get<Notification[]>('/notifications'),
   createNotification: (data: Omit<Notification, 'id' | 'createdAt' | 'read'>) => post<Notification>('/notifications', data),

@@ -241,6 +241,52 @@ export function useDeleteInspection() {
   });
 }
 
+export function useApprovePayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.approvePayment(id),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['payments'] });
+      const prev = qc.getQueryData<Payment[]>(['payments']);
+      const now  = new Date().toISOString();
+      qc.setQueryData<Payment[]>(['payments'], old =>
+        old?.map(p => p.id === id ? { ...p, status: 'paid', paidDate: now } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['payments'], ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['payments'] });
+      qc.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
+export function useRejectPayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => api.rejectPayment(id, reason),
+    onMutate: async ({ id }) => {
+      await qc.cancelQueries({ queryKey: ['payments'] });
+      const prev = qc.getQueryData<Payment[]>(['payments']);
+      qc.setQueryData<Payment[]>(['payments'], old =>
+        old?.map(p => p.id === id ? { ...p, status: 'rejected' } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['payments'], ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['payments'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
 export function useCreateNotification() {
   const qc = useQueryClient();
   return useMutation({

@@ -36,16 +36,21 @@ export function useTenantNotifications() {
   return useQuery({ queryKey: ['tenant', 'notifications'], queryFn: tenantApi.getNotifications });
 }
 
+type UploadReceiptArgs = { id: string; receiptData: string; notes?: string; paymentMethod?: string; paymentDate?: string };
+
 export function useUploadPaymentReceipt() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, receiptData }: { id: string; receiptData: string }) =>
-      tenantApi.uploadReceipt(id, receiptData),
+    mutationFn: ({ id, receiptData, notes, paymentMethod, paymentDate }: UploadReceiptArgs) =>
+      tenantApi.uploadReceipt(id, { receiptData, notes, paymentMethod, paymentDate }),
     onMutate: async ({ id, receiptData }) => {
       await qc.cancelQueries({ queryKey: ['tenant', 'payments'] });
       const prev = qc.getQueryData<Payment[]>(['tenant', 'payments']);
       qc.setQueryData<Payment[]>(['tenant', 'payments'], old =>
-        old?.map(p => p.id === id ? { ...p, receiptUrl: receiptData } : p) ?? []
+        old?.map(p => p.id === id
+          ? { ...p, receiptUrl: receiptData, status: 'awaiting_approval' as const, submittedAt: new Date().toISOString() }
+          : p
+        ) ?? []
       );
       return { prev };
     },

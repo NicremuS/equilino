@@ -32,17 +32,31 @@ export const TenantSchema = z.object({
   status: z.enum(['active', 'inactive']),
 });
 
+export const ALL_PAYMENT_STATUSES = ['paid', 'pending', 'overdue', 'partial', 'awaiting_approval', 'rejected'] as const;
+export const ALL_PAYMENT_METHODS  = ['pix', 'transfer', 'boleto', 'cash', 'other'] as const;
+
 export const PaymentSchema = z.object({
-  tenantId: z.string().min(1),
-  propertyId: z.string().min(1),
-  contractId: z.string().min(1),
-  amount: z.number().positive(),
-  dueDate: z.string().min(1),
-  paidDate: z.string().optional(),
-  status: z.enum(['paid', 'pending', 'overdue', 'partial']),
-  month: z.string().regex(/^\d{4}-\d{2}$/, 'Formato YYYY-MM esperado'),
+  tenantId:    z.string().min(1),
+  propertyId:  z.string().min(1),
+  contractId:  z.string().min(1),
+  amount:      z.number().positive(),
+  dueDate:     z.string().min(1),
+  paidDate:    z.string().optional(),
+  status:      z.enum(ALL_PAYMENT_STATUSES),
+  month:       z.string().regex(/^\d{4}-\d{2}$/, 'Formato YYYY-MM esperado'),
   description: z.string().min(1).max(500),
-  receiptUrl: z.string().url().optional(),
+  receiptUrl:  z.string().optional(),
+});
+
+export const ReceiptSubmissionSchema = z.object({
+  receiptData:   z.string().min(1, 'Comprovante obrigatório'),
+  notes:         z.string().max(500).optional(),
+  paymentMethod: z.enum(ALL_PAYMENT_METHODS).optional(),
+  paymentDate:   z.string().optional(),
+});
+
+export const RejectPaymentSchema = z.object({
+  reason: z.string().min(5, 'Informe o motivo com pelo menos 5 caracteres').max(500),
 });
 
 export const ContractSchema = z.object({

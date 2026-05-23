@@ -3,7 +3,7 @@ import path from 'path';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'db.json');
 
-export type DbKey = 'properties' | 'tenants' | 'payments' | 'contracts' | 'tickets' | 'notifications' | 'inspections' | 'chartData' | 'occupancyData' | 'paymentStatusData' | 'user' | 'users' | 'notices';
+export type DbKey = 'properties' | 'tenants' | 'payments' | 'contracts' | 'tickets' | 'notifications' | 'inspections' | 'chartData' | 'occupancyData' | 'paymentStatusData' | 'user' | 'users' | 'notices' | 'payment_logs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = Record<DbKey, any>;
