@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, TrendingUp } from 'lucide-react';
+import { Search, TrendingUp, Paperclip } from 'lucide-react';
 import { usePayments, useTenants, useProperties } from '@/hooks/useApi';
 import { formatCurrency, formatDate, getInitials } from '@/lib/utils';
 import { StatusBadge } from '@/components/shared/StatusBadge';
@@ -9,11 +9,14 @@ import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkel
 import { PaymentProfileScreen } from './PaymentProfileScreen';
 import type { Payment, PaymentStatus } from '@/types';
 
-const filters: { label: string; value: PaymentStatus | 'all' }[] = [
+type FilterValue = PaymentStatus | 'all' | 'with_receipt';
+
+const filters: { label: string; value: FilterValue }[] = [
   { label: 'Todos', value: 'all' },
   { label: 'Pagos', value: 'paid' },
   { label: 'Pendentes', value: 'pending' },
   { label: 'Atrasados', value: 'overdue' },
+  { label: 'Com comprovante', value: 'with_receipt' },
 ];
 
 const summaryColors = {
@@ -26,13 +29,16 @@ export function PaymentsScreen() {
   const { data: payments, isLoading, isError, refetch } = usePayments();
   const { data: tenants = [] } = useTenants();
   const { data: properties = [] } = useProperties();
-  const [active, setActive] = useState<PaymentStatus | 'all'>('all');
+  const [active, setActive] = useState<FilterValue>('all');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Payment | null>(null);
 
   const filtered = (payments ?? []).filter(p => {
     const tenant = tenants.find(t => t.id === p.tenantId);
-    const matchesStatus = active === 'all' || p.status === active;
+    const matchesStatus =
+      active === 'all' ? true :
+      active === 'with_receipt' ? !!p.receiptUrl :
+      p.status === active;
     const matchesSearch = !search ||
       tenant?.name.toLowerCase().includes(search.toLowerCase()) ||
       p.description.toLowerCase().includes(search.toLowerCase());
@@ -149,13 +155,16 @@ export function PaymentsScreen() {
                     <p className="text-muted-foreground text-xs truncate">{property?.name ?? payment.description}</p>
                     <p className="text-muted-foreground text-xs mt-0.5">{payment.month}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right flex flex-col items-end gap-1">
                     <p className="text-foreground text-sm font-semibold">{formatCurrency(payment.amount)}</p>
-                    <div className="mt-1">
-                      <StatusBadge type="payment" status={payment.status} />
-                    </div>
+                    <StatusBadge type="payment" status={payment.status} />
+                    {payment.receiptUrl && (
+                      <span className="flex items-center gap-1 text-[10px] font-medium text-violet-400 bg-violet-500/10 px-1.5 py-0.5 rounded-full">
+                        <Paperclip size={9} /> comprovante
+                      </span>
+                    )}
                     {payment.paidDate && (
-                      <p className="text-muted-foreground text-[10px] mt-0.5">{formatDate(payment.paidDate)}</p>
+                      <p className="text-muted-foreground text-[10px]">{formatDate(payment.paidDate)}</p>
                     )}
                   </div>
                 </motion.div>

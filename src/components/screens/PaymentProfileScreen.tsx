@@ -1,11 +1,12 @@
 'use client';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, CheckCircle2, Clock, AlertCircle, Calendar,
-  Building2, User, FileText, Receipt, Phone, Mail, MapPin,
-  TrendingUp, CreditCard, Hash,
+  FileText, Receipt, Phone, Mail, MapPin,
+  TrendingUp, CreditCard, Eye, ThumbsUp, Loader2, X,
 } from 'lucide-react';
-import { useTenants, useProperties, useContracts, usePayments } from '@/hooks/useApi';
+import { useTenants, useProperties, useContracts, usePayments, useUpdatePayment } from '@/hooks/useApi';
 import { formatCurrency, formatDate, getInitials } from '@/lib/utils';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { Payment } from '@/types';
@@ -39,6 +40,17 @@ export function PaymentProfileScreen({ payment, onBack }: PaymentProfileScreenPr
   const { data: properties = [] } = useProperties();
   const { data: contracts = [] } = useContracts();
   const { data: payments = [] } = usePayments();
+  const updatePayment = useUpdatePayment();
+  const [lightbox, setLightbox] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+
+  async function handleConfirm() {
+    await updatePayment.mutateAsync({
+      id: payment.id,
+      data: { status: 'paid', paidDate: new Date().toISOString() },
+    });
+    setConfirmed(true);
+  }
 
   const tenant   = tenants.find(t => t.id === payment.tenantId);
   const property = properties.find(p => p.id === payment.propertyId);
@@ -274,24 +286,93 @@ export function PaymentProfileScreen({ payment, onBack }: PaymentProfileScreenPr
         </motion.div>
       )}
 
-      {/* Receipt link placeholder */}
+      {/* Receipt */}
       {payment.receiptUrl && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.22 }}
+          className="premium-surface rounded-2xl overflow-hidden"
         >
-          <a
-            href={payment.receiptUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border border-violet-500/30 bg-violet-500/10 text-violet-400 text-sm font-semibold hover:bg-violet-500/20 transition-colors"
-          >
-            <Receipt size={16} />
-            Ver comprovante
-          </a>
+          <div className="flex items-center justify-between px-4 pt-4 pb-3">
+            <div className="flex items-center gap-2">
+              <Receipt size={15} className="text-violet-400" />
+              <p className="text-foreground text-sm font-semibold">Comprovante enviado</p>
+            </div>
+            <button
+              onClick={() => setLightbox(true)}
+              className="flex items-center gap-1.5 text-xs text-violet-400 hover:text-violet-300 transition-colors"
+            >
+              <Eye size={13} /> Ver completo
+            </button>
+          </div>
+
+          {/* Thumbnail */}
+          <button onClick={() => setLightbox(true)} className="w-full px-4 pb-4">
+            <div className="relative rounded-xl overflow-hidden border border-border">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={payment.receiptUrl}
+                alt="Comprovante"
+                className="w-full max-h-52 object-contain bg-black/20"
+              />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/40 transition-opacity">
+                <Eye size={24} className="text-white" />
+              </div>
+            </div>
+          </button>
+
+          {/* Confirm action */}
+          {(payment.status === 'pending' || payment.status === 'overdue' || payment.status === 'partial') && !confirmed && (
+            <div className="px-4 pb-4">
+              <button
+                onClick={handleConfirm}
+                disabled={updatePayment.isPending}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white text-sm font-semibold transition-colors"
+              >
+                {updatePayment.isPending
+                  ? <Loader2 size={15} className="animate-spin" />
+                  : <><ThumbsUp size={15} /> Confirmar recebimento</>
+                }
+              </button>
+            </div>
+          )}
+          {confirmed && (
+            <div className="px-4 pb-4">
+              <div className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold">
+                <CheckCircle2 size={15} /> Pagamento confirmado
+              </div>
+            </div>
+          )}
         </motion.div>
       )}
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightbox && payment.receiptUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+            onClick={() => setLightbox(false)}
+          >
+            <button
+              onClick={() => setLightbox(false)}
+              className="absolute top-4 right-4 w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={18} className="text-white" />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={payment.receiptUrl}
+              alt="Comprovante"
+              className="max-w-full max-h-full rounded-2xl object-contain"
+              onClick={e => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
