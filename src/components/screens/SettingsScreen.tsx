@@ -17,6 +17,11 @@ export function SettingsScreen() {
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
 
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    logout();
+  }
+
   function openModal(key: ModalKey) {
     if (key === 'perfil') {
       setEditName(user?.name ?? '');
@@ -156,7 +161,7 @@ export function SettingsScreen() {
       <motion.button
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
         whileTap={{ scale: 0.97 }}
-        onClick={logout}
+        onClick={handleLogout}
         className="w-full flex items-center justify-center gap-2 p-4 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-semibold hover:bg-red-500/10 transition-colors"
       >
         <LogOut size={16} />

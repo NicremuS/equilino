@@ -2,38 +2,77 @@ import type {
   Property, Tenant, Payment, Contract, MaintenanceTicket,
   Inspection, Notification, DashboardStats, ChartDataPoint,
 } from '@/types';
+import { useAppStore } from '@/store/useAppStore';
 
 const BASE = '/api';
 
-async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { cache: 'no-store' });
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`);
+async function refreshAccessToken(): Promise<string | null> {
+  try {
+    const res = await fetch('/api/auth/refresh', { method: 'POST' });
+    if (!res.ok) return null;
+    const { accessToken } = await res.json() as { accessToken: string };
+    useAppStore.getState().setAccessToken(accessToken);
+    return accessToken;
+  } catch {
+    return null;
+  }
+}
+
+function authHeaders(token: string | null): HeadersInit {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function request<T>(
+  path: string,
+  init: RequestInit = {},
+): Promise<T> {
+  let token = useAppStore.getState().accessToken;
+
+  const run = (t: string | null) =>
+    fetch(`${BASE}${path}`, {
+      ...init,
+      headers: { ...init.headers, ...authHeaders(t) },
+    });
+
+  let res = await run(token);
+
+  if (res.status === 401 && token) {
+    token = await refreshAccessToken();
+    if (token) {
+      res = await run(token);
+    } else {
+      useAppStore.getState().logout();
+      throw new Error('Sessão expirada. Faça login novamente.');
+    }
+  }
+
+  if (!res.ok) throw new Error(`${init.method ?? 'GET'} ${path} failed: ${res.status}`);
+  if (res.status === 204) return undefined as unknown as T;
   return res.json() as Promise<T>;
 }
 
-async function post<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+function get<T>(path: string) {
+  return request<T>(path, { cache: 'no-store' });
+}
+
+function post<T>(path: string, body: unknown) {
+  return request<T>(path, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
-  return res.json() as Promise<T>;
 }
 
-async function put<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+function put<T>(path: string, body: unknown) {
+  return request<T>(path, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`PUT ${path} failed: ${res.status}`);
-  return res.json() as Promise<T>;
 }
 
-async function del(path: string): Promise<void> {
-  const res = await fetch(`${BASE}${path}`, { method: 'DELETE' });
-  if (!res.ok && res.status !== 204) throw new Error(`DELETE ${path} failed: ${res.status}`);
+function del(path: string) {
+  return request<void>(path, { method: 'DELETE' });
 }
 
 export const api = {

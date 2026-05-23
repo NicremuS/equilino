@@ -1032,6 +1032,17 @@
       "role": "admin",
       "plan": "pro",
       "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "tenant-user-001",
+      "name": "Ana Carolina Silva",
+      "email": "ana@equilino.app",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Ana",
+      "password": "demo1234",
+      "role": "tenant",
+      "tenantId": "tenant-001",
+      "plan": "starter",
+      "createdAt": "2023-03-01T10:00:00.000Z"
     }
   ]
 }

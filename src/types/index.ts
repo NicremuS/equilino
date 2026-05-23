@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'manager' | 'owner';
+export type UserRole = 'admin' | 'manager' | 'owner' | 'tenant';
 export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance' | 'reserved';
 export type ContractStatus = 'active' | 'expiring' | 'expired' | 'terminated';
@@ -14,6 +14,7 @@ export interface User {
   role: UserRole;
   plan: 'starter' | 'pro' | 'enterprise';
   createdAt: string;
+  tenantId?: string;
 }
 
 export interface Property {

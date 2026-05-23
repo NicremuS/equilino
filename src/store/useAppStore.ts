@@ -6,10 +6,12 @@ type Theme = 'dark' | 'light';
 
 interface AppState {
   user: User | null;
+  accessToken: string | null;
   activeTab: string;
   isLoading: boolean;
   theme: Theme;
   setUser: (user: User | null) => void;
+  setAccessToken: (token: string | null) => void;
   setActiveTab: (tab: string) => void;
   setLoading: (v: boolean) => void;
   toggleTheme: () => void;
@@ -29,10 +31,12 @@ function applyThemeToDom(theme: Theme) {
 
 export const useAppStore = create<AppState>((set) => ({
   user: null,
+  accessToken: null,
   activeTab: 'dashboard',
   isLoading: false,
   theme: getSavedTheme(),
   setUser: (user) => set({ user }),
+  setAccessToken: (token) => set({ accessToken: token }),
   setActiveTab: (tab) => set({ activeTab: tab }),
   setLoading: (v) => set({ isLoading: v }),
   toggleTheme: () =>
@@ -48,7 +52,7 @@ export const useAppStore = create<AppState>((set) => ({
     set({ theme: t });
   },
   logout: () => {
-    set({ user: null, activeTab: 'dashboard' });
+    set({ user: null, accessToken: null, activeTab: 'dashboard' });
   },
 }));
 

@@ -7,6 +7,7 @@ import type { User } from '@/types';
 
 interface StoredUser extends User {
   password?: string;
+  tenantId?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -35,8 +36,15 @@ export async function POST(req: NextRequest) {
 
   const { password: _pw, ...safeUser } = user;
 
+  const tokenPayload = {
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+    ...(user.tenantId ? { tenantId: user.tenantId } : {}),
+  };
+
   const [accessToken, refreshToken] = await Promise.all([
-    signAccessToken({ sub: user.id, email: user.email, role: user.role }),
+    signAccessToken(tokenPayload),
     signRefreshToken(user.id),
   ]);
 

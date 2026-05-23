@@ -10,6 +10,7 @@ export interface TokenPayload extends JWTPayload {
   sub: string;
   email: string;
   role: string;
+  tenantId?: string;
 }
 
 export async function signAccessToken(payload: Omit<TokenPayload, 'iat' | 'exp'>): Promise<string> {
