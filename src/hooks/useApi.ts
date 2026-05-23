@@ -128,7 +128,18 @@ export function useUpdatePayment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Payment> }) => api.updatePayment(id, data),
-    onSuccess: () => {
+    onMutate: async ({ id, data }) => {
+      await qc.cancelQueries({ queryKey: ['payments'] });
+      const prev = qc.getQueryData<Payment[]>(['payments']);
+      qc.setQueryData<Payment[]>(['payments'], old =>
+        old?.map(p => p.id === id ? { ...p, ...data } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['payments'], ctx.prev);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['payments'] });
       qc.invalidateQueries({ queryKey: ['dashboard-stats'] });
     },

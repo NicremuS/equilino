@@ -104,13 +104,12 @@ interface CardProps {
   onMarkRead: () => void;
   onDelete: () => void;
   onNavigate: () => void;
-  deleting: boolean;
 }
 
-function NotifCard({ notif, unread, onMarkRead, onDelete, onNavigate, deleting }: CardProps) {
+function NotifCard({ notif, unread, onMarkRead, onDelete, onNavigate }: CardProps) {
   const cfg = resolveIcon(notif.type, notif.title);
   const Icon = cfg.icon;
-  const hoverRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   function handleClick() {
     if (unread) onMarkRead();
@@ -121,10 +120,10 @@ function NotifCard({ notif, unread, onMarkRead, onDelete, onNavigate, deleting }
     <motion.div
       layout
       initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: deleting ? 0 : 1, x: deleting ? 40 : 0, y: 0 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
       exit={{ opacity: 0, x: 40, transition: { duration: 0.18 } }}
       transition={{ duration: 0.22 }}
-      ref={hoverRef}
+      ref={cardRef}
       onClick={handleClick}
       className={[
         'group relative rounded-2xl border p-4 cursor-pointer transition-all duration-200',
@@ -184,18 +183,15 @@ export function NotificationsScreen() {
   const markAllRead         = useMarkAllNotificationsRead();
   const setActiveTab        = useAppStore(s => s.setActiveTab);
 
-  const deletingIds = useRef<Set<string>>(new Set());
-
-  const groups = groupNotifications(notifications);
+  const groups      = groupNotifications(notifications);
   const unreadCount = groups.unread.length;
-  const hasAny = notifications.length > 0;
+  const hasAny      = notifications.length > 0;
 
   function markRead(id: string) {
     updateNotification.mutate({ id, data: { read: true } });
   }
 
   function removeNotif(id: string) {
-    deletingIds.current.add(id);
     deleteNotification.mutate(id);
   }
 
@@ -273,7 +269,6 @@ export function NotificationsScreen() {
                       onMarkRead={() => markRead(notif.id)}
                       onDelete={() => removeNotif(notif.id)}
                       onNavigate={() => navigate(notif)}
-                      deleting={deletingIds.current.has(notif.id)}
                     />
                   ))}
                 </AnimatePresence>

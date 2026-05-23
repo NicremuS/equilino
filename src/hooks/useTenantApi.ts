@@ -1,7 +1,7 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tenantApi } from '@/services/tenantApi';
-import type { MaintenanceTicket } from '@/types';
+import type { MaintenanceTicket, Payment } from '@/types';
 
 export function useTenantProfile() {
   return useQuery({ queryKey: ['tenant', 'profile'], queryFn: tenantApi.getProfile });
@@ -41,7 +41,18 @@ export function useUploadPaymentReceipt() {
   return useMutation({
     mutationFn: ({ id, receiptData }: { id: string; receiptData: string }) =>
       tenantApi.uploadReceipt(id, receiptData),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['tenant', 'payments'] }),
+    onMutate: async ({ id, receiptData }) => {
+      await qc.cancelQueries({ queryKey: ['tenant', 'payments'] });
+      const prev = qc.getQueryData<Payment[]>(['tenant', 'payments']);
+      qc.setQueryData<Payment[]>(['tenant', 'payments'], old =>
+        old?.map(p => p.id === id ? { ...p, receiptUrl: receiptData } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['tenant', 'payments'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['tenant', 'payments'] }),
   });
 }
 
