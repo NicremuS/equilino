@@ -11,7 +11,7 @@ type AppState = 'splash' | 'login' | 'app';
 
 export default function Home() {
   const [state, setState] = useState<AppState>('splash');
-  const { user, setUser, setAccessToken } = useAppStore();
+  const { user, setUser, setAccessToken, setMustChangePassword } = useAppStore();
 
   useEffect(() => {
     if (!user && state === 'app') {
@@ -19,9 +19,10 @@ export default function Home() {
     }
   }, [user, state]);
 
-  function handleLogin(user: User, accessToken: string) {
+  function handleLogin(user: User, accessToken: string, mustChangePassword?: boolean) {
     setUser(user);
     setAccessToken(accessToken);
+    setMustChangePassword(mustChangePassword ?? false);
     setState('app');
   }
 

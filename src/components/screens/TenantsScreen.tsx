@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Users, Star, Phone, Mail, ChevronRight, Plus, X } from 'lucide-react';
+import { Search, Users, Star, Phone, Mail, ChevronRight, Plus, X, AlertCircle } from 'lucide-react';
 import { useTenants, useProperties, useCreateTenant, useCreateContract } from '@/hooks/useApi';
 import { ApiErrorState } from '@/components/shared/LoadingSkeleton';
 import { formatDate, getInitials } from '@/lib/utils';
@@ -57,6 +57,7 @@ export function TenantsScreen() {
   const [showActive, setShowActive] = useState(true);
   const [selected, setSelected] = useState<Tenant | null>(null);
   const [isCreatingContract, setIsCreatingContract] = useState(false);
+  const [createError, setCreateError] = useState('');
   const [draft, setDraft] = useState<ContractDraft>({
     tenantName: '',
     email: '',
@@ -125,8 +126,8 @@ export function TenantsScreen() {
       propertyId: '', startDate: todayInput(),
       durationValue: 12, durationUnit: 'months', rentAmount: 0,
     });
-    } catch {
-      // mutation error is visible via createTenant.isError / createContract.isError
+    } catch (err) {
+      setCreateError(err instanceof Error ? err.message : 'Erro ao criar inquilino. Tente novamente.');
     }
   }
 
@@ -175,7 +176,7 @@ export function TenantsScreen() {
               </p>
             </div>
             <button
-              onClick={() => setIsCreatingContract(false)}
+              onClick={() => { setIsCreatingContract(false); setCreateError(''); }}
               className="rounded-xl bg-muted/70 p-2 text-muted-foreground transition-colors hover:text-foreground dark:bg-white/5"
               aria-label="Fechar"
             >
@@ -288,6 +289,13 @@ export function TenantsScreen() {
             </label>
           </div>
 
+          {createError && (
+            <div className="mt-3 flex items-start gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-red-400 text-xs">
+              <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+              <span>{createError}</span>
+            </div>
+          )}
+
           <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-violet-500/20 bg-violet-500/10 p-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-violet-500 dark:text-violet-300 text-xs font-bold">
@@ -298,7 +306,7 @@ export function TenantsScreen() {
               </p>
             </div>
             <button
-              onClick={handleCreate}
+              onClick={() => { setCreateError(''); handleCreate(); }}
               disabled={isPending || !draft.tenantName || !draft.cpf || !draft.phone || !draft.propertyId}
               className="gradient-accent rounded-2xl px-4 py-3 text-xs font-bold text-white shadow-lg shadow-violet-500/20 disabled:opacity-50"
             >

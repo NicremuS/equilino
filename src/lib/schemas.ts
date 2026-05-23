@@ -21,9 +21,9 @@ export const PropertySchema = z.object({
 export const TenantSchema = z.object({
   name: z.string().min(1).max(200),
   email: z.string().email().or(z.literal('')),
-  phone: z.string().min(8).max(20),
+  phone: z.string().min(1).max(30),
   avatar: z.string().url().optional().or(z.literal('')),
-  cpf: z.string().min(11).max(18),
+  cpf: z.string().min(1).max(20),
   score: z.number().int().min(0).max(1000),
   propertyId: z.string().optional(),
   contractId: z.string().optional(),
@@ -69,10 +69,19 @@ export const TicketSchema = z.object({
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   resolvedAt: z.string().datetime().optional(),
-  images: z.array(z.string().url()).optional(),
+  images: z.array(z.string().min(1)).max(5).optional(),
   category: z.enum(['plumbing', 'electrical', 'structural', 'appliance', 'other']),
   assignedTo: z.string().optional(),
   cost: z.number().nonnegative().optional(),
+});
+
+export const CreateTicketSchema = z.object({
+  propertyId: z.string().min(1),
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']),
+  category: z.enum(['plumbing', 'electrical', 'structural', 'appliance', 'other']),
+  images: z.array(z.string().min(1)).max(5).optional(),
 });
 
 export const NotificationSchema = z.object({

@@ -249,6 +249,18 @@
       "paymentHistory": [],
       "status": "active",
       "id": "d6dd71c4-7ccc-4922-90bc-02772a5a0afd"
+    },
+    {
+      "name": "Jasmin cardio",
+      "email": "jasmincardio@gmail.com",
+      "phone": "81925746351",
+      "cpf": "56874952842",
+      "score": 50,
+      "propertyId": "prop-004",
+      "joinedAt": "2026-05-23T17:02:23.434Z",
+      "paymentHistory": [],
+      "status": "active",
+      "id": "5b6a8cfb-68c4-4f31-af78-d9a60903eed3"
     }
   ],
   "payments": [
@@ -425,6 +437,20 @@
       "clauses": [],
       "signedAt": "2026-05-22T22:07:48.509Z",
       "id": "1cdcf3cb-7f2b-45d6-93cc-1af989f2f2e3"
+    },
+    {
+      "tenantId": "5b6a8cfb-68c4-4f31-af78-d9a60903eed3",
+      "propertyId": "prop-004",
+      "startDate": "2026-05-23",
+      "endDate": "2026-11-23",
+      "rentAmount": 1100,
+      "adjustmentIndex": "IGPM",
+      "status": "active",
+      "depositAmount": 2200,
+      "guaranteeType": "deposit",
+      "clauses": [],
+      "signedAt": "2026-05-23T17:02:23.467Z",
+      "id": "1df6db5d-8178-49ce-b703-500b3d82ce39"
     }
   ],
   "tickets": [
@@ -1025,34 +1051,14 @@
   ],
   "notices": [
     {
-      "id": "notice-001",
-      "tenantId": "tenant-001",
-      "propertyId": "prop-001",
-      "category": "obrigacao",
-      "title": "Limpeza semestral do filtro do ar condicionado",
-      "message": "Lembramos que é obrigação contratual do locatário realizar a limpeza e manutenção semestral dos filtros dos aparelhos de ar condicionado. O próximo prazo é 15/06/2026. Guarde o comprovante do serviço.",
-      "read": true,
-      "createdAt": "2026-05-01T09:00:00.000Z"
-    },
-    {
-      "id": "notice-002",
-      "tenantId": "tenant-001",
-      "propertyId": "prop-001",
-      "category": "recomendacao",
-      "title": "Revisão dos pontos elétricos",
-      "message": "Recomendamos que você verifique periodicamente o estado dos pontos elétricos do imóvel, especialmente tomadas e interruptores. Caso perceba aquecimento, faíscas ou barulhos, abra um chamado de manutenção imediatamente.",
-      "read": true,
-      "createdAt": "2026-05-10T14:00:00.000Z"
-    },
-    {
-      "id": "notice-003",
       "tenantId": "tenant-001",
       "propertyId": "prop-001",
       "category": "aviso",
-      "title": "Vistoria anual agendada para Junho",
-      "message": "Informamos que a vistoria anual do imóvel está agendada para a primeira semana de Junho de 2026. O vistoriador entrará em contato para confirmar o horário exato. Por favor, certifique-se de que há acesso a todos os cômodos.",
-      "read": false,
-      "createdAt": "2026-05-20T11:30:00.000Z"
+      "title": "LUCAS ROUPA E DA A RODA",
+      "message": "Cuidado com o maníaco que solta a roda",
+      "id": "421b440c-cfdd-4490-85c5-abf9b2cd09cf",
+      "read": true,
+      "createdAt": "2026-05-23T02:36:34.970Z"
     }
   ],
   "users": [
@@ -1075,6 +1081,16 @@
       "tenantId": "tenant-001",
       "plan": "starter",
       "createdAt": "2023-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "162a944f-f5b7-450a-aaa4-082ad978f44c",
+      "name": "Jasmin cardio",
+      "email": "jasmincardio@gmail.com",
+      "password": "123456",
+      "role": "tenant",
+      "tenantId": "5b6a8cfb-68c4-4f31-af78-d9a60903eed3",
+      "plan": "starter",
+      "createdAt": "2026-05-23T17:02:23.454Z"
     }
   ]
 }

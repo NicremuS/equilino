@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wrench, Plus, X, AlertCircle, Clock, CheckCircle2, Loader2, ChevronDown } from 'lucide-react';
+import { Wrench, Plus, X, AlertCircle, Clock, CheckCircle2, Loader2, ChevronDown, Camera, ImageIcon } from 'lucide-react';
 import { useTenantTickets, useTenantProperty, useCreateTenantTicket } from '@/hooks/useTenantApi';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';
 import { formatDate } from '@/lib/utils';
@@ -39,7 +39,30 @@ export function TenantMaintenanceScreen() {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<string>('other');
   const [priority, setPriority] = useState<TicketPriority>('medium');
+  const [images, setImages] = useState<string[]>([]);
   const [formError, setFormError] = useState('');
+
+  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    const remaining = 5 - images.length;
+    const toProcess = files.slice(0, remaining);
+    const encoded = await Promise.all(
+      toProcess.map(
+        file => new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        })
+      )
+    );
+    setImages(prev => [...prev, ...encoded]);
+    e.target.value = '';
+  }
+
+  function removeImage(index: number) {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  }
 
   async function handleSubmit() {
     if (!title.trim() || !description.trim()) {
@@ -58,11 +81,13 @@ export function TenantMaintenanceScreen() {
         category: category as 'plumbing' | 'electrical' | 'structural' | 'appliance' | 'other',
         priority,
         propertyId: property.id,
+        images: images.length > 0 ? images : undefined,
       });
       setTitle('');
       setDescription('');
       setCategory('other');
       setPriority('medium');
+      setImages([]);
       setShowForm(false);
     } catch {
       setFormError('Erro ao abrir chamado. Tente novamente.');
@@ -139,6 +164,51 @@ export function TenantMaintenanceScreen() {
                   />
                 </div>
 
+                {/* Photo upload */}
+                <div>
+                  <label className="text-xs text-muted-foreground font-medium mb-1.5 block">
+                    Fotos
+                    <span className="ml-1 opacity-50">({images.length}/5)</span>
+                  </label>
+
+                  {images.length > 0 && (
+                    <div className="flex gap-2 mb-2 flex-wrap">
+                      {images.map((src, i) => (
+                        <div key={i} className="relative w-[72px] h-[72px] rounded-xl overflow-hidden border border-border flex-shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={src} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(i)}
+                            className="absolute top-1 right-1 w-5 h-5 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-colors"
+                          >
+                            <X size={10} className="text-white" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {images.length < 5 && (
+                    <label className="flex items-center gap-2.5 px-4 py-3 bg-muted/70 dark:bg-[#111827] border border-dashed border-border hover:border-emerald-500/50 rounded-2xl cursor-pointer transition-colors group">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/20 transition-colors">
+                        <Camera size={15} className="text-emerald-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-foreground font-medium leading-tight">Adicionar fotos</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">JPG, PNG — até 5 imagens</p>
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={handleImageSelect}
+                      />
+                    </label>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs text-muted-foreground font-medium mb-1.5 block">Categoria</label>
@@ -146,7 +216,7 @@ export function TenantMaintenanceScreen() {
                       <select
                         value={category}
                         onChange={e => setCategory(e.target.value)}
-                        className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-white/5 border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-emerald-500/60 transition-all pr-8"
+                        className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-[#111827] border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-emerald-500/60 transition-all pr-8"
                       >
                         {CATEGORIES.map(c => (
                           <option key={c.value} value={c.value}>{c.label}</option>
@@ -162,7 +232,7 @@ export function TenantMaintenanceScreen() {
                       <select
                         value={priority}
                         onChange={e => setPriority(e.target.value as TicketPriority)}
-                        className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-white/5 border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-emerald-500/60 transition-all pr-8"
+                        className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-[#111827] border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-emerald-500/60 transition-all pr-8"
                       >
                         {Object.entries(PRIORITY_MAP).map(([val, { label }]) => (
                           <option key={val} value={val}>{label}</option>
@@ -225,7 +295,23 @@ export function TenantMaintenanceScreen() {
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${p.color} ${p.bg}`}>
                         {p.label}
                       </span>
+                      {ticket.images && ticket.images.length > 0 && (
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <ImageIcon size={11} />
+                          {ticket.images.length}
+                        </span>
+                      )}
                     </div>
+                    {ticket.images && ticket.images.length > 0 && (
+                      <div className="flex gap-1.5 mt-2 flex-wrap">
+                        {ticket.images.map((src, i) => (
+                          <div key={i} className="w-12 h-12 rounded-lg overflow-hidden border border-border flex-shrink-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={src} alt="" className="w-full h-full object-cover" />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     {ticket.assignedTo && (
                       <p className="text-muted-foreground text-xs mt-1">Responsável: {ticket.assignedTo}</p>
                     )}

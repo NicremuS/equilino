@@ -19,11 +19,20 @@ function authHeaders(token: string | null): HeadersInit {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}, baseOverride?: string): Promise<T> {
   let token = useAppStore.getState().accessToken;
+  const base = baseOverride ?? BASE;
+
+  if (!token && useAppStore.getState().user) {
+    token = await refreshAccessToken();
+    if (!token) {
+      useAppStore.getState().logout();
+      throw new Error('Sessão expirada. Faça login novamente.');
+    }
+  }
 
   const run = (t: string | null) =>
-    fetch(`${BASE}${path}`, { ...init, headers: { ...init.headers, ...authHeaders(t) } });
+    fetch(`${base}${path}`, { ...init, headers: { ...init.headers, ...authHeaders(t) } });
 
   let res = await run(token);
 
@@ -37,7 +46,10 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     }
   }
 
-  if (!res.ok) throw new Error(`${init.method ?? 'GET'} ${path} failed: ${res.status}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({})) as { error?: string };
+    throw new Error(err.error ?? `${init.method ?? 'GET'} ${path} failed: ${res.status}`);
+  }
   return res.json() as Promise<T>;
 }
 
@@ -62,4 +74,11 @@ export const tenantApi = {
   getNotices: () => get<Notice[]>('/notices'),
   markNoticeRead: (id: string) =>
     request<Notice>(`/notices/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
+
+  changePassword: (newPassword: string) =>
+    request<{ ok: boolean }>('/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newPassword }),
+    }, '/api/auth'),
 };

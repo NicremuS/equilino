@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCollection, createItem } from '@/lib/db.server';
-import { TicketSchema } from '@/lib/schemas';
+import { CreateTicketSchema } from '@/lib/schemas';
 import type { MaintenanceTicket } from '@/types';
 
 export async function GET(req: NextRequest) {
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   if (!tenantId) return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
 
   const body = await req.json();
-  const result = TicketSchema.safeParse(body);
+  const result = CreateTicketSchema.safeParse(body);
   if (!result.success) {
     return NextResponse.json({ error: result.error.flatten() }, { status: 422 });
   }

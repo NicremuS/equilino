@@ -8,6 +8,7 @@ import { TenantPaymentsScreen } from '@/components/screens/tenant/TenantPayments
 import { TenantMaintenanceScreen } from '@/components/screens/tenant/TenantMaintenanceScreen';
 import { TenantContractScreen } from '@/components/screens/tenant/TenantContractScreen';
 import { TenantNoticesScreen } from '@/components/screens/tenant/TenantNoticesScreen';
+import { ChangePasswordModal } from '@/components/screens/tenant/ChangePasswordModal';
 import { useTenantNotices } from '@/hooks/useTenantApi';
 import type React from 'react';
 
@@ -32,7 +33,7 @@ const NAV_ITEMS: { tab: TenantTab; icon: React.ElementType; label: string }[] = 
 ];
 
 export function TenantShell() {
-  const { user, activeTab, setActiveTab, theme, toggleTheme, logout } = useAppStore();
+  const { user, activeTab, setActiveTab, theme, toggleTheme, logout, mustChangePassword } = useAppStore();
   const { data: notices } = useTenantNotices();
   const unreadNotices = notices?.filter(n => !n.read).length ?? 0;
 
@@ -46,6 +47,7 @@ export function TenantShell() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {mustChangePassword && <ChangePasswordModal />}
       {/* Top bar */}
       <header className="sticky top-0 z-30 glass border-b border-border px-4 py-3 flex items-center gap-3 shadow-sm">
         <div className="flex items-center gap-2">

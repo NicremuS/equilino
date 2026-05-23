@@ -5,7 +5,7 @@ import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, AlertCircle, UserCheck,
 import type { User } from '@/types';
 
 interface LoginScreenProps {
-  onLogin: (user: User, accessToken: string) => void;
+  onLogin: (user: User, accessToken: string, mustChangePassword?: boolean) => void;
 }
 
 const DEMO_ACCOUNTS = [
@@ -57,8 +57,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
         return;
       }
 
-      const { user, accessToken } = await res.json() as { user: User; accessToken: string };
-      onLogin(user, accessToken);
+      const { user, accessToken, mustChangePassword } = await res.json() as { user: User; accessToken: string; mustChangePassword?: boolean };
+      onLogin(user, accessToken, mustChangePassword);
     } catch {
       setError('Erro de conexão. Tente novamente.');
     } finally {

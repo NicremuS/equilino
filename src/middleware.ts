@@ -8,7 +8,7 @@ const ACCESS_SECRET = new TextEncoder().encode(
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith('/api/auth/')) {
+  if (pathname.startsWith('/api/auth/') && !pathname.startsWith('/api/auth/change-password')) {
     return NextResponse.next();
   }
 

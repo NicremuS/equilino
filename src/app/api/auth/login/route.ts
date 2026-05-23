@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { password: _pw, ...safeUser } = user;
+  const mustChangePassword = passwordHash === '123456';
 
   const tokenPayload = {
     sub: user.id,
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     signRefreshToken(user.id),
   ]);
 
-  const res = NextResponse.json({ user: safeUser, accessToken }, { status: 200 });
+  const res = NextResponse.json({ user: safeUser, accessToken, mustChangePassword }, { status: 200 });
   res.cookies.set('refresh_token', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

@@ -28,6 +28,15 @@ async function request<T>(
 ): Promise<T> {
   let token = useAppStore.getState().accessToken;
 
+  // Proactively refresh if token is missing but user session exists
+  if (!token && useAppStore.getState().user) {
+    token = await refreshAccessToken();
+    if (!token) {
+      useAppStore.getState().logout();
+      throw new Error('Sessão expirada. Faça login novamente.');
+    }
+  }
+
   const run = (t: string | null) =>
     fetch(`${BASE}${path}`, {
       ...init,
@@ -46,7 +55,20 @@ async function request<T>(
     }
   }
 
-  if (!res.ok) throw new Error(`${init.method ?? 'GET'} ${path} failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as { error?: unknown };
+    let msg: string;
+    if (typeof body.error === 'string') {
+      msg = body.error;
+    } else if (body.error && typeof body.error === 'object') {
+      const fe = (body.error as { fieldErrors?: Record<string, string[]> }).fieldErrors;
+      const first = fe ? Object.values(fe).flat()[0] : undefined;
+      msg = first ?? 'Dados inválidos. Verifique os campos e tente novamente.';
+    } else {
+      msg = `${init.method ?? 'GET'} ${path} falhou: ${res.status}`;
+    }
+    throw new Error(msg);
+  }
   if (res.status === 204) return undefined as unknown as T;
   return res.json() as Promise<T>;
 }

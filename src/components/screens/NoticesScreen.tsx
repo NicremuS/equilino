@@ -815,7 +815,7 @@ function DirectNoticesSection() {
                         <select
                           value={tenantId}
                           onChange={e => { setTenantId(e.target.value); setFormError(''); }}
-                          className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-white/5 border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-violet-500/60 transition-all pr-8"
+                          className="w-full appearance-none px-4 py-3 bg-muted/70 dark:bg-[#111827] border border-border rounded-2xl text-foreground text-sm focus:outline-none focus:border-violet-500/60 transition-all pr-8"
                         >
                           <option value="">Selecionar locatário…</option>
                           {activeTenantsWithProperty.map(t => (
