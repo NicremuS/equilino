@@ -45,7 +45,12 @@
       "Bash(Get-Content \"C:\\\\Users\\\\lucas\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--projetos-aluguel\\\\628c5497-22e3-4809-aa20-17491d5deb68\\\\tasks\\\\bbymgu9b4.output\" -Tail 15)",
       "PowerShell($login = Invoke-RestMethod -Uri \"http://localhost:3000/api/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"ana@equilino.app\",\"password\":\"demo1234\"}'; $t = $login.accessToken; $contract = Invoke-RestMethod -Uri \"http://localhost:3000/api/tenant/contract\" -Headers @{Authorization=\"Bearer $t\"}; $contract | ConvertTo-Json -Depth 5)",
       "Bash(ping -n 5 127.0.0.1)",
-      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\lucas\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--projetos-aluguel\\\\628c5497-22e3-4809-aa20-17491d5deb68\\\\tasks\\\\b26t1vffr.output' -Tail 30\")"
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\lucas\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--projetos-aluguel\\\\628c5497-22e3-4809-aa20-17491d5deb68\\\\tasks\\\\b26t1vffr.output' -Tail 30\")",
+      "Bash(New-Item -ItemType Directory -Force \"src\\\\app\\\\api\\\\cron\\\\rent-reminders\")",
+      "Bash(Out-Null)",
+      "Bash(New-Item -ItemType Directory -Force \"src\\\\app\\\\api\\\\tenant\\\\notifications\\\\[id]\")",
+      "Bash(Write-Host \"dirs created\")",
+      "Bash(echo \"PID: $!\")"
     ]
   }
 }

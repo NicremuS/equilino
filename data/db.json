@@ -357,6 +357,44 @@
       "status": "pending",
       "month": "Junho 2026",
       "description": "Aluguel - Comercial Faria Lima"
+    },
+    {
+      "id": "demo-pay-await",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "contractId": "contract-001",
+      "amount": 3800,
+      "dueDate": "2026-06-10",
+      "status": "paid",
+      "month": "Junho 2026",
+      "description": "Aluguel - Apto 301 Vila Madalena",
+      "receiptUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzODAiIGhlaWdodD0iNDY0IiB2aWV3Qm94PSIwIDAgMzgwIDQ2NCI+CiAgPHJlY3Qgd2lkdGg9IjM4MCIgaGVpZ2h0PSI0NjQiIGZpbGw9IiNmZmZmZmYiLz4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMzgwIiBoZWlnaHQ9IjY0IiBmaWxsPSIjNGY0NmU1Ii8+CiAgPHRleHQgeD0iMTkwIiB5PSIzNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiPkNPTVBST1ZBTlRFIFBJWDwvdGV4dD4KICA8dGV4dCB4PSIxOTAiIHk9IjU0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNzUpIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiPlRyYW5zZmVyZW5jaWEgY29uY2x1aWRhIGNvbSBzdWNlc3NvPC90ZXh0PgogIDx0ZXh0IHg9IjE5MCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNmI3MjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiPlZBTE9SIFBBR088L3RleHQ+CiAgPHRleHQgeD0iMTkwIiB5PSIxMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMxMTE4MjciIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiPlIkIDMuODAwLDAwPC90ZXh0PgogIDxsaW5lIHgxPSIyNCIgeTE9IjE1MiIgeDI9IjM1NiIgeTI9IjE1MiIgc3Ryb2tlPSIjZTVlN2ViIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIyNCIgeT0iMTc0IiBmaWxsPSIjOWNhM2FmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPkRBVEEgRSBIT1JBPC90ZXh0PgogIDx0ZXh0IHg9IjM1NiIgeT0iMTc0IiB0ZXh0LWFuY2hvcj0iZW5kIiBmaWxsPSIjMzc0MTUxIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPjEwLzA2LzIwMjYgIDA5OjQyOjE4PC90ZXh0PgogIDx0ZXh0IHg9IjI0IiB5PSIxOTgiIGZpbGw9IiM5Y2EzYWYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCI+SUQgREEgVFJBTlNBQ0FPPC90ZXh0PgogIDx0ZXh0IHg9IjM1NiIgeT0iMTk4IiB0ZXh0LWFuY2hvcj0iZW5kIiBmaWxsPSIjMzc0MTUxIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiPkUwNzY1NjUwMDIwMjYwNjEwMDk0MjE4MEEzPC90ZXh0PgogIDxsaW5lIHgxPSIyNCIgeTE9IjIxNiIgeDI9IjM1NiIgeTI9IjIxNiIgc3Ryb2tlPSIjZTVlN2ViIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIyNCIgeT0iMjQwIiBmaWxsPSIjOWNhM2FmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPk9SSUdFTTwvdGV4dD4KICA8dGV4dCB4PSIyNCIgeT0iMjYyIiBmaWxsPSIjMTExODI3IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIj5BbmEgQ2Fyb2xpbmEgU2lsdmE8L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjI4MCIgZmlsbD0iIzZiNzI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjExIj5DUEY6ICoqKi40NTYuNzg5LSoqPC90ZXh0PgogIDx0ZXh0IHg9IjI0IiB5PSIyOTYiIGZpbGw9IiM2YjcyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMSI+TnViYW5rIFMuQS4gIEFnLiAwMDAxICBDYy4gKioqKi0xMjM0PC90ZXh0PgogIDxsaW5lIHgxPSIyNCIgeTE9IjMxMyIgeDI9IjM1NiIgeTI9IjMxMyIgc3Ryb2tlPSIjZTVlN2ViIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIyNCIgeT0iMzM3IiBmaWxsPSIjOWNhM2FmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPkRFU1RJTk88L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjM1OSIgZmlsbD0iIzExMTgyNyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCI+THVjYXMgT2xpdmVpcmE8L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjM3NyIgZmlsbD0iIzZiNzI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjExIj5DaGF2ZSBQaXg6IGx1Y2FzQGVxdWlsaW5vLmNvbS5icjwvdGV4dD4KICA8dGV4dCB4PSIyNCIgeT0iMzkzIiBmaWxsPSIjNmI3MjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiPkl0YXUgVW5pYmFuY28gUy5BLjwvdGV4dD4KICA8bGluZSB4MT0iMjQiIHkxPSI0MTAiIHgyPSIzNTYiIHkyPSI0MTAiIHN0cm9rZT0iI2U1ZTdlYiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMjQiIHk9IjQzMiIgZmlsbD0iIzljYTNhZiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj5ERVNDUklDQU88L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjQ1MCIgZmlsbD0iIzM3NDE1MSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjExIj5BbHVndWVsIEp1bmhvIDIwMjYgLSBBcHRvIDMwMSBWaWxhIE1hZGFsZW5hPC90ZXh0Pgo8L3N2Zz4=",
+      "paymentMethod": "pix",
+      "paymentDate": "2026-06-10",
+      "submittedAt": "2026-06-10T09:45:00.000Z",
+      "receiptNotes": "Pagamento referente ao mes de junho 2026. Comprovante Pix Nubank.",
+      "paidDate": "2026-05-23T22:52:04.297Z",
+      "approvedBy": "demo-user-001",
+      "approvedAt": "2026-05-23T22:52:04.297Z"
+    },
+    {
+      "id": "demo-pay-reject",
+      "tenantId": "tenant-001",
+      "propertyId": "prop-001",
+      "contractId": "contract-001",
+      "amount": 3800,
+      "dueDate": "2026-07-10",
+      "status": "rejected",
+      "month": "Julho 2026",
+      "description": "Aluguel - Apto 301 Vila Madalena",
+      "receiptUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzODAiIGhlaWdodD0iNDgwIiB2aWV3Qm94PSIwIDAgMzgwIDQ4MCI+CiAgPHJlY3Qgd2lkdGg9IjM4MCIgaGVpZ2h0PSI0ODAiIGZpbGw9IiNmOWZhZmIiLz4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMzgwIiBoZWlnaHQ9IjY0IiBmaWxsPSIjMWQ0ZWQ4Ii8+CiAgPHRleHQgeD0iMTkwIiB5PSIzNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiPkNPTVBST1ZBTlRFIERFIFRSQU5TRkVSRU5DSUE8L3RleHQ+CiAgPHRleHQgeD0iMTkwIiB5PSI1NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjc1KSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjExIj5URUQgLSBUcmFuc2ZlcmVuY2lhIEVsZXRyb25pY28gRGlzcG9uaXZlbDwvdGV4dD4KICA8dGV4dCB4PSIxOTAiIHk9IjEwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjExIj5WQUxPUiBUUkFOU0ZFUklETzwvdGV4dD4KICA8dGV4dCB4PSIxOTAiIHk9IjEzNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzExMTgyNyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjMwIiBmb250LXdlaWdodD0iYm9sZCI+UiQgMy44MDAsMDA8L3RleHQ+CiAgPGxpbmUgeDE9IjI0IiB5MT0iMTU0IiB4Mj0iMzU2IiB5Mj0iMTU0IiBzdHJva2U9IiNkMWQ1ZGIiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjI0IiB5PSIxNzYiIGZpbGw9IiM5Y2EzYWYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCI+REFUQSBERSBQUk9DRVNTQU1FTlRPPC90ZXh0PgogIDx0ZXh0IHg9IjM1NiIgeT0iMTc2IiB0ZXh0LWFuY2hvcj0iZW5kIiBmaWxsPSIjMzc0MTUxIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPjA5LzA3LzIwMjY8L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjE5OCIgZmlsbD0iIzljYTNhZiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj5IT1JBUklPPC90ZXh0PgogIDx0ZXh0IHg9IjM1NiIgeT0iMTk4IiB0ZXh0LWFuY2hvcj0iZW5kIiBmaWxsPSIjMzc0MTUxIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPjE0OjIyOjA3PC90ZXh0PgogIDx0ZXh0IHg9IjI0IiB5PSIyMjAiIGZpbGw9IiM5Y2EzYWYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCI+QVVURU5USUNBQ0FPPC90ZXh0PgogIDx0ZXh0IHg9IjM1NiIgeT0iMjIwIiB0ZXh0LWFuY2hvcj0iZW5kIiBmaWxsPSIjMzc0MTUxIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiPkJEMjAyNjA3MDkxNDIyMDcwMDAwMDAxMjM0NTwvdGV4dD4KICA8bGluZSB4MT0iMjQiIHkxPSIyMzYiIHgyPSIzNTYiIHkyPSIyMzYiIHN0cm9rZT0iI2QxZDVkYiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMjQiIHk9IjI1OCIgZmlsbD0iIzljYTNhZiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIj5DT05UQSBERUJJVEFEQSAoUEFHQURPUik8L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjI3OCIgZmlsbD0iIzExMTgyNyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCI+QW5hIENhcm9saW5hIFNpbHZhPC90ZXh0PgogIDx0ZXh0IHg9IjI0IiB5PSIyOTYiIGZpbGw9IiM2YjcyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMSI+QnJhZGVzY28gIEFnLiAxMjM0LTUgIENjLiA5ODc2NS00PC90ZXh0PgogIDxsaW5lIHgxPSIyNCIgeTE9IjMxMyIgeDI9IjM1NiIgeTI9IjMxMyIgc3Ryb2tlPSIjZDFkNWRiIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIyNCIgeT0iMzM1IiBmaWxsPSIjOWNhM2FmIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiPkNPTlRBIENSRURJVEFEQSAoRkFWT1JFQ0lETyk8L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjM1NSIgZmlsbD0iIzExMTgyNyIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCI+THVjYXMgT2xpdmVpcmE8L3RleHQ+CiAgPHRleHQgeD0iMjQiIHk9IjM3MyIgZmlsbD0iIzZiNzI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjExIj5JdGF1IFVuaWJhbmNvICBBZy4gMDA3OCAgQ2MuICoqKiotOTgwMTwvdGV4dD4KICA8dGV4dCB4PSIyNCIgeT0iMzkxIiBmaWxsPSIjNmI3MjgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiPkJyYWRlc2NvIMK3IENQRjogKioqLjY1NC4zMjEtKio8L3RleHQ+CiAgPGxpbmUgeDE9IjI0IiB5MT0iNDA4IiB4Mj0iMzU2IiB5Mj0iNDA4IiBzdHJva2U9IiNkMWQ1ZGIiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjI0IiB5PSI0MzAiIGZpbGw9IiM5Y2EzYWYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCI+SElTVE9SSUNPIC8gREVTQ1JJQ0FPPC90ZXh0PgogIDx0ZXh0IHg9IjI0IiB5PSI0NTAiIGZpbGw9IiMzNzQxNTEiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMSI+QWx1Z3VlbCBKdWxobyAyMDI2IC0gQXB0byAzMDEgVmlsYSBNYWRhbGVuYTwvdGV4dD4KICA8dGV4dCB4PSIxOTAiIHk9IjQ3MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzljYTNhZiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjkiPkNPTVBST1ZBTlRFIEdFUkFETyBBVVRPTUFUSUNBTUVOVEU8L3RleHQ+Cjwvc3ZnPg==",
+      "paymentMethod": "transfer",
+      "paymentDate": "2026-07-09",
+      "submittedAt": "2026-07-09T14:25:00.000Z",
+      "receiptNotes": "TED referente ao aluguel de julho 2026.",
+      "rejectionReason": "Comprovante ilegivel. Por favor, envie uma imagem mais nitida do comprovante Pix ou transferencia bancaria com o valor e data visiveis.",
+      "approvedAt": "2026-07-10T10:00:00.000Z",
+      "approvedBy": "demo-user-001"
     }
   ],
   "contracts": [
@@ -620,6 +658,48 @@
       "relatedId": "pay-002",
       "priority": "low",
       "targetTenantId": "tenant-002"
+    },
+    {
+      "id": "demo-notif-landlord-001",
+      "type": "payment",
+      "title": "Comprovante aguardando aprovacao",
+      "message": "Ana Carolina Silva enviou comprovante de R$ 3.800,00 via Pix referente a Junho 2026 em Apto 301 - Vila Madalena. Acesse para aprovar ou rejeitar.",
+      "read": false,
+      "createdAt": "2026-06-10T09:45:00.000Z",
+      "relatedId": "demo-pay-await",
+      "priority": "high"
+    },
+    {
+      "id": "demo-notif-tenant-001",
+      "type": "alert",
+      "title": "Comprovante rejeitado",
+      "message": "Seu comprovante de R$ 3.800,00 (Julho 2026) foi rejeitado. Motivo: Comprovante ilegivel. Por favor, envie uma imagem mais nitida do comprovante. Envie um novo comprovante.",
+      "read": true,
+      "createdAt": "2026-07-10T10:00:00.000Z",
+      "relatedId": "demo-pay-reject",
+      "priority": "high",
+      "targetTenantId": "tenant-001"
+    },
+    {
+      "id": "86f76089-9d09-429f-9fd4-42241582ab23",
+      "type": "payment",
+      "title": "Pagamento aprovado",
+      "message": "Pagamento de R$ 3.800,00 de Ana Carolina Silva (Apto 301 - Vila Madalena) foi aprovado e registrado.",
+      "read": false,
+      "createdAt": "2026-05-23T22:52:04.297Z",
+      "relatedId": "demo-pay-await",
+      "priority": "low"
+    },
+    {
+      "id": "557fbce0-58f2-45ab-b9d0-8b07e3f113cc",
+      "type": "payment",
+      "title": "Pagamento confirmado! ✓",
+      "message": "Seu comprovante de R$ 3.800,00 (Junho 2026) foi aprovado pelo locador. Obrigado!",
+      "read": true,
+      "createdAt": "2026-05-23T22:52:04.297Z",
+      "relatedId": "demo-pay-await",
+      "priority": "low",
+      "targetTenantId": "tenant-001"
     }
   ],
   "inspections": [
