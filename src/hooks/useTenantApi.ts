@@ -3,6 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tenantApi } from '@/services/tenantApi';
 import type { MaintenanceTicket } from '@/types';
 
+export function useTenantProfile() {
+  return useQuery({ queryKey: ['tenant', 'profile'], queryFn: tenantApi.getProfile });
+}
+
 export function useTenantProperty() {
   return useQuery({ queryKey: ['tenant', 'property'], queryFn: tenantApi.getProperty });
 }

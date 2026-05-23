@@ -1,4 +1,4 @@
-import type { Property, Contract, Payment, MaintenanceTicket, Notification, Notice } from '@/types';
+import type { Tenant, Property, Contract, Payment, MaintenanceTicket, Notification, Notice } from '@/types';
 import { useAppStore } from '@/store/useAppStore';
 
 const BASE = '/api/tenant';
@@ -63,6 +63,7 @@ const post = <T>(path: string, body: unknown) =>
   });
 
 export const tenantApi = {
+  getProfile: () => get<Tenant>('/profile'),
   getProperty: () => get<Property>('/property'),
   getContract: () => get<Contract>('/contract'),
   getPayments: () => get<Payment[]>('/payments'),
