@@ -622,7 +622,7 @@
       "type": "payment",
       "title": "Comprovante enviado — aguardando aprovação",
       "message": "Ana Carolina Silva enviou comprovante de R$ 3.800,00 via Pix referente a Julho 2026 em Apto 301 - Vila Madalena. Acesse para aprovar ou rejeitar.",
-      "read": false,
+      "read": true,
       "createdAt": "2026-05-24T06:12:34.913Z",
       "relatedId": "demo-pay-reject",
       "priority": "high"
@@ -1210,6 +1210,48 @@
       "trialEndsAt": "2026-05-31T06:11:52.426Z",
       "createdAt": "2026-05-24T06:11:52.426Z",
       "password": "$2b$12$QdrFeYR1P0L8kK78zo1vSOV0qy0H/a54DH5qV3TChSFqiLvgu2YZW"
+    },
+    {
+      "id": "f3173c1f-6851-4175-9835-6e6beea9ee99",
+      "name": "Test User 1779603778068",
+      "email": "test1779603778068@test.com",
+      "phone": "(11) 98765-4321",
+      "cpf": "123.456.789-01",
+      "role": "owner",
+      "plan": "basic",
+      "subscriptionStatus": "active",
+      "onboardingCompleted": true,
+      "trialEndsAt": "2026-05-31T06:22:58.649Z",
+      "createdAt": "2026-05-24T06:22:58.649Z",
+      "password": "$2b$12$2Hj6Iv/wX3vVXdqVpGiNUeKhBJ38GCQ.08Qiai.AMtTi9FSkkjAM2"
+    },
+    {
+      "id": "0c4acb70-7b20-462e-8c39-9ad815e6f613",
+      "name": "Test User 1779603911459",
+      "email": "test1779603911459@test.com",
+      "phone": "(11) 98765-4321",
+      "cpf": "123.456.789-01",
+      "role": "owner",
+      "plan": "basic",
+      "subscriptionStatus": "active",
+      "onboardingCompleted": true,
+      "trialEndsAt": "2026-05-31T06:25:11.855Z",
+      "createdAt": "2026-05-24T06:25:11.855Z",
+      "password": "$2b$12$wth/nSrJVIEo66wmQLttXe0hbH9u0WpebdA89C/00zbBj.G/0Y5De"
+    },
+    {
+      "id": "c8048d60-9853-45dc-bb67-3bdcffe18638",
+      "name": "Test User 1779604174033",
+      "email": "test1779604174033@test.com",
+      "phone": "(11) 98765-4321",
+      "cpf": "123.456.789-01",
+      "role": "owner",
+      "plan": "basic",
+      "subscriptionStatus": "active",
+      "onboardingCompleted": true,
+      "trialEndsAt": "2026-05-31T06:29:34.448Z",
+      "createdAt": "2026-05-24T06:29:34.448Z",
+      "password": "$2b$12$7oq0PyCc7lAuymPpkcWvEeVuZR6yb30HvX3F/N6tvHXgs2c037EQq"
     }
   ],
   "payment_logs": [],
@@ -1900,6 +1942,39 @@
       "currentPeriodEnd": "2027-05-24T06:11:55.620Z",
       "createdAt": "2026-05-24T06:11:55.620Z",
       "updatedAt": "2026-05-24T06:11:55.620Z"
+    },
+    {
+      "id": "c34cbe97-220e-45e7-a999-b1db7a2e4976",
+      "userId": "f3173c1f-6851-4175-9835-6e6beea9ee99",
+      "planId": "basic",
+      "status": "active",
+      "billingCycle": "yearly",
+      "currentPeriodStart": "2026-05-24T06:23:02.152Z",
+      "currentPeriodEnd": "2027-05-24T06:23:02.152Z",
+      "createdAt": "2026-05-24T06:23:02.152Z",
+      "updatedAt": "2026-05-24T06:23:02.152Z"
+    },
+    {
+      "id": "4220e284-e3fc-4c07-9e83-8016ca48a857",
+      "userId": "0c4acb70-7b20-462e-8c39-9ad815e6f613",
+      "planId": "basic",
+      "status": "active",
+      "billingCycle": "yearly",
+      "currentPeriodStart": "2026-05-24T06:25:15.023Z",
+      "currentPeriodEnd": "2027-05-24T06:25:15.023Z",
+      "createdAt": "2026-05-24T06:25:15.023Z",
+      "updatedAt": "2026-05-24T06:25:15.023Z"
+    },
+    {
+      "id": "31c2da3a-c8a2-4f2c-be73-ee296a548b47",
+      "userId": "c8048d60-9853-45dc-bb67-3bdcffe18638",
+      "planId": "basic",
+      "status": "active",
+      "billingCycle": "yearly",
+      "currentPeriodStart": "2026-05-24T06:29:37.612Z",
+      "currentPeriodEnd": "2027-05-24T06:29:37.612Z",
+      "createdAt": "2026-05-24T06:29:37.612Z",
+      "updatedAt": "2026-05-24T06:29:37.612Z"
     }
   ],
   "billing_payments": [
@@ -1937,6 +2012,42 @@
       "planName": "Básico",
       "description": "Básico — Anual",
       "createdAt": "2026-05-24T06:11:55.620Z",
+      "last4": "1111"
+    },
+    {
+      "id": "aeca1eba-30a3-4c35-9748-a21ba6157473",
+      "userId": "f3173c1f-6851-4175-9835-6e6beea9ee99",
+      "subscriptionId": "c34cbe97-220e-45e7-a999-b1db7a2e4976",
+      "amount": 862.8000000000001,
+      "status": "succeeded",
+      "paymentMethod": "card",
+      "planName": "Básico",
+      "description": "Básico — Anual",
+      "createdAt": "2026-05-24T06:23:02.152Z",
+      "last4": "1111"
+    },
+    {
+      "id": "20f46b1d-d777-4a92-8999-fa86b9ae701e",
+      "userId": "0c4acb70-7b20-462e-8c39-9ad815e6f613",
+      "subscriptionId": "4220e284-e3fc-4c07-9e83-8016ca48a857",
+      "amount": 862.8000000000001,
+      "status": "succeeded",
+      "paymentMethod": "card",
+      "planName": "Básico",
+      "description": "Básico — Anual",
+      "createdAt": "2026-05-24T06:25:15.023Z",
+      "last4": "1111"
+    },
+    {
+      "id": "249ee453-f02f-4fa3-8ff7-6edee75c18ca",
+      "userId": "c8048d60-9853-45dc-bb67-3bdcffe18638",
+      "subscriptionId": "31c2da3a-c8a2-4f2c-be73-ee296a548b47",
+      "amount": 862.8000000000001,
+      "status": "succeeded",
+      "paymentMethod": "card",
+      "planName": "Básico",
+      "description": "Básico — Anual",
+      "createdAt": "2026-05-24T06:29:37.612Z",
       "last4": "1111"
     }
   ],
@@ -2001,6 +2112,54 @@
       "goals": [],
       "complete": true,
       "completedAt": "2026-05-24T06:11:54.858Z"
+    },
+    {
+      "id": "c48c5050-c26d-4809-85ab-27d773edae67",
+      "userId": "f3173c1f-6851-4175-9835-6e6beea9ee99",
+      "companyName": "",
+      "profileType": "individual",
+      "propertiesCount": "1–3",
+      "propertyTypes": [
+        "apartment"
+      ],
+      "city": "São Paulo",
+      "state": "SP",
+      "paymentMethods": [],
+      "goals": [],
+      "complete": true,
+      "completedAt": "2026-05-24T06:23:01.164Z"
+    },
+    {
+      "id": "fb21ad0f-b5cd-4c83-be0d-356e89de7fdb",
+      "userId": "0c4acb70-7b20-462e-8c39-9ad815e6f613",
+      "companyName": "",
+      "profileType": "individual",
+      "propertiesCount": "1–3",
+      "propertyTypes": [
+        "apartment"
+      ],
+      "city": "São Paulo",
+      "state": "SP",
+      "paymentMethods": [],
+      "goals": [],
+      "complete": true,
+      "completedAt": "2026-05-24T06:25:14.272Z"
+    },
+    {
+      "id": "f4888939-69bb-4be4-8ade-1354d603a01e",
+      "userId": "c8048d60-9853-45dc-bb67-3bdcffe18638",
+      "companyName": "",
+      "profileType": "individual",
+      "propertiesCount": "1–3",
+      "propertyTypes": [
+        "apartment"
+      ],
+      "city": "São Paulo",
+      "state": "SP",
+      "paymentMethods": [],
+      "goals": [],
+      "complete": true,
+      "completedAt": "2026-05-24T06:29:36.878Z"
     }
   ]
 }
