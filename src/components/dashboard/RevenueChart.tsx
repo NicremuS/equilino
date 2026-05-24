@@ -4,7 +4,7 @@ import {
   Tooltip, CartesianGrid,
 } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { ChartSkeleton } from '@/components/shared/LoadingSkeleton';
+import { ChartSkeleton, ChartErrorState } from '@/components/shared/LoadingSkeleton';
 import { formatCurrency } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
 import type { ChartDataPoint } from '@/types';
@@ -50,9 +50,11 @@ function CustomTooltip({ active, payload, label }: TooltipProps) {
 interface RevenueChartProps {
   data?: ChartDataPoint[];
   isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
-export function RevenueChart({ data, isLoading }: RevenueChartProps) {
+export function RevenueChart({ data, isLoading, isError, onRetry }: RevenueChartProps) {
   const { theme } = useAppStore();
   const isDark = theme === 'dark';
 
@@ -61,7 +63,8 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
   const dotStroke   = isDark ? '#0f172a'    : '#ffffff';
   const cursorColor = isDark ? '#ffffff10'  : '#00000010';
 
-  if (isLoading || !data) return <ChartSkeleton className="h-64" />;
+  if (isLoading) return <ChartSkeleton className="h-64" />;
+  if (isError || !data) return <ChartErrorState onRetry={onRetry} className="h-64" />;
 
   const totalRevenue = data.reduce((s, d) => s + d.revenue, 0);
   const prevMonthRevenue = data[data.length - 2]?.revenue ?? 0;

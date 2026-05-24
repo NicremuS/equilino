@@ -21,10 +21,31 @@ function getGreeting() {
 
 export function DashboardScreen() {
   const { user } = useAppStore();
-  const { data: stats, isLoading: loadingStats, isError: errorStats, refetch: refetchStats } = useDashboardStats();
-  const { data: chartData, isLoading: loadingChart } = useChartData();
-  const { data: occupancyData, isLoading: loadingOccupancy } = useOccupancyData();
+  const {
+    data: stats,
+    isLoading: loadingStats,
+    isError: errorStats,
+    refetch: refetchStats,
+  } = useDashboardStats();
+  const {
+    data: chartData,
+    isLoading: loadingChart,
+    isError: errorChart,
+    refetch: refetchCharts,
+  } = useChartData();
+  const {
+    data: occupancyData,
+    isLoading: loadingOccupancy,
+    isError: errorOccupancy,
+  } = useOccupancyData();
+
   const firstName = user?.name.split(' ')[0] ?? 'usuário';
+  const anyError = errorStats || errorChart || errorOccupancy;
+
+  function retryAll() {
+    refetchStats();
+    refetchCharts();
+  }
 
   return (
     <div className="space-y-5 pb-2">
@@ -80,7 +101,12 @@ export function DashboardScreen() {
         </div>
       </div>
 
-      {errorStats && <ApiErrorState onRetry={refetchStats} />}
+      {anyError && (
+        <ApiErrorState
+          message="Alguns dados não puderam ser carregados."
+          onRetry={retryAll}
+        />
+      )}
 
       {/* Quick actions */}
       <QuickActions />
@@ -89,12 +115,27 @@ export function DashboardScreen() {
       <StatsCards stats={stats} isLoading={loadingStats} />
 
       {/* Revenue chart full width */}
-      <RevenueChart data={chartData} isLoading={loadingChart} />
+      <RevenueChart
+        data={chartData}
+        isLoading={loadingChart}
+        isError={errorChart}
+        onRetry={refetchCharts}
+      />
 
       {/* Donut + Bar side by side on tablet+ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <OccupancyDonut data={occupancyData} isLoading={loadingOccupancy} />
-        <OccupancyBar data={chartData} isLoading={loadingChart} />
+        <OccupancyDonut
+          data={occupancyData}
+          isLoading={loadingOccupancy}
+          isError={errorOccupancy}
+          onRetry={refetchCharts}
+        />
+        <OccupancyBar
+          data={chartData}
+          isLoading={loadingChart}
+          isError={errorChart}
+          onRetry={refetchCharts}
+        />
       </div>
 
       {/* Upcoming + Activity */}

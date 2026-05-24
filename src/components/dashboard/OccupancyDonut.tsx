@@ -1,10 +1,12 @@
 'use client';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { ChartSkeleton } from '@/components/shared/LoadingSkeleton';
+import { ChartSkeleton, ChartErrorState } from '@/components/shared/LoadingSkeleton';
 
 interface OccupancyDonutProps {
   data?: Array<{ name: string; value: number; color: string }>;
   isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
 interface TooltipProps {
@@ -33,8 +35,9 @@ const statusColors: Record<string, string> = {
   'Reservado':  'bg-blue-500',
 };
 
-export function OccupancyDonut({ data, isLoading }: OccupancyDonutProps) {
-  if (isLoading || !data) return <ChartSkeleton />;
+export function OccupancyDonut({ data, isLoading, isError, onRetry }: OccupancyDonutProps) {
+  if (isLoading) return <ChartSkeleton />;
+  if (isError || !data) return <ChartErrorState onRetry={onRetry} />;
 
   const total    = data.reduce((s, d) => s + d.value, 0);
   const occupied = data.find(d => d.name === 'Ocupado')?.value ?? 0;

@@ -8,15 +8,36 @@ import { useAppStore } from '@/store/useAppStore';
 
 const BASE = '/api';
 
+// Singleton refresh promise — prevents concurrent 401s from each firing their
+// own refresh request. All callers await the same in-flight refresh.
+let _refreshPromise: Promise<string | null> | null = null;
+
 async function refreshAccessToken(): Promise<string | null> {
+  if (_refreshPromise) return _refreshPromise;
+  _refreshPromise = (async () => {
+    try {
+      const res = await fetch('/api/auth/refresh', { method: 'POST' });
+      if (!res.ok) return null;
+      const { accessToken } = await res.json() as { accessToken: string };
+      useAppStore.getState().setAccessToken(accessToken);
+      return accessToken;
+    } catch {
+      return null;
+    } finally {
+      _refreshPromise = null;
+    }
+  })();
+  return _refreshPromise;
+}
+
+/** Parse JWT exp claim without verifying signature (client-side only). */
+function tokenExpiresInMs(token: string): number {
   try {
-    const res = await fetch('/api/auth/refresh', { method: 'POST' });
-    if (!res.ok) return null;
-    const { accessToken } = await res.json() as { accessToken: string };
-    useAppStore.getState().setAccessToken(accessToken);
-    return accessToken;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (!payload.exp) return Infinity;
+    return payload.exp * 1000 - Date.now();
   } catch {
-    return null;
+    return 0;
   }
 }
 
@@ -30,8 +51,9 @@ async function request<T>(
 ): Promise<T> {
   let token = useAppStore.getState().accessToken;
 
-  // Proactively refresh if token is missing but user session exists
-  if (!token && useAppStore.getState().user) {
+  // Proactively refresh if token is missing OR will expire within 60 seconds
+  const needsRefresh = !token || tokenExpiresInMs(token) < 60_000;
+  if (needsRefresh && useAppStore.getState().user) {
     token = await refreshAccessToken();
     if (!token) {
       useAppStore.getState().logout();
