@@ -5,14 +5,16 @@ const ACCESS_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET ?? 'dev-secret-change-in-production',
 );
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Auth endpoints (login, logout, refresh) don't require a token —
+  // only the change-password endpoint does (user must be logged in).
   if (pathname.startsWith('/api/auth/') && !pathname.startsWith('/api/auth/change-password')) {
     return NextResponse.next();
   }
 
-  // Cron endpoint: protected only by optional CRON_SECRET, not JWT
+  // Cron endpoint: protected by optional CRON_SECRET header, not JWT
   if (pathname.startsWith('/api/cron/')) {
     return NextResponse.next();
   }

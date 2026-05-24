@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { hash } from 'bcryptjs';
 import { z } from 'zod';
 import { getCollection, updateItem } from '@/lib/db.server';
 
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
   if (!valid) return NextResponse.json({ error: 'Senha atual incorreta' }, { status: 403 });
   if (currentPassword === newPassword) return NextResponse.json({ error: 'A nova senha deve ser diferente da atual' }, { status: 422 });
 
-  updateItem<StoredUser>('users', userId, { password: newPassword });
+  const hashed = await hash(newPassword, 12);
+  updateItem<StoredUser>('users', userId, { password: hashed });
   return NextResponse.json({ ok: true });
 }

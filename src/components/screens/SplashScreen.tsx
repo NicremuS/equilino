@@ -11,12 +11,19 @@ export function SplashScreen({ onDone }: SplashScreenProps) {
   onDoneRef.current = onDone;
 
   useEffect(() => {
-    const t = window.setTimeout(() => onDoneRef.current(), 2600);
+    // Timer fires quickly once JS loads — the actual "loading" time IS the splash.
+    // In dev mode the browser downloads ~11MB of unminified JS first, so we keep
+    // this short and let the user tap to skip if they're on a slow connection.
+    const t = window.setTimeout(() => onDoneRef.current(), 800);
     return () => window.clearTimeout(t);
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[#0B0F1A] flex flex-col items-center justify-center z-50 overflow-hidden">
+    // Tap anywhere to skip — useful on slow connections (e.g. mobile dev mode)
+    <div
+      className="fixed inset-0 bg-[#0B0F1A] flex flex-col items-center justify-center z-50 overflow-hidden cursor-pointer select-none"
+      onClick={() => onDoneRef.current()}
+    >
       {/* Background orbs — pure CSS, no JS needed */}
       <div className="absolute w-96 h-96 rounded-full bg-violet-600/15 blur-[100px] pointer-events-none" />
       <div className="absolute top-1/3 -right-20 w-64 h-64 rounded-full bg-violet-400/8 blur-[80px] pointer-events-none" />

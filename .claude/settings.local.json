@@ -62,7 +62,8 @@
       "Bash(git stash *)",
       "Bash(git restore *)",
       "Bash(pkill -f \"next dev\")",
-      "Bash(echo \"PID=$!\")"
+      "Bash(echo \"PID=$!\")",
+      "Bash(python -c \"import sys; html=sys.stdin.read\\(\\); print\\(html[:3000]\\)\")"
     ]
   }
 }

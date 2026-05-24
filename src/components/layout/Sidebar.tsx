@@ -1,5 +1,5 @@
 'use client';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   LayoutDashboard, Building2, FileText, Users, Wrench,
   CreditCard, Bell, Settings, LogOut, TrendingUp, ClipboardCheck,
@@ -65,7 +65,7 @@ export function Sidebar() {
               )}
             >
               {isActive && (
-                <motion.div
+                <m.div
                   layoutId="sidebarIndicator"
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-violet-400"
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}

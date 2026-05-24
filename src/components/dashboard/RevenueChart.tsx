@@ -3,7 +3,6 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   Tooltip, CartesianGrid,
 } from 'recharts';
-import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { ChartSkeleton } from '@/components/shared/LoadingSkeleton';
 import { formatCurrency } from '@/lib/utils';
@@ -73,11 +72,9 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
   const isPositive = parseFloat(growthPct) >= 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
-      className="premium-surface rounded-2xl overflow-hidden"
+    <div
+      className="premium-surface rounded-2xl overflow-hidden animate-card-enter"
+      style={{ animationDelay: '0.15s', animationFillMode: 'both' }}
     >
       {/* Header */}
       <div className="flex items-start justify-between px-5 pt-5 pb-4 border-b border-premium">
@@ -157,6 +154,6 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-    </motion.div>
+    </div>
   );
 }

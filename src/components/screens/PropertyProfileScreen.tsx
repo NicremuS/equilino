@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, MapPin, Bed, Bath, Maximize, Building2,
   Home, Wrench, ClipboardCheck, CreditCard, User,
@@ -516,7 +516,7 @@ export function PropertyProfileScreen({ property, onBack }: PropertyProfileScree
       <div className="flex items-center gap-3">
         <button
           onClick={onBack}
-          className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors flex-shrink-0"
+          className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors flex-shrink-0"
         >
           <ChevronLeft size={18} className="text-foreground" />
         </button>

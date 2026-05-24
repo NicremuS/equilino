@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   FileText, Clock, CheckCircle, XCircle, ChevronRight,
   PenLine, Eye, AlertCircle, FileSignature
@@ -11,16 +11,14 @@ import { TenantContractViewerScreen } from './TenantContractViewerScreen';
 import type { DigitalContract } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-const formatCurrency = (v: number) =>
-  v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+import { formatCurrency } from '@/lib/utils';
 
 const fmtDate = (d: string) => {
   try { return format(new Date(d), 'dd/MM/yyyy', { locale: ptBR }); }
   catch { return d; }
 };
 
-const PENDING_STATUSES = ['sent', 'viewed', 'awaiting_signature', 'signed_tenant'];
+const PENDING_STATUSES = ['sent', 'viewed', 'awaiting_signature', 'signed_tenant', 'signed_landlord'];
 const DONE_STATUSES = ['completed', 'rejected', 'cancelled', 'expired'];
 
 type FilterTab = 'pending' | 'completed' | 'all';

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   Megaphone, Trash2, Leaf, Droplets, Scissors,
   AlertTriangle, CheckCircle2, Volume2, Building2,
@@ -609,7 +609,7 @@ function AreasSection() {
                                 type="date"
                                 value={reservationDate}
                                 onChange={e => setReservationDate(e.target.value)}
-                                className="w-full bg-muted/70 dark:bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-foreground text-xs focus:outline-none focus:border-violet-500/50 transition-colors"
+                                className="w-full bg-muted/70 dark:bg-white/5 border border-border rounded-xl px-3 py-2 text-foreground text-xs focus:outline-none focus:border-violet-500/50 transition-colors"
                               />
                             </div>
                             <div>
@@ -618,14 +618,14 @@ function AreasSection() {
                                 type="time"
                                 value={reservationTime}
                                 onChange={e => setReservationTime(e.target.value)}
-                                className="w-full bg-muted/70 dark:bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-foreground text-xs focus:outline-none focus:border-violet-500/50 transition-colors"
+                                className="w-full bg-muted/70 dark:bg-white/5 border border-border rounded-xl px-3 py-2 text-foreground text-xs focus:outline-none focus:border-violet-500/50 transition-colors"
                               />
                             </div>
                           </div>
                           <div className="flex gap-2">
                             <button
                               onClick={() => setReservingArea(null)}
-                              className="flex-1 py-2.5 rounded-xl bg-muted/70 dark:bg-white/5 border border-white/10 text-muted-foreground text-xs font-semibold hover:bg-white/10 transition-colors"
+                              className="flex-1 py-2.5 rounded-xl bg-muted/70 dark:bg-white/5 border border-border text-muted-foreground text-xs font-semibold hover:bg-muted transition-colors"
                             >
                               Cancelar
                             </button>

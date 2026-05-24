@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   Bell, CheckCircle2, AlertCircle, AlertTriangle, Wrench, Clock,
   FileText, CreditCard, Sparkles, CheckCheck, X, ReceiptText, ShieldAlert,

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, CreditCard, AlertCircle, AlertTriangle, Clock } from 'lucide-react';
 import { useTenantNotifications } from '@/hooks/useTenantApi';
 import { useAppStore } from '@/store/useAppStore';

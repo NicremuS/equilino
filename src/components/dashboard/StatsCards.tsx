@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import { TrendingUp, AlertTriangle, FileText, Building2, Wrench, Clock, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { StatsCardSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -100,12 +99,10 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps) {
         const Icon = card.icon;
         const TrendIcon = card.positive ? ArrowUpRight : ArrowDownRight;
         return (
-          <motion.div
+          <div
             key={card.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: i * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="premium-surface rounded-2xl p-4 relative overflow-hidden"
+            className="premium-surface rounded-2xl p-4 relative overflow-hidden animate-card-enter"
+            style={{ animationDelay: `${i * 0.07}s`, animationFillMode: 'both' }}
           >
             {/* Gradient wash */}
             <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient}`} />
@@ -138,7 +135,7 @@ export function StatsCards({ stats, isLoading }: StatsCardsProps) {
                 <p className="text-[11px] text-muted-foreground font-medium leading-tight">{card.label}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>

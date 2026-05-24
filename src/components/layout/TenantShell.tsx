@@ -1,24 +1,52 @@
 'use client';
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
+// m.div requires LazyMotion context — we wrap the whole shell once at the root.
 import { Home, CreditCard, Wrench, FileText, Megaphone, Sun, Moon, FileSignature } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { getInitials } from '@/lib/utils';
-import { TenantHomeScreen } from '@/components/screens/tenant/TenantHomeScreen';
-import { TenantPaymentsScreen } from '@/components/screens/tenant/TenantPaymentsScreen';
-import { TenantMaintenanceScreen } from '@/components/screens/tenant/TenantMaintenanceScreen';
-import { TenantContractScreen } from '@/components/screens/tenant/TenantContractScreen';
-import { TenantNoticesScreen } from '@/components/screens/tenant/TenantNoticesScreen';
-import { TenantUserProfileScreen } from '@/components/screens/tenant/TenantUserProfileScreen';
-import { TenantDigitalContractsScreen } from '@/components/screens/tenant/TenantDigitalContractsScreen';
-import { ChangePasswordModal } from '@/components/screens/tenant/ChangePasswordModal';
+import { ScreenSkeleton } from '@/components/shared/ScreenSkeleton';
 import { useTenantNotices, useTenantPendingContractsCount } from '@/hooks/useTenantApi';
 import { TenantNotificationBell } from '@/components/shared/TenantNotificationBell';
 import { TenantNotificationToast } from '@/components/shared/TenantNotificationToast';
 import type React from 'react';
 
-type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract' | 'notices' | 'digital-contracts';
+// ── Lazy-loaded tenant screens ────────────────────────────────────────────────
+const TenantHomeScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantHomeScreen').then(m => ({ default: m.TenantHomeScreen })),
+  { ssr: false }
+);
+const TenantPaymentsScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantPaymentsScreen').then(m => ({ default: m.TenantPaymentsScreen })),
+  { ssr: false }
+);
+const TenantMaintenanceScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantMaintenanceScreen').then(m => ({ default: m.TenantMaintenanceScreen })),
+  { ssr: false }
+);
+const TenantContractScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantContractScreen').then(m => ({ default: m.TenantContractScreen })),
+  { ssr: false }
+);
+const TenantNoticesScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantNoticesScreen').then(m => ({ default: m.TenantNoticesScreen })),
+  { ssr: false }
+);
+const TenantDigitalContractsScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantDigitalContractsScreen').then(m => ({ default: m.TenantDigitalContractsScreen })),
+  { ssr: false }
+);
+const TenantUserProfileScreen = dynamic(
+  () => import('@/components/screens/tenant/TenantUserProfileScreen').then(m => ({ default: m.TenantUserProfileScreen })),
+  { ssr: false }
+);
+const ChangePasswordModal = dynamic(
+  () => import('@/components/screens/tenant/ChangePasswordModal').then(m => ({ default: m.ChangePasswordModal })),
+  { ssr: false }
+);
 
+type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract' | 'notices' | 'digital-contracts';
 type ScreenComponent = React.ComponentType;
 
 const SCREENS: Record<TenantTab, ScreenComponent> = {
@@ -49,8 +77,15 @@ export function TenantShell() {
   const ActiveScreen = SCREENS[currentTab];
 
   return (
+    // Single LazyMotion root: screen transitions + nav indicator share one feature-set load.
+    <LazyMotion features={domAnimation} strict>
     <div className="min-h-screen bg-background flex flex-col">
-      {mustChangePassword && <ChangePasswordModal />}
+      {mustChangePassword && (
+        <Suspense fallback={null}>
+          <ChangePasswordModal />
+        </Suspense>
+      )}
+
       {/* Top bar */}
       <header className="sticky top-0 z-30 glass border-b border-border px-4 py-3 flex items-center gap-3 shadow-sm">
         <div className="flex items-center gap-2">
@@ -86,17 +121,21 @@ export function TenantShell() {
       <main className="flex-1 px-4 py-5 pb-28 overflow-x-hidden max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait">
           {profileOpen ? (
-            <TenantUserProfileScreen key="profile" onClose={() => setProfileOpen(false)} />
+            <Suspense key="profile" fallback={<ScreenSkeleton />}>
+              <TenantUserProfileScreen onClose={() => setProfileOpen(false)} />
+            </Suspense>
           ) : (
-            <motion.div
+            <m.div
               key={currentTab}
-              initial={{ opacity: 0, x: 12 }}
+              initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -12 }}
-              transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <ActiveScreen />
-            </motion.div>
+              <Suspense fallback={<ScreenSkeleton />}>
+                <ActiveScreen />
+              </Suspense>
+            </m.div>
           )}
         </AnimatePresence>
       </main>
@@ -107,42 +146,43 @@ export function TenantShell() {
       <nav className="fixed bottom-0 left-0 right-0 z-40 glass border-t border-border px-2 pb-safe">
         <div className="flex items-center justify-around max-w-lg mx-auto">
           {NAV_ITEMS.map(({ tab, icon: Icon, label }) => {
-            const active = currentTab === tab;
-            const hasBadge = (tab === 'notices' && unreadNotices > 0) ||
-              (tab === 'digital-contracts' && pendingContracts > 0);
-            const badgeCount = tab === 'notices' ? unreadNotices : pendingContracts;
-            return (
-              <button
-                key={tab}
-                onClick={() => { setProfileOpen(false); setActiveTab(tab); }}
-                className="flex flex-col items-center gap-1 py-3 px-4 relative"
-              >
-                {active && (
-                  <motion.div
-                    layoutId="tenant-nav-indicator"
-                    className="absolute inset-x-2 top-0 h-0.5 bg-emerald-500 rounded-full"
-                  />
-                )}
-                <div className="relative">
-                  <Icon
-                    size={22}
-                    className={active ? 'text-emerald-400' : 'text-muted-foreground'}
-                    strokeWidth={active ? 2.2 : 1.8}
-                  />
-                  {hasBadge && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
-                      {badgeCount > 9 ? '9+' : badgeCount}
-                    </span>
+              const active = currentTab === tab;
+              const hasBadge = (tab === 'notices' && unreadNotices > 0) ||
+                (tab === 'digital-contracts' && pendingContracts > 0);
+              const badgeCount = tab === 'notices' ? unreadNotices : pendingContracts;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => { setProfileOpen(false); setActiveTab(tab); }}
+                  className="flex flex-col items-center gap-1 py-3 px-4 relative"
+                >
+                  {active && (
+                    <m.div
+                      layoutId="tenant-nav-indicator"
+                      className="absolute inset-x-2 top-0 h-0.5 bg-emerald-500 rounded-full"
+                    />
                   )}
-                </div>
-                <span className={`text-[10px] font-medium ${active ? 'text-emerald-400' : 'text-muted-foreground'}`}>
-                  {label}
-                </span>
-              </button>
-            );
-          })}
+                  <div className="relative">
+                    <Icon
+                      size={22}
+                      className={active ? 'text-emerald-400' : 'text-muted-foreground'}
+                      strokeWidth={active ? 2.2 : 1.8}
+                    />
+                    {hasBadge && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
+                        {badgeCount > 9 ? '9+' : badgeCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`text-[10px] font-medium ${active ? 'text-emerald-400' : 'text-muted-foreground'}`}>
+                    {label}
+                  </span>
+                </button>
+              );
+            })}
         </div>
       </nav>
     </div>
+    </LazyMotion>
   );
 }

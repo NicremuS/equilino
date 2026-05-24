@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   Bell, BellOff, CheckCheck, X,
   CreditCard, AlertCircle, AlertTriangle, Clock, CheckCircle2,

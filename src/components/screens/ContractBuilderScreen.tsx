@@ -1,13 +1,11 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, Check, FileText, Building2, DollarSign,
   FileEdit, Settings, Eye, Home, Users, Sparkles, ChevronRight
 } from 'lucide-react';
-import { useProperties } from '@/hooks/useApi';
-import { useTenants } from '@/hooks/useApi';
-import { useContractTemplates, useCreateDigitalContract, useUpdateDigitalContract, useDigitalContract } from '@/hooks/useApi';
+import { useProperties, useTenants, useContractTemplates, useCreateDigitalContract, useUpdateDigitalContract, useDigitalContract } from '@/hooks/useApi';
 import { ClauseEditor } from '@/components/contracts/ClauseEditor';
 import type { ContractClause, ContractTemplate } from '@/types';
 import type { CreateDigitalContractInput } from '@/lib/schemas';

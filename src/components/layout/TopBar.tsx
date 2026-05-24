@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Bell, Search, Sun, Moon, X, Building2, Users, CreditCard, FileText } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/store/useAppStore';
 import { useUnreadCount, useProperties, useTenants, usePayments, useContracts } from '@/hooks/useApi';
 import { getInitials } from '@/lib/utils';

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Trash2, Plus, GripVertical, Sparkles, Lock } from 'lucide-react';
 import type { ContractClause, ClauseCategory } from '@/types';
 import { cn } from '@/lib/utils';

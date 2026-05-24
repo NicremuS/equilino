@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, ChevronRight, Check, Plus, Trash2, Camera,
   Home, Calendar, User, ClipboardList, Star, MapPin,
@@ -311,7 +311,7 @@ function RoomEditor({ room, index, onChange, onRemove }: {
         <div className="flex items-center gap-1">
           <button
             onClick={() => setExpanded(v => !v)}
-            className="w-7 h-7 rounded-lg bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+            className="w-7 h-7 rounded-lg bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors"
           >
             <motion.div animate={{ rotate: expanded ? 90 : 0 }} transition={{ duration: 0.2 }}>
               <ChevronRight size={14} className="text-gray-400" />
@@ -791,7 +791,7 @@ export function NewInspectionScreen({ onBack, onSave }: NewInspectionScreenProps
       <div className="flex items-center gap-3 mb-5">
         <button
           onClick={onBack}
-          className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors flex-shrink-0"
+          className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors flex-shrink-0"
         >
           <ChevronLeft size={18} className="text-foreground" />
         </button>

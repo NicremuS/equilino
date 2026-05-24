@@ -1,5 +1,5 @@
-'use client';
-import { motion } from 'framer-motion';
+﻿'use client';
+import { m as motion } from 'framer-motion';
 import { Home, FileText, Wrench, ChevronRight, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { useTenantProperty, useTenantContract, useTenantPayments, useTenantTickets } from '@/hooks/useTenantApi';
@@ -51,6 +51,7 @@ export function TenantHomeScreen() {
         >
           {property.image && (
             <div className="h-36 w-full overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={property.image} alt={property.name} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60" />
             </div>

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { CheckCircle2, Circle, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

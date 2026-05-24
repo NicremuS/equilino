@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { z } from 'zod';
 import { getCollection, updateItem } from '@/lib/db.server';
 
@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Esta ação só é permitida na primeira alteração de senha.' }, { status: 403 });
   }
 
-  updateItem<StoredUser>('users', userId, { password: result.data.newPassword });
+  const hashed = await hash(result.data.newPassword, 12);
+  updateItem<StoredUser>('users', userId, { password: hashed });
 
   return NextResponse.json({ ok: true });
 }

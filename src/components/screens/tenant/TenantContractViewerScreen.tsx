@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, PenLine, FileText, Eye, CheckCircle, Clock,
   AlertCircle, ChevronDown, ChevronUp, Paperclip, History,
@@ -39,6 +39,7 @@ export function TenantContractViewerScreen({ contractId, onBack }: Props) {
   const [showSign, setShowSign] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
   const [signSuccess, setSignSuccess] = useState(false);
+  const [signError, setSignError] = useState('');
 
   if (isLoading) {
     return (
@@ -71,7 +72,8 @@ export function TenantContractViewerScreen({ contractId, onBack }: Props) {
   const canSign = !tenantSigned && ['sent', 'viewed', 'awaiting_signature'].includes(contract.status);
 
   const handleSign = async () => {
-    if (!signatureData) { alert('Desenhe sua assinatura primeiro'); return; }
+    if (!signatureData) { setSignError('Desenhe sua assinatura antes de confirmar.'); return; }
+    setSignError('');
     await sign.mutateAsync({ id: contract.id, signatureData });
     setShowSign(false);
     setSignatureData('');
@@ -167,7 +169,13 @@ export function TenantContractViewerScreen({ contractId, onBack }: Props) {
           <p className="text-xs text-muted-foreground">
             Ao assinar, você concorda com todos os termos e cláusulas do contrato acima.
           </p>
-          <SignatureCanvas onSignature={setSignatureData} />
+          <SignatureCanvas onSignature={(data) => { setSignatureData(data); if (data) setSignError(''); }} />
+          {signError && (
+            <p className="text-xs text-red-400 flex items-center gap-1.5">
+              <AlertCircle size={12} />
+              {signError}
+            </p>
+          )}
           <div className="flex gap-2">
             <button
               onClick={() => { setShowSign(false); setSignatureData(''); }}

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Megaphone, AlertCircle, Lightbulb, ShieldAlert, ChevronDown, ChevronUp, Bell } from 'lucide-react';
 import { useTenantNotices, useMarkTenantNoticeRead } from '@/hooks/useTenantApi';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';
@@ -151,7 +151,7 @@ export function TenantNoticesScreen() {
               >
                 <button
                   onClick={() => toggle(notice.id, notice.read)}
-                  className="w-full flex items-start gap-3 p-4 text-left hover:bg-white/5 transition-colors"
+                  className="w-full flex items-start gap-3 p-4 text-left hover:bg-muted/30 dark:hover:bg-white/5 transition-colors"
                 >
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 ${cfg.bg}`}>
                     <Icon size={17} className={cfg.color} />

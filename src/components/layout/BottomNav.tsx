@@ -1,5 +1,5 @@
 'use client';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { LayoutDashboard, Building2, Users, Wrench, FileSignature, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
@@ -33,7 +33,7 @@ export function BottomNav() {
               >
                 <div className="relative flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-xl">
                   {isActive && (
-                    <motion.div
+                    <m.div
                       layoutId="bottomNavPill"
                       className="absolute inset-0 bg-violet-500/15 rounded-xl"
                       transition={{ type: 'spring', stiffness: 500, damping: 38 }}

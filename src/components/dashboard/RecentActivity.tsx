@@ -1,6 +1,5 @@
 'use client';
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { CheckCircle2, AlertCircle, Clock, Wrench, ArrowRight, Sparkles, CreditCard, FileText } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
 import { useNotifications } from '@/hooks/useApi';
@@ -34,11 +33,9 @@ export function RecentActivity() {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.4 }}
-      className="premium-surface rounded-2xl overflow-hidden"
+    <div
+      className="premium-surface rounded-2xl overflow-hidden animate-card-enter"
+      style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
       role="region"
       aria-label="Atividade recente"
     >
@@ -94,6 +91,6 @@ export function RecentActivity() {
           })}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

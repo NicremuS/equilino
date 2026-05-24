@@ -1,6 +1,5 @@
 'use client';
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { formatCurrency, getInitials } from '@/lib/utils';
 import { usePayments, useTenants } from '@/hooks/useApi';
 import { AlertCircle, Clock, ChevronRight } from 'lucide-react';
@@ -40,11 +39,9 @@ export function UpcomingPayments() {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.45 }}
-      className="premium-surface rounded-2xl overflow-hidden"
+    <div
+      className="premium-surface rounded-2xl overflow-hidden animate-card-enter"
+      style={{ animationDelay: '0.22s', animationFillMode: 'both' }}
     >
       <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-premium">
         <div>
@@ -80,7 +77,7 @@ export function UpcomingPayments() {
         </div>
       ) : (
         <div className="divide-y divide-border">
-          {upcoming.map((payment, i) => {
+          {upcoming.map((payment) => {
             const tenant = tenants.find(t => t.id === payment.tenantId);
             const cfg = statusConfig[payment.status as 'pending' | 'overdue'] ?? statusConfig.pending;
             const StatusIcon = cfg.icon;
@@ -89,11 +86,8 @@ export function UpcomingPayments() {
               days < 0 ? `${Math.abs(days)}d atrasado` : days === 0 ? 'Vence hoje' : `${days}d restantes`;
 
             return (
-              <motion.div
+              <div
                 key={payment.id}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + i * 0.07 }}
                 className="flex items-center gap-0 relative hover:bg-black/[0.025] dark:hover:bg-white/[0.03] transition-colors cursor-pointer"
               >
                 <div className={`w-1 self-stretch flex-shrink-0 ${cfg.stripe}`} />
@@ -116,11 +110,11 @@ export function UpcomingPayments() {
                   </div>
                   <ChevronRight size={13} className="text-muted-foreground flex-shrink-0 ml-1" />
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { Eraser, PenLine } from 'lucide-react';
 
 interface Props {

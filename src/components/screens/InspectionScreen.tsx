@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ClipboardCheck, Plus, ChevronRight, ChevronLeft, Calendar,
   User, Camera, CheckCircle2, AlertCircle, XCircle, MinusCircle,
@@ -47,7 +47,7 @@ function ScoreRing({ score, size = 56 }: { score: number; size?: number }) {
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#1F2937" strokeWidth={4} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={4} className="text-muted/70" />
         <motion.circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
           stroke={color} strokeWidth={4} strokeLinecap="round"
@@ -209,7 +209,7 @@ function InspectionDetail({ inspection, onBack, onStartNew, properties, tenants 
     >
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors">
           <ChevronLeft size={18} className="text-foreground" />
         </button>
         <div className="flex-1 min-w-0">

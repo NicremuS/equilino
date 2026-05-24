@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2,
   Loader2, LogOut, Sun, Moon, Shield, Star, Building2, Users,

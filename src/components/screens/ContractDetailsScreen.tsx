@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import {
   ArrowLeft, Send, PenLine, FileText, Users, DollarSign,
   Clock, CheckCircle, XCircle, Download, Printer, AlertCircle,

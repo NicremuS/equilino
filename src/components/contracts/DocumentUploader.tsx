@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Upload, FileText, X, CheckCircle, Image, AlertCircle } from 'lucide-react';
 import type { ContractDocument } from '@/types';
 

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Printer, QrCode } from 'lucide-react';
 import type { DigitalContract } from '@/types';
 import { format } from 'date-fns';

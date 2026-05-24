@@ -1,5 +1,5 @@
-'use client';
-import { motion } from 'framer-motion';
+﻿'use client';
+import { m as motion } from 'framer-motion';
 import { FileText, Calendar, DollarSign, Shield, CheckCircle2, Clock, AlertTriangle, User, Home, Hash } from 'lucide-react';
 import { useTenantContract, useTenantProperty } from '@/hooks/useTenantApi';
 import { useAppStore } from '@/store/useAppStore';

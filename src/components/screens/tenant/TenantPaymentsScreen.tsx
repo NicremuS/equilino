@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   CreditCard, CheckCircle2, Clock, AlertCircle, Receipt,
   Upload, Eye, X, Loader2, ImageIcon, Download, ZapIcon, XCircle,

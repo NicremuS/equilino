@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Wrench, Plus, X, AlertCircle, Clock, CheckCircle2, Loader2, ChevronDown, Camera, ImageIcon } from 'lucide-react';
 import { useTenantTickets, useTenantProperty, useCreateTenantTicket } from '@/hooks/useTenantApi';
 import { ListItemSkeleton, ApiErrorState } from '@/components/shared/LoadingSkeleton';

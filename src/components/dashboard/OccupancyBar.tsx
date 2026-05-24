@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, Cell,
@@ -67,11 +66,9 @@ export function OccupancyBar({ data, isLoading }: OccupancyBarProps) {
   const delta  = latest - prev;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.38 }}
-      className="premium-surface rounded-2xl overflow-hidden"
+    <div
+      className="premium-surface rounded-2xl overflow-hidden animate-card-enter"
+      style={{ animationDelay: '0.19s', animationFillMode: 'both' }}
     >
       {/* Header */}
       <div className="px-4 pt-4 pb-3 border-b border-premium">
@@ -133,6 +130,6 @@ export function OccupancyBar({ data, isLoading }: OccupancyBarProps) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </motion.div>
+    </div>
   );
 }

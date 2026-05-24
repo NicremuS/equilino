@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   FileText, Plus, Search, Filter, ChevronRight, CheckCircle,
   Clock, AlertCircle, FileEdit, Send, Eye, Users, TrendingUp, X
@@ -16,9 +16,7 @@ import { ContractDetailsScreen } from './ContractDetailsScreen';
 import type { DigitalContract, DigitalContractStatus } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-const formatCurrency = (v: number) =>
-  v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+import { formatCurrency } from '@/lib/utils';
 
 const FILTER_TABS = [
   { id: 'all',       label: 'Todos' },

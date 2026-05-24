@@ -54,7 +54,10 @@ export const useNotifications = () =>
   useQuery({
     queryKey: ['notifications'],
     queryFn: api.getNotifications,
-    refetchInterval: 8000,
+    // Poll every 30 s (was 8 s) — less aggressive on slow mobile connections.
+    // refetchOnWindowFocus is already disabled globally in QueryClient.
+    staleTime: 20 * 1000,
+    refetchInterval: 30_000,
     refetchIntervalInBackground: false,
   });
 

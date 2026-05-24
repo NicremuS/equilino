@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Search, TrendingUp, Paperclip, Clock } from 'lucide-react';
 import { usePayments, useTenants, useProperties } from '@/hooks/useApi';
 import { formatCurrency, formatDate, getInitials } from '@/lib/utils';
@@ -131,7 +131,7 @@ export function PaymentsScreen() {
       {/* Filter chips */}
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-        className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+        className="flex gap-2 overflow-x-auto pb-1 no-scrollbar"
       >
         {filters.map(f => (
           <button

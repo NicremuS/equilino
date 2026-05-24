@@ -23,7 +23,11 @@ interface AppState {
 
 function getSavedTheme(): Theme {
   if (typeof window === 'undefined') return 'dark';
-  return (localStorage.getItem('equilino-theme') as Theme) ?? 'dark';
+  try {
+    return (localStorage.getItem('equilino-theme') as Theme) ?? 'dark';
+  } catch {
+    return 'dark';
+  }
 }
 
 function applyThemeToDom(theme: Theme) {
@@ -46,12 +50,12 @@ export const useAppStore = create<AppState>((set) => ({
   toggleTheme: () =>
     set((state) => {
       const next: Theme = state.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('equilino-theme', next);
+      try { localStorage.setItem('equilino-theme', next); } catch {}
       applyThemeToDom(next);
       return { theme: next };
     }),
   setTheme: (t) => {
-    localStorage.setItem('equilino-theme', t);
+    try { localStorage.setItem('equilino-theme', t); } catch {}
     applyThemeToDom(t);
     set({ theme: t });
   },

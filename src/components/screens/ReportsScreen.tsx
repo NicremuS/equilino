@@ -1,5 +1,5 @@
-'use client';
-import { motion } from 'framer-motion';
+﻿'use client';
+import { m as motion } from 'framer-motion';
 import { BarChart2, Download, TrendingUp, TrendingDown } from 'lucide-react';
 import { useChartData } from '@/hooks/useApi';
 import { formatCurrency } from '@/lib/utils';

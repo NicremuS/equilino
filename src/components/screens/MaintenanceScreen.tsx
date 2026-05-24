@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Wrench, Zap, Droplets, Package, ChevronRight, Plus, X, CheckCircle2, AlertCircle, Clock, XCircle, Calendar, User, ImageIcon } from 'lucide-react';
 import { useTickets, useProperties, useTenants, useCreateTicket } from '@/hooks/useApi';
 import { formatRelativeTime, formatCurrency, formatDate } from '@/lib/utils';
@@ -112,7 +112,7 @@ export function MaintenanceScreen() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSelected(null)}
-            className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors flex-shrink-0"
+            className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors flex-shrink-0"
           >
             <ChevronRight size={18} className="text-foreground rotate-180" />
           </button>

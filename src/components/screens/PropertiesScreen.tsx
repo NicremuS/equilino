@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Search, Grid3X3, List, MapPin, Bed, Bath, Maximize } from 'lucide-react';
 import { useProperties } from '@/hooks/useApi';
 import { formatCurrency } from '@/lib/utils';
