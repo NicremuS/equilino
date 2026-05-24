@@ -1,10 +1,9 @@
 'use client';
-import { motion } from 'framer-motion';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, Cell,
 } from 'recharts';
-import { ChartSkeleton } from '@/components/shared/LoadingSkeleton';
+import { ChartSkeleton, ChartErrorState } from '@/components/shared/LoadingSkeleton';
 import { useAppStore } from '@/store/useAppStore';
 import type { ChartDataPoint } from '@/types';
 
@@ -50,9 +49,11 @@ function TopLabel({ x = 0, y = 0, width = 0, value = 0, fill = '#9CA3AF' }: Labe
 interface OccupancyBarProps {
   data?: ChartDataPoint[];
   isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
-export function OccupancyBar({ data, isLoading }: OccupancyBarProps) {
+export function OccupancyBar({ data, isLoading, isError, onRetry }: OccupancyBarProps) {
   const { theme } = useAppStore();
   const isDark = theme === 'dark';
   const gridColor  = isDark ? '#ffffff06' : '#00000008';
@@ -60,18 +61,17 @@ export function OccupancyBar({ data, isLoading }: OccupancyBarProps) {
   const labelColor = isDark ? '#9CA3AF'   : '#6B7280';
   const cursorFill = isDark ? '#ffffff05' : '#00000005';
 
-  if (isLoading || !data) return <ChartSkeleton />;
+  if (isLoading) return <ChartSkeleton />;
+  if (isError || !data) return <ChartErrorState onRetry={onRetry} />;
 
   const latest = data[data.length - 1]?.occupancy ?? 0;
   const prev   = data[data.length - 2]?.occupancy ?? 0;
   const delta  = latest - prev;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.38 }}
-      className="premium-surface rounded-2xl overflow-hidden"
+    <div
+      className="premium-surface rounded-2xl overflow-hidden animate-card-enter"
+      style={{ animationDelay: '0.19s', animationFillMode: 'both' }}
     >
       {/* Header */}
       <div className="px-4 pt-4 pb-3 border-b border-premium">
@@ -133,6 +133,6 @@ export function OccupancyBar({ data, isLoading }: OccupancyBarProps) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </motion.div>
+    </div>
   );
 }

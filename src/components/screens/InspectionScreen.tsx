@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ClipboardCheck, Plus, ChevronRight, ChevronLeft, Calendar,
   User, Camera, CheckCircle2, AlertCircle, XCircle, MinusCircle,
@@ -47,7 +47,7 @@ function ScoreRing({ score, size = 56 }: { score: number; size?: number }) {
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#1F2937" strokeWidth={4} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={4} className="text-muted/70" />
         <motion.circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
           stroke={color} strokeWidth={4} strokeLinecap="round"
@@ -187,7 +187,7 @@ function RoomCard({ room, index }: { room: InspectionRoom; index: number }) {
 
 // ─── Detail view ──────────────────────────────────────────────────────────────
 
-function InspectionDetail({ inspection, onBack, properties, tenants }: { inspection: Inspection; onBack: () => void; properties: { id: string; name?: string; city?: string; image?: string }[]; tenants: { id: string; name: string; phone: string }[] }) {
+function InspectionDetail({ inspection, onBack, onStartNew, properties, tenants }: { inspection: Inspection; onBack: () => void; onStartNew: () => void; properties: { id: string; name?: string; city?: string; image?: string }[]; tenants: { id: string; name: string; phone: string }[] }) {
   const property = properties.find(p => p.id === inspection.propertyId);
   const tenant = inspection.tenantId ? tenants.find(t => t.id === inspection.tenantId) : null;
   const typeCfg = typeConfig[inspection.type];
@@ -209,7 +209,7 @@ function InspectionDetail({ inspection, onBack, properties, tenants }: { inspect
     >
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors">
           <ChevronLeft size={18} className="text-foreground" />
         </button>
         <div className="flex-1 min-w-0">
@@ -297,7 +297,7 @@ function InspectionDetail({ inspection, onBack, properties, tenants }: { inspect
               {property?.image && <img src={property.image} alt="" className="w-full h-full object-cover opacity-70" />}
             </div>
             <div className="min-w-0">
-              <p className="text-white text-xs font-semibold truncate">{property?.name}</p>
+              <p className="text-foreground text-xs font-semibold truncate">{property?.name}</p>
               <p className="text-muted-foreground text-[10px] flex items-center gap-0.5"><MapPin size={9} />{property?.city}</p>
             </div>
           </div>
@@ -311,7 +311,7 @@ function InspectionDetail({ inspection, onBack, properties, tenants }: { inspect
               {tenant ? getInitials(tenant.name) : getInitials(inspection.inspector)}
             </div>
             <div className="min-w-0">
-              <p className="text-white text-xs font-semibold truncate">
+              <p className="text-foreground text-xs font-semibold truncate">
                 {tenant ? tenant.name.split(' ')[0] : inspection.inspector.split(' ')[0]}
               </p>
               <p className="text-muted-foreground text-[10px]">
@@ -328,7 +328,7 @@ function InspectionDetail({ inspection, onBack, properties, tenants }: { inspect
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="premium-surface rounded-2xl p-4"
         >
-          <p className="text-white text-sm font-semibold mb-3">Resumo por condição</p>
+          <p className="text-foreground text-sm font-semibold mb-3">Resumo por condição</p>
           <div className="flex gap-2 flex-wrap">
             {(Object.entries(conditionCounts) as [RoomCondition, number][])
               .filter(([, count]) => count > 0)
@@ -381,7 +381,7 @@ function InspectionDetail({ inspection, onBack, properties, tenants }: { inspect
           <ClipboardCheck size={28} className="mx-auto mb-3 text-gray-600" />
           <p className="text-gray-400 text-sm font-medium">Vistoria ainda não iniciada</p>
           <p className="text-muted-foreground text-xs mt-1">Agendada para {formatDate(inspection.scheduledDate)}</p>
-          <button className="mt-4 px-5 py-2.5 gradient-accent rounded-xl text-white text-xs font-semibold hover:opacity-90 transition-opacity">
+          <button onClick={onStartNew} className="mt-4 px-5 py-2.5 gradient-accent rounded-xl text-white text-xs font-semibold hover:opacity-90 transition-opacity">
             Iniciar vistoria
           </button>
         </div>
@@ -390,7 +390,7 @@ function InspectionDetail({ inspection, onBack, properties, tenants }: { inspect
           <ClipboardCheck size={28} className="mx-auto mb-3 text-yellow-500" />
           <p className="text-yellow-400 text-sm font-medium">Vistoria em andamento</p>
           <p className="text-muted-foreground text-xs mt-1">Adicione cômodos para continuar</p>
-          <button className="mt-4 px-5 py-2.5 bg-yellow-500/20 border border-yellow-500/30 rounded-xl text-yellow-400 text-xs font-semibold hover:bg-yellow-500/30 transition-colors">
+          <button onClick={onStartNew} className="mt-4 px-5 py-2.5 bg-yellow-500/20 border border-yellow-500/30 rounded-xl text-yellow-400 text-xs font-semibold hover:bg-yellow-500/30 transition-colors">
             + Adicionar cômodo
           </button>
         </div>
@@ -429,7 +429,7 @@ function InspectionCard({ inspection, index, onClick, properties }: { inspection
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-white text-sm font-semibold truncate">{property?.name ?? 'Imóvel'}</p>
+              <p className="text-foreground text-sm font-semibold truncate">{property?.name ?? 'Imóvel'}</p>
               <p className="text-muted-foreground text-xs mt-0.5 flex items-center gap-1">
                 <MapPin size={10} /> {property?.city}
               </p>
@@ -536,7 +536,7 @@ export function InspectionScreen() {
           onSave={handleSave}
         />
       ) : selected ? (
-        <InspectionDetail key="detail" inspection={selected} onBack={() => setSelected(null)} properties={properties} tenants={tenants} />
+        <InspectionDetail key="detail" inspection={selected} onBack={() => setSelected(null)} onStartNew={() => { setSelected(null); setView('new'); }} properties={properties} tenants={tenants} />
       ) : (
         <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5 pb-2">
           {/* Header */}

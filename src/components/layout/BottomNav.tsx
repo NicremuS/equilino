@@ -1,16 +1,16 @@
 'use client';
-import { motion } from 'framer-motion';
-import { LayoutDashboard, Building2, ClipboardCheck, Users, Wrench, Megaphone } from 'lucide-react';
+import { m } from 'framer-motion';
+import { LayoutDashboard, Building2, Users, Wrench, FileSignature, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
 
 const tabs = [
-  { id: 'dashboard',   label: 'Início',    icon: LayoutDashboard },
-  { id: 'properties',  label: 'Imóveis',   icon: Building2 },
-  { id: 'inspections', label: 'Vistorias', icon: ClipboardCheck },
-  { id: 'tenants',     label: 'Inquilinos', icon: Users },
-  { id: 'maintenance', label: 'Chamados',  icon: Wrench },
-  { id: 'notices',     label: 'Avisos',    icon: Megaphone },
+  { id: 'dashboard',          label: 'Início',    icon: LayoutDashboard },
+  { id: 'properties',         label: 'Imóveis',   icon: Building2 },
+  { id: 'digital-contracts',  label: 'Contratos', icon: FileSignature },
+  { id: 'tenants',            label: 'Inquilinos', icon: Users },
+  { id: 'maintenance',        label: 'Chamados',  icon: Wrench },
+  { id: 'notices',            label: 'Avisos',    icon: Megaphone },
 ];
 
 export function BottomNav() {
@@ -33,7 +33,7 @@ export function BottomNav() {
               >
                 <div className="relative flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-xl">
                   {isActive && (
-                    <motion.div
+                    <m.div
                       layoutId="bottomNavPill"
                       className="absolute inset-0 bg-violet-500/15 rounded-xl"
                       transition={{ type: 'spring', stiffness: 500, damping: 38 }}

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { FileText, Calendar, ChevronRight, Plus, X, UserRound, Home } from 'lucide-react';
 import { useContracts, useTenants, useProperties, useCreateContract } from '@/hooks/useApi';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -61,7 +61,7 @@ export function ContractsScreen() {
     tenantId: '',
     propertyId: '',
     startDate: todayInput(),
-    durationValue: 30,
+    durationValue: 12,
     durationUnit: 'months',
     rentAmount: 0,
     adjustmentIndex: 'IPCA',
@@ -89,7 +89,7 @@ export function ContractsScreen() {
   }
 
   function createContract() {
-    if (!draft.tenantId || !draft.propertyId || !draft.startDate || draft.durationValue <= 0) return;
+    if (!draft.tenantId || !draft.propertyId || !draft.startDate || draft.durationValue <= 0 || draft.rentAmount <= 0) return;
 
     createContractMutation.mutate({
       tenantId: draft.tenantId,

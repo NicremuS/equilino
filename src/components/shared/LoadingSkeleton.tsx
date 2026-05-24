@@ -3,6 +3,26 @@ import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+export function ChartErrorState({ onRetry, className }: { onRetry?: () => void; className?: string }) {
+  return (
+    <div className={cn('premium-surface rounded-2xl flex flex-col items-center justify-center gap-3 py-10', className)}>
+      <div className="w-9 h-9 rounded-2xl bg-red-500/10 flex items-center justify-center">
+        <AlertTriangle size={17} className="text-red-400" />
+      </div>
+      <p className="text-muted-foreground text-xs">Falha ao carregar gráfico</p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-500/10 text-violet-400 text-xs font-medium hover:bg-violet-500/20 transition-colors"
+        >
+          <RefreshCw size={11} />
+          Tentar novamente
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function ApiErrorState({ message, onRetry }: { message?: string; onRetry?: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
@@ -38,7 +58,7 @@ export function StatsCardSkeleton() {
 
 export function ListItemSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="status" aria-label="Carregando…">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="premium-surface rounded-2xl p-4 flex items-center gap-3">
           <Skeleton className="h-10 w-10 rounded-full bg-muted" />
@@ -49,6 +69,7 @@ export function ListItemSkeleton({ count = 4 }: { count?: number }) {
           <Skeleton className="h-6 w-16 rounded-full bg-muted" />
         </div>
       ))}
+      <span className="sr-only">Carregando conteúdo</span>
     </div>
   );
 }

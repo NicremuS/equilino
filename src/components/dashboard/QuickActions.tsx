@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import { Plus, CreditCard, FileText, Wrench, Megaphone } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -15,35 +14,27 @@ export function QuickActions() {
   const { setActiveTab } = useAppStore();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.2 }}
-    >
+    <div className="animate-fade-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
       <h3 className="text-foreground font-semibold text-sm mb-3">Ações Rápidas</h3>
       <div className="grid grid-cols-5 gap-2">
         {actions.map((action, i) => {
           const Icon = action.icon;
           return (
-            <motion.button
+            <button
               key={action.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.25 + i * 0.06, type: 'spring', stiffness: 400 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveTab(action.tab)}
               aria-label={action.label}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-2 animate-card-enter active:scale-95 transition-transform duration-150"
+              style={{ animationDelay: `${0.12 + i * 0.055}s`, animationFillMode: 'both' }}
             >
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.gradient} shadow-lg ${action.glow} flex items-center justify-center ring-1 ring-white/20`}>
+              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${action.gradient} shadow-lg ${action.glow} flex items-center justify-center ring-1 ring-white/20 hover:scale-105 transition-transform duration-150`}>
                 <Icon size={20} className="text-white" />
               </div>
               <span className="text-[10px] text-muted-foreground text-center leading-tight">{action.label}</span>
-            </motion.button>
+            </button>
           );
         })}
       </div>
-    </motion.div>
+    </div>
   );
 }

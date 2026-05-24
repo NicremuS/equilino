@@ -1,11 +1,12 @@
 'use client';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { motion } from 'framer-motion';
-import { ChartSkeleton } from '@/components/shared/LoadingSkeleton';
+import { ChartSkeleton, ChartErrorState } from '@/components/shared/LoadingSkeleton';
 
 interface OccupancyDonutProps {
   data?: Array<{ name: string; value: number; color: string }>;
   isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
 interface TooltipProps {
@@ -34,19 +35,18 @@ const statusColors: Record<string, string> = {
   'Reservado':  'bg-blue-500',
 };
 
-export function OccupancyDonut({ data, isLoading }: OccupancyDonutProps) {
-  if (isLoading || !data) return <ChartSkeleton />;
+export function OccupancyDonut({ data, isLoading, isError, onRetry }: OccupancyDonutProps) {
+  if (isLoading) return <ChartSkeleton />;
+  if (isError || !data) return <ChartErrorState onRetry={onRetry} />;
 
   const total    = data.reduce((s, d) => s + d.value, 0);
   const occupied = data.find(d => d.name === 'Ocupado')?.value ?? 0;
   const pct      = total > 0 ? Math.round((occupied / total) * 100) : 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay: 0.35 }}
-      className="premium-surface rounded-2xl overflow-hidden"
+    <div
+      className="premium-surface rounded-2xl overflow-hidden animate-card-enter"
+      style={{ animationDelay: '0.18s', animationFillMode: 'both' }}
     >
       {/* Header */}
       <div className="px-4 pt-4 pb-3 border-b border-premium">
@@ -105,13 +105,11 @@ export function OccupancyDonut({ data, isLoading }: OccupancyDonutProps) {
                     <span className="text-muted-foreground text-[10px]">{entryPct}%</span>
                   </div>
                 </div>
-                {/* Mini progress bar */}
+                {/* Mini progress bar — CSS transition on width */}
                 <div className="h-1 rounded-full bg-black/5 dark:bg-white/5 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${entryPct}%` }}
-                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.5 }}
-                    className={`h-full rounded-full ${barCls}`}
+                  <div
+                    className={`h-full rounded-full ${barCls} transition-[width] duration-700 ease-out`}
+                    style={{ width: `${entryPct}%` }}
                   />
                 </div>
               </div>
@@ -119,6 +117,6 @@ export function OccupancyDonut({ data, isLoading }: OccupancyDonutProps) {
           })}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

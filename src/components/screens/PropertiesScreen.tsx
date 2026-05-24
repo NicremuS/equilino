@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import { Search, Grid3X3, List, MapPin, Bed, Bath, Maximize } from 'lucide-react';
 import { useProperties } from '@/hooks/useApi';
 import { formatCurrency } from '@/lib/utils';
@@ -43,11 +43,11 @@ export function PropertiesScreen() {
           <p className="text-muted-foreground text-sm mt-0.5">{isLoading ? '…' : `${properties?.length ?? 0} propriedades`}</p>
         </div>
         <div className="premium-surface flex gap-1 rounded-xl p-1">
-          <button onClick={() => setIsGrid(true)}
+          <button onClick={() => setIsGrid(true)} aria-label="Visualização em grade"
             className={`p-2 rounded-lg transition-colors ${isGrid ? 'bg-violet-500/20 text-violet-400' : 'text-muted-foreground hover:text-foreground'}`}>
             <Grid3X3 size={15} />
           </button>
-          <button onClick={() => setIsGrid(false)}
+          <button onClick={() => setIsGrid(false)} aria-label="Visualização em lista"
             className={`p-2 rounded-lg transition-colors ${!isGrid ? 'bg-violet-500/20 text-violet-400' : 'text-muted-foreground hover:text-foreground'}`}>
             <List size={15} />
           </button>
@@ -135,7 +135,7 @@ export function PropertiesScreen() {
               </motion.div>
             ))}
             {filtered.length === 0 && (
-              <div className="col-span-2 text-center py-16 text-gray-500">
+              <div className="col-span-full text-center py-16 text-muted-foreground">
                 <MapPin size={32} className="mx-auto mb-3 opacity-30" />
                 <p className="text-sm">Nenhum imóvel encontrado</p>
               </div>

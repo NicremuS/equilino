@@ -3,13 +3,14 @@ import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 const ACCESS_SECRET  = new TextEncoder().encode(process.env.JWT_SECRET  ?? 'dev-secret-change-in-production');
 const REFRESH_SECRET = new TextEncoder().encode(process.env.JWT_REFRESH_SECRET ?? 'dev-refresh-secret-change-in-production');
 
-const ACCESS_TTL  = '15m';
+const ACCESS_TTL  = '4h';   // was 15m — short TTL caused mid-session 401 storms
 const REFRESH_TTL = '7d';
 
 export interface TokenPayload extends JWTPayload {
   sub: string;
   email: string;
   role: string;
+  tenantId?: string;
 }
 
 export async function signAccessToken(payload: Omit<TokenPayload, 'iat' | 'exp'>): Promise<string> {

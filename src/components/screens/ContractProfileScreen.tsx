@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, FileText, Calendar, CreditCard, Users,
   CheckCircle2, AlertCircle, Clock, XCircle, MinusCircle,
@@ -21,10 +21,12 @@ const contractStatusConfig: Record<ContractStatus, { label: string; color: strin
 };
 
 const paymentStatusConfig: Record<PaymentStatus, { label: string; icon: React.ElementType; color: string; bg: string; border: string }> = {
-  paid:    { label: 'Pago',     icon: CheckCircle2, color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20'  },
-  pending: { label: 'Pendente', icon: Clock,        color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
-  overdue: { label: 'Atrasado', icon: AlertCircle,  color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20'    },
-  partial: { label: 'Parcial',  icon: MinusCircle,  color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+  paid:              { label: 'Pago',               icon: CheckCircle2, color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20'  },
+  pending:           { label: 'Pendente',            icon: Clock,        color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+  overdue:           { label: 'Atrasado',            icon: AlertCircle,  color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20'    },
+  partial:           { label: 'Parcial',             icon: MinusCircle,  color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+  awaiting_approval: { label: 'Aguard. aprovação',  icon: Clock,        color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/20' },
+  rejected:          { label: 'Rejeitado',           icon: AlertCircle,  color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/20'    },
 };
 
 const guaranteeLabel: Record<string, string> = {
@@ -506,7 +508,7 @@ export function ContractProfileScreen({ contract, onBack }: ContractProfileScree
       <div className="flex items-center gap-3">
         <button
           onClick={onBack}
-          className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors flex-shrink-0"
+          className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors flex-shrink-0"
         >
           <ChevronLeft size={18} className="text-foreground" />
         </button>

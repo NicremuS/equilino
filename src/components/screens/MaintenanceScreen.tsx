@@ -1,7 +1,7 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Wrench, Zap, Droplets, Package, ChevronRight, Plus, X, CheckCircle2, AlertCircle, Clock, XCircle, Calendar, User } from 'lucide-react';
+import { m as motion, AnimatePresence } from 'framer-motion';
+import { Wrench, Zap, Droplets, Package, ChevronRight, Plus, X, CheckCircle2, AlertCircle, Clock, XCircle, Calendar, User, ImageIcon } from 'lucide-react';
 import { useTickets, useProperties, useTenants, useCreateTicket } from '@/hooks/useApi';
 import { formatRelativeTime, formatCurrency, formatDate } from '@/lib/utils';
 import { StatusBadge } from '@/components/shared/StatusBadge';
@@ -71,15 +71,17 @@ export function MaintenanceScreen() {
   const filtered = (tickets ?? []).filter(t => active === 'all' || t.status === active);
   const urgent = (tickets ?? []).filter(t => t.priority === 'urgent' && t.status !== 'resolved').length;
 
+  const resetDraft = () => setDraft({ title: '', description: '', category: 'other', priority: 'medium', propertyId: '' });
+
   function submitTicket() {
-    if (!draft.title.trim()) return;
+    if (!draft.title.trim() || !draft.propertyId) return;
     createTicket.mutate(
       {
         title: draft.title,
         description: draft.description,
         category: draft.category,
         priority: draft.priority,
-        propertyId: draft.propertyId || (properties[0]?.id ?? ''),
+        propertyId: draft.propertyId,
         status: 'open',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -87,7 +89,7 @@ export function MaintenanceScreen() {
       {
         onSuccess: () => {
           setIsCreating(false);
-          setDraft({ title: '', description: '', category: 'other', priority: 'medium', propertyId: '' });
+          resetDraft();
         },
       }
     );
@@ -110,7 +112,7 @@ export function MaintenanceScreen() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSelected(null)}
-            className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors flex-shrink-0"
+            className="w-9 h-9 rounded-xl bg-muted/70 dark:bg-white/5 flex items-center justify-center hover:bg-muted dark:hover:bg-white/10 transition-colors flex-shrink-0"
           >
             <ChevronRight size={18} className="text-foreground rotate-180" />
           </button>
@@ -134,6 +136,28 @@ export function MaintenanceScreen() {
           </div>
 
           <p className="text-muted-foreground text-sm leading-relaxed">{selected.description}</p>
+
+          {selected.images && selected.images.length > 0 && (
+            <div>
+              <p className="text-muted-foreground text-[10px] uppercase tracking-wider font-semibold mb-2 flex items-center gap-1">
+                <ImageIcon size={9} /> Fotos do chamado ({selected.images.length})
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                {selected.images.map((src, i) => (
+                  <a
+                    key={i}
+                    href={src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-20 h-20 rounded-xl overflow-hidden border border-border flex-shrink-0 hover:opacity-80 transition-opacity"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`Foto ${i + 1}`} className="w-full h-full object-cover" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -217,7 +241,7 @@ export function MaintenanceScreen() {
               <div className="overflow-y-auto flex-1 min-h-0 px-6 space-y-4 pt-1 pb-4">
                 <div className="flex items-center justify-between">
                   <p className="text-foreground font-bold text-base">Novo chamado</p>
-                  <button onClick={() => setIsCreating(false)} className="w-8 h-8 rounded-full bg-muted/70 dark:bg-white/5 flex items-center justify-center text-muted-foreground hover:text-foreground">
+                  <button onClick={() => { setIsCreating(false); resetDraft(); }} className="w-8 h-8 rounded-full bg-muted/70 dark:bg-white/5 flex items-center justify-center text-muted-foreground hover:text-foreground">
                     <X size={14} />
                   </button>
                 </div>
@@ -269,13 +293,13 @@ export function MaintenanceScreen() {
               </div>
 
               <div className="flex gap-3 px-6 pt-4 flex-shrink-0 border-t border-border/40">
-                <button onClick={() => setIsCreating(false)}
+                <button onClick={() => { setIsCreating(false); resetDraft(); }}
                   className="flex-1 py-3.5 rounded-2xl bg-muted/70 dark:bg-white/5 border border-border text-muted-foreground text-sm font-semibold hover:text-foreground transition-colors">
                   Cancelar
                 </button>
                 <button
                   onClick={submitTicket}
-                  disabled={!draft.title.trim() || createTicket.isPending}
+                  disabled={!draft.title.trim() || !draft.propertyId || createTicket.isPending}
                   className="flex-1 py-3.5 rounded-2xl gradient-accent text-white text-sm font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity"
                 >
                   {createTicket.isPending ? 'Salvando…' : 'Abrir chamado'}
@@ -357,6 +381,11 @@ export function MaintenanceScreen() {
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
                         <StatusBadge type="ticket" status={ticket.status} />
                         <StatusBadge type="priority" status={ticket.priority} />
+                        {ticket.images && ticket.images.length > 0 && (
+                          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                            <ImageIcon size={11} /> {ticket.images.length}
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center justify-between mt-2">
                         <div>

@@ -1,35 +1,65 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m as motion, AnimatePresence } from 'framer-motion';
 import {
   User, Bell, Shield, CreditCard, HelpCircle, LogOut,
   ChevronRight, Moon, Sun, Smartphone, Globe, Star, X,
-  CheckCircle2, Lock, Download, ExternalLink,
+  CheckCircle2, Lock, Download, ExternalLink, Loader2, AlertCircle,
 } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { getInitials } from '@/lib/utils';
+import { clearStoredSession } from '@/lib/session';
 
 type ModalKey = 'perfil' | 'segurança' | 'plano' | 'ajuda' | 'pwa' | null;
 
 export function SettingsScreen() {
-  const { user, theme, toggleTheme, setActiveTab, logout, setUser } = useAppStore();
+  const { user, theme, toggleTheme, setActiveTab, logout, setUser, accessToken } = useAppStore();
   const [modal, setModal] = useState<ModalKey>(null);
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState('');
+
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    clearStoredSession();
+    logout();
+  }
 
   function openModal(key: ModalKey) {
     if (key === 'perfil') {
       setEditName(user?.name ?? '');
       setEditEmail(user?.email ?? '');
+      setProfileError('');
     }
     setModal(key);
   }
 
-  function saveProfile() {
-    if (user && editName.trim()) {
-      setUser({ ...user, name: editName.trim(), email: editEmail.trim() || user.email });
+  async function saveProfile() {
+    if (!user || !editName.trim()) return;
+    setProfileSaving(true);
+    setProfileError('');
+    try {
+      const res = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ name: editName.trim(), email: editEmail.trim() || user.email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setProfileError(data.error ?? 'Erro ao salvar perfil');
+        return;
+      }
+      setUser({ ...user, name: data.user.name, email: data.user.email });
+      setModal(null);
+    } catch {
+      setProfileError('Falha de conexão. Tente novamente.');
+    } finally {
+      setProfileSaving(false);
     }
-    setModal(null);
   }
 
   const sections = [
@@ -156,7 +186,7 @@ export function SettingsScreen() {
       <motion.button
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
         whileTap={{ scale: 0.97 }}
-        onClick={logout}
+        onClick={handleLogout}
         className="w-full flex items-center justify-center gap-2 p-4 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-semibold hover:bg-red-500/10 transition-colors"
       >
         <LogOut size={16} />
@@ -214,12 +244,17 @@ export function SettingsScreen() {
                         className="premium-field w-full rounded-2xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/25"
                       />
                     </label>
+                    {profileError && (
+                      <p className="text-red-400 text-xs flex items-center gap-1.5">
+                        <AlertCircle size={12} /> {profileError}
+                      </p>
+                    )}
                     <button
                       onClick={saveProfile}
-                      disabled={!editName.trim()}
-                      className="w-full gradient-accent text-white font-semibold text-sm py-3.5 rounded-2xl hover:opacity-90 transition-opacity disabled:opacity-50"
+                      disabled={!editName.trim() || profileSaving}
+                      className="w-full gradient-accent text-white font-semibold text-sm py-3.5 rounded-2xl hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      Salvar alterações
+                      {profileSaving ? <><Loader2 size={15} className="animate-spin" /> Salvando…</> : 'Salvar alterações'}
                     </button>
                   </div>
                 </div>

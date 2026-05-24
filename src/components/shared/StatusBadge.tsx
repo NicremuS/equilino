@@ -3,10 +3,12 @@ import { cn } from '@/lib/utils';
 import type { PaymentStatus, PropertyStatus, ContractStatus, TicketStatus, TicketPriority } from '@/types';
 
 const paymentConfig: Record<PaymentStatus, { label: string; class: string }> = {
-  paid: { label: 'Pago', class: 'bg-green-500/15 text-green-400 border-green-500/20' },
-  pending: { label: 'Pendente', class: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20' },
-  overdue: { label: 'Atrasado', class: 'bg-red-500/15 text-red-400 border-red-500/20' },
-  partial: { label: 'Parcial', class: 'bg-orange-500/15 text-orange-400 border-orange-500/20' },
+  paid:               { label: 'Pago',               class: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20' },
+  pending:            { label: 'Pendente',            class: 'bg-amber-500/15 text-amber-400 border-amber-500/20'       },
+  overdue:            { label: 'Atrasado',            class: 'bg-red-500/15 text-red-400 border-red-500/20'             },
+  partial:            { label: 'Parcial',             class: 'bg-orange-500/15 text-orange-400 border-orange-500/20'   },
+  awaiting_approval:  { label: 'Aguard. aprovação',  class: 'bg-violet-500/15 text-violet-400 border-violet-500/20'    },
+  rejected:           { label: 'Rejeitado',           class: 'bg-red-500/15 text-red-400 border-red-500/20'             },
 };
 
 const propertyConfig: Record<PropertyStatus, { label: string; class: string }> = {

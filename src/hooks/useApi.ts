@@ -1,7 +1,8 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
-import type { Property, Tenant, Payment, Contract, MaintenanceTicket, Inspection, Notification } from '@/types';
+import type { Property, Tenant, Payment, Contract, MaintenanceTicket, Inspection, Notification, Notice, DigitalContract, ContractTemplate } from '@/types';
+import type { CreateDigitalContractInput } from '@/lib/schemas';
 
 // ── Queries ──────────────────────────────────────────────────────────────────
 
@@ -50,7 +51,15 @@ export const usePaymentStatusData = () =>
   useQuery({ ...chartsQueryBase, select: (d) => d.paymentStatusData });
 
 export const useNotifications = () =>
-  useQuery({ queryKey: ['notifications'], queryFn: api.getNotifications });
+  useQuery({
+    queryKey: ['notifications'],
+    queryFn: api.getNotifications,
+    // Poll every 30 s (was 8 s) — less aggressive on slow mobile connections.
+    // refetchOnWindowFocus is already disabled globally in QueryClient.
+    staleTime: 20 * 1000,
+    refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
+  });
 
 // ── Mutations ─────────────────────────────────────────────────────────────────
 
@@ -123,7 +132,18 @@ export function useUpdatePayment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Payment> }) => api.updatePayment(id, data),
-    onSuccess: () => {
+    onMutate: async ({ id, data }) => {
+      await qc.cancelQueries({ queryKey: ['payments'] });
+      const prev = qc.getQueryData<Payment[]>(['payments']);
+      qc.setQueryData<Payment[]>(['payments'], old =>
+        old?.map(p => p.id === id ? { ...p, ...data } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['payments'], ctx.prev);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['payments'] });
       qc.invalidateQueries({ queryKey: ['dashboard-stats'] });
     },
@@ -225,6 +245,52 @@ export function useDeleteInspection() {
   });
 }
 
+export function useApprovePayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.approvePayment(id),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['payments'] });
+      const prev = qc.getQueryData<Payment[]>(['payments']);
+      const now  = new Date().toISOString();
+      qc.setQueryData<Payment[]>(['payments'], old =>
+        old?.map(p => p.id === id ? { ...p, status: 'paid', paidDate: now } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['payments'], ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['payments'] });
+      qc.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
+export function useRejectPayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => api.rejectPayment(id, reason),
+    onMutate: async ({ id }) => {
+      await qc.cancelQueries({ queryKey: ['payments'] });
+      const prev = qc.getQueryData<Payment[]>(['payments']);
+      qc.setQueryData<Payment[]>(['payments'], old =>
+        old?.map(p => p.id === id ? { ...p, status: 'rejected' } : p) ?? []
+      );
+      return { prev };
+    },
+    onError: (_e, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['payments'], ctx.prev);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['payments'] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
 export function useCreateNotification() {
   const qc = useQueryClient();
   return useMutation({
@@ -237,7 +303,35 @@ export function useUpdateNotification() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Notification> }) => api.updateNotification(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+    onMutate: async ({ id, data }) => {
+      await qc.cancelQueries({ queryKey: ['notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['notifications']);
+      qc.setQueryData<Notification[]>(['notifications'], old =>
+        old?.map(n => n.id === id ? { ...n, ...data } : n) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
+export function useDeleteNotification() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteNotification(id),
+    onMutate: async (id) => {
+      await qc.cancelQueries({ queryKey: ['notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['notifications']);
+      qc.setQueryData<Notification[]>(['notifications'], old => old?.filter(n => n.id !== id) ?? []);
+      return { prev };
+    },
+    onError: (_err, _id, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
   });
 }
 
@@ -249,11 +343,172 @@ export function useMarkAllNotificationsRead() {
       if (!r.ok) throw new Error(`mark-all-read failed: ${r.status}`);
       return r.json() as Promise<{ ok: boolean }>;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+    onMutate: async () => {
+      await qc.cancelQueries({ queryKey: ['notifications'] });
+      const prev = qc.getQueryData<Notification[]>(['notifications']);
+      qc.setQueryData<Notification[]>(['notifications'], old =>
+        old?.map(n => ({ ...n, read: true })) ?? []
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(['notifications'], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
+export function useNotices() {
+  return useQuery({ queryKey: ['notices'], queryFn: api.getNotices });
+}
+
+export function useCreateNotice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Omit<Notice, 'id' | 'read' | 'createdAt'>) => api.createNotice(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['notices'] }),
+  });
+}
+
+export function useDeleteNotice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteNotice(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['notices'] }),
   });
 }
 
 export function useUnreadCount() {
   const { data } = useNotifications();
   return data?.filter(n => !n.read).length ?? 0;
+}
+
+// ─── Digital Contracts ────────────────────────────────────────────────────────
+
+export const useDigitalContracts = (status?: string) =>
+  useQuery({
+    queryKey: ['digital-contracts', status ?? 'all'],
+    queryFn: () => api.getDigitalContracts(status),
+  });
+
+export const useDigitalContract = (id: string) =>
+  useQuery({
+    queryKey: ['digital-contract', id],
+    queryFn: () => api.getDigitalContract(id),
+    enabled: !!id,
+  });
+
+export function useCreateDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateDigitalContractInput) => api.createDigitalContract(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['digital-contracts'] }),
+  });
+}
+
+export function useUpdateDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateDigitalContractInput> }) =>
+      api.updateDigitalContract(id, data),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useDeleteDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteDigitalContract(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['digital-contracts'] }),
+  });
+}
+
+export function useSendDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.sendDigitalContract(id),
+    onSuccess: (_d, id) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useSignDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, signatureData, signerRole }: { id: string; signatureData: string; signerRole: string }) =>
+      api.signDigitalContract(id, signatureData, signerRole),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
+export function useUpdateDigitalContractStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status, reason }: { id: string; status: string; reason?: string }) =>
+      api.updateDigitalContractStatus(id, status, reason),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useUploadContractDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof api.uploadContractDocument>[1] }) =>
+      api.uploadContractDocument(id, data),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useDeleteContractDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, docId }: { id: string; docId: string }) =>
+      api.deleteContractDocument(id, docId),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+// ─── Contract Templates ───────────────────────────────────────────────────────
+
+export const useContractTemplates = () =>
+  useQuery({ queryKey: ['contract-templates'], queryFn: api.getContractTemplates });
+
+export const useContractTemplate = (id: string) =>
+  useQuery({
+    queryKey: ['contract-template', id],
+    queryFn: () => api.getContractTemplate(id),
+    enabled: !!id,
+  });
+
+export function useCreateContractTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Parameters<typeof api.createContractTemplate>[0]) =>
+      api.createContractTemplate(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['contract-templates'] }),
+  });
+}
+
+export function useDeleteContractTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteContractTemplate(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['contract-templates'] }),
+  });
 }

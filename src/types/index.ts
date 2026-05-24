@@ -1,19 +1,30 @@
-export type UserRole = 'admin' | 'manager' | 'owner';
-export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial';
+export type UserRole = 'admin' | 'manager' | 'owner' | 'tenant';
+export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial' | 'awaiting_approval' | 'rejected';
+export type PaymentMethod  = 'pix' | 'transfer' | 'boleto' | 'cash' | 'other';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance' | 'reserved';
 export type ContractStatus = 'active' | 'expiring' | 'expired' | 'terminated';
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 export type NotificationType = 'payment' | 'contract' | 'maintenance' | 'system' | 'alert';
 
+export type SubscriptionStatus = 'trial' | 'active' | 'expired' | 'cancelled' | 'pending';
+export type PlanId = 'basic' | 'pro' | 'enterprise';
+export type BillingCycle = 'monthly' | 'yearly';
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  cpf?: string;
   avatar?: string;
   role: UserRole;
-  plan: 'starter' | 'pro' | 'enterprise';
+  plan: 'starter' | 'basic' | 'pro' | 'enterprise';
+  subscriptionStatus?: SubscriptionStatus;
+  onboardingCompleted?: boolean;
+  trialEndsAt?: string;
   createdAt: string;
+  tenantId?: string;
 }
 
 export interface Property {
@@ -62,6 +73,13 @@ export interface Payment {
   month: string;
   description: string;
   receiptUrl?: string;
+  receiptNotes?: string;
+  paymentMethod?: PaymentMethod;
+  paymentDate?: string;
+  submittedAt?: string;
+  approvedBy?: string;
+  approvedAt?: string;
+  rejectionReason?: string;
 }
 
 export interface Contract {
@@ -105,6 +123,21 @@ export interface Notification {
   createdAt: string;
   actionUrl?: string;
   relatedId?: string;
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  metadata?: Record<string, unknown>;
+  targetTenantId?: string;
+}
+
+export type RentReminderType =
+  | 'due_3d' | 'due_2d' | 'due_1d' | 'due_today'
+  | 'overdue_1d' | 'overdue_3d' | 'overdue_7d' | 'overdue_14d';
+
+export interface RentReminder {
+  id: string;
+  tenantId: string;
+  paymentId: string;
+  reminderType: RentReminderType;
+  sentAt: string;
 }
 
 export interface DashboardStats {
@@ -145,6 +178,19 @@ export interface InspectionRoom {
   items: InspectionItem[];
 }
 
+export type NoticeCategory = 'aviso' | 'recomendacao' | 'obrigacao';
+
+export interface Notice {
+  id: string;
+  tenantId: string;
+  propertyId: string;
+  category: NoticeCategory;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export interface Inspection {
   id: string;
   propertyId: string;
@@ -160,4 +206,243 @@ export interface Inspection {
   createdAt: string;
   signedByTenant?: boolean;
   signedByOwner?: boolean;
+}
+
+// ─────────────────────────────────────────────
+// Digital Contract System
+// ─────────────────────────────────────────────
+
+export type DigitalContractStatus =
+  | 'draft'
+  | 'pending_review'
+  | 'sent'
+  | 'viewed'
+  | 'awaiting_signature'
+  | 'signed_tenant'
+  | 'signed_landlord'
+  | 'pending_notarization'
+  | 'completed'
+  | 'rejected'
+  | 'expired'
+  | 'cancelled';
+
+export type ClauseCategory = 'general' | 'payment' | 'rules' | 'maintenance' | 'termination' | 'custom';
+
+export interface ContractClause {
+  id: string;
+  title: string;
+  content: string;
+  category: ClauseCategory;
+  order: number;
+  required: boolean;
+}
+
+export interface ContractSignature {
+  id: string;
+  contractId: string;
+  signerName: string;
+  signerEmail: string;
+  signerRole: 'landlord' | 'tenant' | 'guarantor';
+  signatureData: string; // base64 PNG from canvas
+  signedAt: string;
+  ipAddress?: string;
+}
+
+export interface ContractDocument {
+  id: string;
+  contractId: string;
+  name: string;
+  docType: 'rg' | 'cpf' | 'income_proof' | 'residence_proof' | 'selfie' | 'property_photo' | 'signed_contract' | 'other';
+  uploadedBy: string;
+  uploadedByRole: 'landlord' | 'tenant';
+  uploadedAt: string;
+  fileData: string; // base64
+  mimeType: string;
+  sizeBytes: number;
+}
+
+export type ContractHistoryEventType =
+  | 'created' | 'edited' | 'sent' | 'viewed' | 'signed'
+  | 'signed_landlord' | 'signed_tenant'
+  | 'rejected' | 'completed' | 'cancelled' | 'document_uploaded'
+  | 'status_changed' | 'comment_added' | 'reminder_sent';
+
+export interface ContractHistoryEvent {
+  id: string;
+  contractId: string;
+  type: ContractHistoryEventType;
+  description: string;
+  userId: string;
+  userName: string;
+  timestamp: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ContractUtilities {
+  water: 'landlord' | 'tenant';
+  electricity: 'landlord' | 'tenant';
+  gas: 'landlord' | 'tenant';
+  internet: 'landlord' | 'tenant';
+  condominiumFee: 'landlord' | 'tenant';
+  iptu: 'landlord' | 'tenant';
+}
+
+export interface DigitalContract {
+  id: string;
+  title: string;
+  status: DigitalContractStatus;
+
+  // Parties
+  landlordId: string;
+  landlordName?: string;
+  landlordEmail?: string;
+  tenantId: string;
+  tenantName?: string;
+  tenantEmail?: string;
+
+  // Property
+  propertyId: string;
+  propertyName?: string;
+  propertyAddress?: string;
+
+  // Financial
+  rentAmount: number;
+  dueDay: number;
+  depositAmount: number;
+  depositInstallments?: number;
+  lateFeePercent: number;
+  lateInterestPercent: number;
+  adjustmentIndex: 'IGPM' | 'IPCA' | 'INPC';
+
+  // Dates
+  startDate: string;
+  endDate: string;
+  duration: number; // months
+  moveInDate: string;
+
+  // Payment
+  paymentMethod: string;
+  pixKey?: string;
+  bankInfo?: string;
+
+  // Clauses
+  clauses: ContractClause[];
+
+  // Rules
+  petPolicy: 'allowed' | 'not_allowed' | 'case_by_case';
+  smokingPolicy: 'allowed' | 'not_allowed';
+  sublettingAllowed: boolean;
+  maxOccupants?: number;
+
+  // Utilities
+  utilities: ContractUtilities;
+
+  // Guarantor
+  guaranteeType: 'deposit' | 'guarantor' | 'insurance' | 'none';
+  guarantorName?: string;
+  guarantorCpf?: string;
+  guarantorEmail?: string;
+  guarantorPhone?: string;
+
+  // Signatures
+  signatures: ContractSignature[];
+
+  // Documents
+  documents: ContractDocument[];
+
+  // History / audit
+  history: ContractHistoryEvent[];
+
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+  sentAt?: string;
+  viewedAt?: string;
+  signedByTenantAt?: string;
+  signedByLandlordAt?: string;
+  completedAt?: string;
+  expiresAt?: string;
+  rejectionReason?: string;
+
+  viewCount: number;
+  templateId?: string;
+  version: number;
+  internalNotes?: string;
+}
+
+// ─── Subscription & Billing ───────────────────────────────────────────────────
+
+export interface PlanFeature {
+  label: string;
+  included: boolean;
+  value?: string;
+}
+
+export interface Plan {
+  id: PlanId;
+  name: string;
+  description: string;
+  monthlyPrice: number;
+  yearlyPrice: number;
+  color: string;
+  recommended: boolean;
+  features: PlanFeature[];
+  propertyLimit: number | null;
+  contractLimit: number | null;
+}
+
+export interface Subscription {
+  id: string;
+  userId: string;
+  planId: PlanId;
+  status: SubscriptionStatus;
+  billingCycle: BillingCycle;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  trialEndsAt?: string;
+  cancelledAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BillingPayment {
+  id: string;
+  userId: string;
+  subscriptionId: string;
+  amount: number;
+  status: 'succeeded' | 'pending' | 'failed';
+  paymentMethod: 'card' | 'pix';
+  planName: string;
+  description: string;
+  createdAt: string;
+  last4?: string;
+}
+
+export interface OnboardingData {
+  id?: string;
+  userId: string;
+  companyName?: string;
+  profileType?: string;
+  propertiesCount?: string;
+  propertyTypes?: string[];
+  city?: string;
+  state?: string;
+  paymentMethods?: string[];
+  goals?: string[];
+  completedAt?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ContractTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: 'residential' | 'commercial' | 'seasonal';
+  clauses: ContractClause[];
+  isBuiltIn: boolean;
+  usageCount: number;
+  createdAt: string;
+  updatedAt: string;
+  icon?: string;
 }

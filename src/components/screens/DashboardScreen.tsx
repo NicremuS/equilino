@@ -1,5 +1,4 @@
 'use client';
-import { motion } from 'framer-motion';
 import { TrendingUp } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { useDashboardStats, useChartData, useOccupancyData } from '@/hooks/useApi';
@@ -22,24 +21,38 @@ function getGreeting() {
 
 export function DashboardScreen() {
   const { user } = useAppStore();
-  const { data: stats, isLoading: loadingStats, isError: errorStats, refetch: refetchStats } = useDashboardStats();
-  const { data: chartData, isLoading: loadingChart } = useChartData();
-  const { data: occupancyData, isLoading: loadingOccupancy } = useOccupancyData();
+  const {
+    data: stats,
+    isLoading: loadingStats,
+    isError: errorStats,
+    refetch: refetchStats,
+  } = useDashboardStats();
+  const {
+    data: chartData,
+    isLoading: loadingChart,
+    isError: errorChart,
+    refetch: refetchCharts,
+  } = useChartData();
+  const {
+    data: occupancyData,
+    isLoading: loadingOccupancy,
+    isError: errorOccupancy,
+  } = useOccupancyData();
+
   const firstName = user?.name.split(' ')[0] ?? 'usuário';
+  const anyError = errorStats || errorChart || errorOccupancy;
+
+  function retryAll() {
+    refetchStats();
+    refetchCharts();
+  }
 
   return (
     <div className="space-y-5 pb-2">
-      {/* Hero greeting */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-[1.75rem] border border-white/20 shadow-[0_24px_70px_rgba(49,32,111,0.28)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.45)]"
-      >
+      {/* Hero greeting — CSS animation replaces framer-motion for a simpler enter */}
+      <div className="animate-fade-up relative overflow-hidden rounded-[1.75rem] border border-white/20 shadow-[0_24px_70px_rgba(49,32,111,0.28)] dark:shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
         {/* Background layers */}
         <div className="absolute inset-0 hero-premium" />
-
-        {/* Depth and color panels */}
         <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.18)_0%,transparent_28%,rgba(20,184,166,0.22)_100%)] pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/34 via-black/10 to-transparent pointer-events-none" />
         <div className="absolute -right-16 -top-20 h-48 w-48 rounded-full bg-white/15 blur-3xl pointer-events-none" />
@@ -73,14 +86,9 @@ export function DashboardScreen() {
           {/* Main value */}
           <div className="mb-3">
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/52">Receita total acumulada</p>
-            <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="text-[2.45rem] font-bold leading-[0.95] tracking-normal text-white tabular-nums sm:text-5xl"
-            >
+            <p className="text-[2.45rem] font-bold leading-[0.95] tracking-normal text-white tabular-nums sm:text-5xl">
               {stats ? formatCurrency(stats.totalRevenue) : '--'}
-            </motion.p>
+            </p>
           </div>
 
           {/* Growth badge */}
@@ -90,11 +98,15 @@ export function DashboardScreen() {
             </span>
             <span className="text-[11px] font-medium text-white/45">crescimento líquido</span>
           </div>
-
         </div>
-      </motion.div>
+      </div>
 
-      {errorStats && <ApiErrorState onRetry={refetchStats} />}
+      {anyError && (
+        <ApiErrorState
+          message="Alguns dados não puderam ser carregados."
+          onRetry={retryAll}
+        />
+      )}
 
       {/* Quick actions */}
       <QuickActions />
@@ -103,12 +115,27 @@ export function DashboardScreen() {
       <StatsCards stats={stats} isLoading={loadingStats} />
 
       {/* Revenue chart full width */}
-      <RevenueChart data={chartData} isLoading={loadingChart} />
+      <RevenueChart
+        data={chartData}
+        isLoading={loadingChart}
+        isError={errorChart}
+        onRetry={refetchCharts}
+      />
 
       {/* Donut + Bar side by side on tablet+ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <OccupancyDonut data={occupancyData} isLoading={loadingOccupancy} />
-        <OccupancyBar data={chartData} isLoading={loadingChart} />
+        <OccupancyDonut
+          data={occupancyData}
+          isLoading={loadingOccupancy}
+          isError={errorOccupancy}
+          onRetry={refetchCharts}
+        />
+        <OccupancyBar
+          data={chartData}
+          isLoading={loadingChart}
+          isError={errorChart}
+          onRetry={refetchCharts}
+        />
       </div>
 
       {/* Upcoming + Activity */}
