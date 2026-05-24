@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { getInitials } from '@/lib/utils';
+import { clearStoredSession } from '@/lib/session';
 
 type ModalKey = 'perfil' | 'segurança' | 'plano' | 'ajuda' | 'pwa' | null;
 
@@ -21,6 +22,7 @@ export function SettingsScreen() {
 
   async function handleLogout() {
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    clearStoredSession();
     logout();
   }
 

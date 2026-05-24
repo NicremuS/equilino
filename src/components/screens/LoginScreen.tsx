@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, AlertCircle, UserCheck, Home } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, AlertCircle, UserCheck, Home, UserPlus } from 'lucide-react';
+import Link from 'next/link';
 import type { User } from '@/types';
 
 interface LoginScreenProps {
@@ -212,7 +213,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           <button
             onClick={handleLogin}
             disabled={loading || demoLoading !== null}
-            className="w-full py-4 gradient-accent rounded-2xl text-white font-semibold text-sm flex items-center justify-center gap-2 glow-accent disabled:opacity-70 active:scale-[0.98] transition-[opacity,transform] duration-150"
+            className="w-full py-4 gradient-accent rounded-2xl text-white font-semibold text-sm flex items-center justify-center gap-2 glow-accent disabled:opacity-70 active:scale-[0.98] transition-[opacity,transform] duration-150 mt-1"
           >
             {loading ? (
               <div className="flex gap-1.5">
@@ -232,6 +233,18 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               </>
             )}
           </button>
+        </div>
+
+        {/* Register link */}
+        <div className="mt-5 text-center animate-fade-up" style={{ animationDelay: '0.18s', animationFillMode: 'both' }}>
+          <p className="text-muted-foreground text-xs mb-2">Ainda não tem conta?</p>
+          <Link
+            href="/register"
+            className="inline-flex items-center gap-1.5 text-violet-400 text-sm font-semibold hover:text-violet-300 transition-colors"
+          >
+            <UserPlus size={14} />
+            Criar conta grátis — 7 dias de teste
+          </Link>
         </div>
       </div>
     </div>

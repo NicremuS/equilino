@@ -8,6 +8,7 @@ import { BottomNav } from './BottomNav';
 import { TopBar } from './TopBar';
 import { ScreenSkeleton } from '@/components/shared/ScreenSkeleton';
 import { NotificationToast } from '@/components/shared/NotificationToast';
+import { TrialBanner } from '@/components/shared/TrialBanner';
 
 // ── Lazy-loaded screens ───────────────────────────────────────────────────────
 // Each becomes its own JS chunk that loads only when first visited.
@@ -98,6 +99,7 @@ export function AppShell() {
         <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
           <TopBar />
 
+          <TrialBanner />
           <main className="flex-1 px-4 py-5 md:px-6 pb-24 md:pb-6 overflow-x-hidden">
             <AnimatePresence mode="wait">
               <m.div

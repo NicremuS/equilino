@@ -7,13 +7,22 @@ export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 export type NotificationType = 'payment' | 'contract' | 'maintenance' | 'system' | 'alert';
 
+export type SubscriptionStatus = 'trial' | 'active' | 'expired' | 'cancelled' | 'pending';
+export type PlanId = 'basic' | 'pro' | 'enterprise';
+export type BillingCycle = 'monthly' | 'yearly';
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  cpf?: string;
   avatar?: string;
   role: UserRole;
-  plan: 'starter' | 'pro' | 'enterprise';
+  plan: 'starter' | 'basic' | 'pro' | 'enterprise';
+  subscriptionStatus?: SubscriptionStatus;
+  onboardingCompleted?: boolean;
+  trialEndsAt?: string;
   createdAt: string;
   tenantId?: string;
 }
@@ -360,6 +369,70 @@ export interface DigitalContract {
   version: number;
   internalNotes?: string;
 }
+
+// ─── Subscription & Billing ───────────────────────────────────────────────────
+
+export interface PlanFeature {
+  label: string;
+  included: boolean;
+  value?: string;
+}
+
+export interface Plan {
+  id: PlanId;
+  name: string;
+  description: string;
+  monthlyPrice: number;
+  yearlyPrice: number;
+  color: string;
+  recommended: boolean;
+  features: PlanFeature[];
+  propertyLimit: number | null;
+  contractLimit: number | null;
+}
+
+export interface Subscription {
+  id: string;
+  userId: string;
+  planId: PlanId;
+  status: SubscriptionStatus;
+  billingCycle: BillingCycle;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  trialEndsAt?: string;
+  cancelledAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BillingPayment {
+  id: string;
+  userId: string;
+  subscriptionId: string;
+  amount: number;
+  status: 'succeeded' | 'pending' | 'failed';
+  paymentMethod: 'card' | 'pix';
+  planName: string;
+  description: string;
+  createdAt: string;
+  last4?: string;
+}
+
+export interface OnboardingData {
+  id?: string;
+  userId: string;
+  companyName?: string;
+  profileType?: string;
+  propertiesCount?: string;
+  propertyTypes?: string[];
+  city?: string;
+  state?: string;
+  paymentMethods?: string[];
+  goals?: string[];
+  completedAt?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 export interface ContractTemplate {
   id: string;

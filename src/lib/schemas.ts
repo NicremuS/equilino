@@ -155,6 +155,21 @@ export const LoginSchema = z.object({
 
 export type LoginInput = z.infer<typeof LoginSchema>;
 
+export const RegisterSchema = z.object({
+  name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres').max(200),
+  email: z.string().email('Email inválido'),
+  phone: z.string().min(10, 'Telefone inválido').max(20),
+  cpf: z.string().min(11, 'CPF/CNPJ inválido').max(20),
+  password: z.string().min(8, 'Senha deve ter pelo menos 8 caracteres').max(128),
+  confirmPassword: z.string().min(8).max(128),
+  terms: z.literal(true, 'Aceite os termos para continuar'),
+}).refine(d => d.password === d.confirmPassword, {
+  message: 'As senhas não coincidem',
+  path: ['confirmPassword'],
+});
+
+export type RegisterInput = z.infer<typeof RegisterSchema>;
+
 // ─── Digital Contract schemas ─────────────────────────────────────────────────
 
 export const ContractClauseSchema = z.object({

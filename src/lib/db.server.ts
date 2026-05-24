@@ -3,14 +3,14 @@ import path from 'path';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'db.json');
 
-export type DbKey = 'properties' | 'tenants' | 'payments' | 'contracts' | 'tickets' | 'notifications' | 'inspections' | 'chartData' | 'occupancyData' | 'paymentStatusData' | 'user' | 'users' | 'notices' | 'payment_logs' | 'rent_reminders' | 'digital_contracts' | 'contract_templates';
+export type DbKey = 'properties' | 'tenants' | 'payments' | 'contracts' | 'tickets' | 'notifications' | 'inspections' | 'chartData' | 'occupancyData' | 'paymentStatusData' | 'user' | 'users' | 'notices' | 'payment_logs' | 'rent_reminders' | 'digital_contracts' | 'contract_templates' | 'plans' | 'subscriptions' | 'billing_payments' | 'onboarding_data';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = Record<DbKey, any>;
 
 export function readDb(): Db {
   try {
-    const raw = fs.readFileSync(DB_PATH, 'utf-8');
+    const raw = fs.readFileSync(DB_PATH, 'utf-8').replace(/^﻿/, '');
     return JSON.parse(raw) as Db;
   } catch (err) {
     throw new Error(`Failed to read database: ${err instanceof Error ? err.message : err}`);
