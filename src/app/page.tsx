@@ -16,11 +16,11 @@ export default function Home() {
   const [state, setState] = useState<AppState>('splash');
   const { user, setUser, setAccessToken, setMustChangePassword } = useAppStore();
 
-  // Restore session from localStorage on mount
+  // Restore session from localStorage on mount — only for owners, never tenants
   useEffect(() => {
     if (state !== 'login') return;
     const session = getStoredSession();
-    if (session?.user && session?.accessToken) {
+    if (session?.user && session?.accessToken && session.user.role !== 'tenant') {
       routeAfterLogin(session.user, session.accessToken);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,13 +36,16 @@ export default function Home() {
     setUser(u);
     setAccessToken(accessToken);
     setMustChangePassword(mustChange);
-    setStoredSession(u, accessToken);
 
-    // Tenants bypass subscription checks
+    // Tenants bypass subscription checks — session is NOT persisted to localStorage
+    // so they always see the login screen on a fresh page load
     if (u.role === 'tenant') {
       setState('app');
       return;
     }
+
+    // Persist session only for owners
+    setStoredSession(u, accessToken);
 
     // Legacy / demo users with no explicit status → treat as active
     const subStatus = u.subscriptionStatus;
