@@ -64,12 +64,10 @@ export interface Payment {
   month: string;
   description: string;
   receiptUrl?: string;
-  // Tenant submission fields
   receiptNotes?: string;
   paymentMethod?: PaymentMethod;
   paymentDate?: string;
   submittedAt?: string;
-  // Landlord decision fields
   approvedBy?: string;
   approvedAt?: string;
   rejectionReason?: string;
@@ -118,7 +116,6 @@ export interface Notification {
   relatedId?: string;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   metadata?: Record<string, unknown>;
-  // When set, this notification belongs to the tenant (not the landlord)
   targetTenantId?: string;
 }
 
@@ -200,4 +197,179 @@ export interface Inspection {
   createdAt: string;
   signedByTenant?: boolean;
   signedByOwner?: boolean;
+}
+
+// ─────────────────────────────────────────────
+// Digital Contract System
+// ─────────────────────────────────────────────
+
+export type DigitalContractStatus =
+  | 'draft'
+  | 'pending_review'
+  | 'sent'
+  | 'viewed'
+  | 'awaiting_signature'
+  | 'signed_tenant'
+  | 'signed_landlord'
+  | 'pending_notarization'
+  | 'completed'
+  | 'rejected'
+  | 'expired'
+  | 'cancelled';
+
+export type ClauseCategory = 'general' | 'payment' | 'rules' | 'maintenance' | 'termination' | 'custom';
+
+export interface ContractClause {
+  id: string;
+  title: string;
+  content: string;
+  category: ClauseCategory;
+  order: number;
+  required: boolean;
+}
+
+export interface ContractSignature {
+  id: string;
+  contractId: string;
+  signerName: string;
+  signerEmail: string;
+  signerRole: 'landlord' | 'tenant' | 'guarantor';
+  signatureData: string; // base64 PNG from canvas
+  signedAt: string;
+  ipAddress?: string;
+}
+
+export interface ContractDocument {
+  id: string;
+  contractId: string;
+  name: string;
+  docType: 'rg' | 'cpf' | 'income_proof' | 'residence_proof' | 'selfie' | 'property_photo' | 'signed_contract' | 'other';
+  uploadedBy: string;
+  uploadedByRole: 'landlord' | 'tenant';
+  uploadedAt: string;
+  fileData: string; // base64
+  mimeType: string;
+  sizeBytes: number;
+}
+
+export type ContractHistoryEventType =
+  | 'created' | 'edited' | 'sent' | 'viewed' | 'signed'
+  | 'signed_landlord' | 'signed_tenant'
+  | 'rejected' | 'completed' | 'cancelled' | 'document_uploaded'
+  | 'status_changed' | 'comment_added' | 'reminder_sent';
+
+export interface ContractHistoryEvent {
+  id: string;
+  contractId: string;
+  type: ContractHistoryEventType;
+  description: string;
+  userId: string;
+  userName: string;
+  timestamp: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ContractUtilities {
+  water: 'landlord' | 'tenant';
+  electricity: 'landlord' | 'tenant';
+  gas: 'landlord' | 'tenant';
+  internet: 'landlord' | 'tenant';
+  condominiumFee: 'landlord' | 'tenant';
+  iptu: 'landlord' | 'tenant';
+}
+
+export interface DigitalContract {
+  id: string;
+  title: string;
+  status: DigitalContractStatus;
+
+  // Parties
+  landlordId: string;
+  landlordName?: string;
+  landlordEmail?: string;
+  tenantId: string;
+  tenantName?: string;
+  tenantEmail?: string;
+
+  // Property
+  propertyId: string;
+  propertyName?: string;
+  propertyAddress?: string;
+
+  // Financial
+  rentAmount: number;
+  dueDay: number;
+  depositAmount: number;
+  depositInstallments?: number;
+  lateFeePercent: number;
+  lateInterestPercent: number;
+  adjustmentIndex: 'IGPM' | 'IPCA' | 'INPC';
+
+  // Dates
+  startDate: string;
+  endDate: string;
+  duration: number; // months
+  moveInDate: string;
+
+  // Payment
+  paymentMethod: string;
+  pixKey?: string;
+  bankInfo?: string;
+
+  // Clauses
+  clauses: ContractClause[];
+
+  // Rules
+  petPolicy: 'allowed' | 'not_allowed' | 'case_by_case';
+  smokingPolicy: 'allowed' | 'not_allowed';
+  sublettingAllowed: boolean;
+  maxOccupants?: number;
+
+  // Utilities
+  utilities: ContractUtilities;
+
+  // Guarantor
+  guaranteeType: 'deposit' | 'guarantor' | 'insurance' | 'none';
+  guarantorName?: string;
+  guarantorCpf?: string;
+  guarantorEmail?: string;
+  guarantorPhone?: string;
+
+  // Signatures
+  signatures: ContractSignature[];
+
+  // Documents
+  documents: ContractDocument[];
+
+  // History / audit
+  history: ContractHistoryEvent[];
+
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+  sentAt?: string;
+  viewedAt?: string;
+  signedByTenantAt?: string;
+  signedByLandlordAt?: string;
+  completedAt?: string;
+  expiresAt?: string;
+  rejectionReason?: string;
+
+  viewCount: number;
+  templateId?: string;
+  version: number;
+  internalNotes?: string;
+}
+
+export interface ContractTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: 'residential' | 'commercial' | 'seasonal';
+  clauses: ContractClause[];
+  isBuiltIn: boolean;
+  usageCount: number;
+  createdAt: string;
+  updatedAt: string;
+  icon?: string;
 }

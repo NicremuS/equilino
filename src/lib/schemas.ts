@@ -154,3 +154,79 @@ export const LoginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof LoginSchema>;
+
+// ─── Digital Contract schemas ─────────────────────────────────────────────────
+
+export const ContractClauseSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1).max(200),
+  content: z.string().min(1).max(5000),
+  category: z.enum(['general', 'payment', 'rules', 'maintenance', 'termination', 'custom']),
+  order: z.number().int().nonnegative(),
+  required: z.boolean(),
+});
+
+export const ContractUtilitiesSchema = z.object({
+  water: z.enum(['landlord', 'tenant']),
+  electricity: z.enum(['landlord', 'tenant']),
+  gas: z.enum(['landlord', 'tenant']),
+  internet: z.enum(['landlord', 'tenant']),
+  condominiumFee: z.enum(['landlord', 'tenant']),
+  iptu: z.enum(['landlord', 'tenant']),
+});
+
+export const CreateDigitalContractSchema = z.object({
+  title: z.string().min(1).max(300),
+  tenantId: z.string().min(1),
+  propertyId: z.string().min(1),
+  rentAmount: z.number().positive(),
+  dueDay: z.number().int().min(1).max(28),
+  depositAmount: z.number().nonnegative(),
+  depositInstallments: z.number().int().positive().optional(),
+  lateFeePercent: z.number().min(0).max(100),
+  lateInterestPercent: z.number().min(0).max(100),
+  adjustmentIndex: z.enum(['IGPM', 'IPCA', 'INPC']),
+  startDate: z.string().min(1),
+  endDate: z.string().min(1),
+  duration: z.number().int().positive(),
+  moveInDate: z.string().min(1),
+  paymentMethod: z.string().min(1),
+  pixKey: z.string().optional(),
+  bankInfo: z.string().optional(),
+  clauses: z.array(ContractClauseSchema),
+  petPolicy: z.enum(['allowed', 'not_allowed', 'case_by_case']),
+  smokingPolicy: z.enum(['allowed', 'not_allowed']),
+  sublettingAllowed: z.boolean(),
+  maxOccupants: z.number().int().positive().optional(),
+  utilities: ContractUtilitiesSchema,
+  guaranteeType: z.enum(['deposit', 'guarantor', 'insurance', 'none']),
+  guarantorName: z.string().optional(),
+  guarantorCpf: z.string().optional(),
+  guarantorEmail: z.string().email().optional().or(z.literal('')),
+  guarantorPhone: z.string().optional(),
+  templateId: z.string().optional(),
+  internalNotes: z.string().max(2000).optional(),
+});
+
+export const UpdateDigitalContractSchema = CreateDigitalContractSchema.partial().extend({
+  title: z.string().min(1).max(300).optional(),
+});
+
+export const SignContractSchema = z.object({
+  signatureData: z.string().min(1, 'Assinatura obrigatória'),
+  signerRole: z.enum(['landlord', 'tenant', 'guarantor']),
+});
+
+export const RejectContractSchema = z.object({
+  reason: z.string().min(5).max(1000),
+});
+
+export const CreateTemplateSchema = z.object({
+  name: z.string().min(1).max(200),
+  description: z.string().min(1).max(1000),
+  category: z.enum(['residential', 'commercial', 'seasonal']),
+  clauses: z.array(ContractClauseSchema),
+});
+
+export type CreateDigitalContractInput = z.infer<typeof CreateDigitalContractSchema>;
+export type CreateTemplateInput = z.infer<typeof CreateTemplateSchema>;

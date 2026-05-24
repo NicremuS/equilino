@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Home, CreditCard, Wrench, FileText, Megaphone, Sun, Moon } from 'lucide-react';
+import { Home, CreditCard, Wrench, FileText, Megaphone, Sun, Moon, FileSignature } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { getInitials } from '@/lib/utils';
 import { TenantHomeScreen } from '@/components/screens/tenant/TenantHomeScreen';
@@ -10,36 +10,39 @@ import { TenantMaintenanceScreen } from '@/components/screens/tenant/TenantMaint
 import { TenantContractScreen } from '@/components/screens/tenant/TenantContractScreen';
 import { TenantNoticesScreen } from '@/components/screens/tenant/TenantNoticesScreen';
 import { TenantUserProfileScreen } from '@/components/screens/tenant/TenantUserProfileScreen';
+import { TenantDigitalContractsScreen } from '@/components/screens/tenant/TenantDigitalContractsScreen';
 import { ChangePasswordModal } from '@/components/screens/tenant/ChangePasswordModal';
-import { useTenantNotices } from '@/hooks/useTenantApi';
+import { useTenantNotices, useTenantPendingContractsCount } from '@/hooks/useTenantApi';
 import { TenantNotificationBell } from '@/components/shared/TenantNotificationBell';
 import { TenantNotificationToast } from '@/components/shared/TenantNotificationToast';
 import type React from 'react';
 
-type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract' | 'notices';
+type TenantTab = 'home' | 'payments' | 'maintenance' | 'contract' | 'notices' | 'digital-contracts';
 
 type ScreenComponent = React.ComponentType;
 
 const SCREENS: Record<TenantTab, ScreenComponent> = {
-  home:        TenantHomeScreen,
-  payments:    TenantPaymentsScreen,
-  maintenance: TenantMaintenanceScreen,
-  contract:    TenantContractScreen,
-  notices:     TenantNoticesScreen,
+  home:                TenantHomeScreen,
+  payments:            TenantPaymentsScreen,
+  maintenance:         TenantMaintenanceScreen,
+  contract:            TenantContractScreen,
+  notices:             TenantNoticesScreen,
+  'digital-contracts': TenantDigitalContractsScreen,
 };
 
 const NAV_ITEMS: { tab: TenantTab; icon: React.ElementType; label: string }[] = [
-  { tab: 'home',        icon: Home,       label: 'Início' },
-  { tab: 'payments',    icon: CreditCard, label: 'Pagamentos' },
-  { tab: 'maintenance', icon: Wrench,     label: 'Manutenção' },
-  { tab: 'contract',    icon: FileText,   label: 'Contrato' },
-  { tab: 'notices',     icon: Megaphone,  label: 'Avisos' },
+  { tab: 'home',                icon: Home,            label: 'Início' },
+  { tab: 'payments',            icon: CreditCard,      label: 'Pagamentos' },
+  { tab: 'maintenance',         icon: Wrench,          label: 'Manutenção' },
+  { tab: 'digital-contracts',   icon: FileSignature,   label: 'Contratos' },
+  { tab: 'notices',             icon: Megaphone,       label: 'Avisos' },
 ];
 
 export function TenantShell() {
   const { user, activeTab, setActiveTab, theme, toggleTheme, mustChangePassword } = useAppStore();
   const { data: notices } = useTenantNotices();
   const unreadNotices = notices?.filter(n => !n.read).length ?? 0;
+  const pendingContracts = useTenantPendingContractsCount();
   const [profileOpen, setProfileOpen] = useState(false);
 
   const currentTab = (SCREENS[activeTab as TenantTab] ? activeTab : 'home') as TenantTab;
@@ -105,7 +108,9 @@ export function TenantShell() {
         <div className="flex items-center justify-around max-w-lg mx-auto">
           {NAV_ITEMS.map(({ tab, icon: Icon, label }) => {
             const active = currentTab === tab;
-            const hasBadge = tab === 'notices' && unreadNotices > 0;
+            const hasBadge = (tab === 'notices' && unreadNotices > 0) ||
+              (tab === 'digital-contracts' && pendingContracts > 0);
+            const badgeCount = tab === 'notices' ? unreadNotices : pendingContracts;
             return (
               <button
                 key={tab}
@@ -126,7 +131,7 @@ export function TenantShell() {
                   />
                   {hasBadge && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
-                      {unreadNotices > 9 ? '9+' : unreadNotices}
+                      {badgeCount > 9 ? '9+' : badgeCount}
                     </span>
                   )}
                 </div>

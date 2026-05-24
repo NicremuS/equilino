@@ -1,7 +1,9 @@
 import type {
   Property, Tenant, Payment, Contract, MaintenanceTicket,
   Inspection, Notification, Notice, DashboardStats, ChartDataPoint,
+  DigitalContract, ContractTemplate, ContractDocument,
 } from '@/types';
+import type { CreateDigitalContractInput } from '@/lib/schemas';
 import { useAppStore } from '@/store/useAppStore';
 
 const BASE = '/api';
@@ -166,4 +168,37 @@ export const api = {
       occupancyData: { name: string; value: number; color: string }[];
       paymentStatusData: { name: string; value: number; color: string }[];
     }>('/charts'),
+
+  // Digital Contracts
+  getDigitalContracts: (status?: string) =>
+    get<DigitalContract[]>(status ? `/digital-contracts?status=${status}` : '/digital-contracts'),
+  getDigitalContract: (id: string) => get<DigitalContract>(`/digital-contracts/${id}`),
+  createDigitalContract: (data: CreateDigitalContractInput) => post<DigitalContract>('/digital-contracts', data),
+  updateDigitalContract: (id: string, data: Partial<CreateDigitalContractInput>) =>
+    put<DigitalContract>(`/digital-contracts/${id}`, data),
+  deleteDigitalContract: (id: string) => del(`/digital-contracts/${id}`),
+  sendDigitalContract: (id: string) =>
+    request<{ ok: boolean; sentAt: string; expiresAt: string }>(`/digital-contracts/${id}/send`, { method: 'POST' }),
+  signDigitalContract: (id: string, signatureData: string, signerRole: string) =>
+    post<DigitalContract>(`/digital-contracts/${id}/sign`, { signatureData, signerRole }),
+  updateDigitalContractStatus: (id: string, status: string, reason?: string) =>
+    request<{ ok: boolean }>(`/digital-contracts/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, reason }),
+    }),
+  getContractDocuments: (id: string) => get<ContractDocument[]>(`/digital-contracts/${id}/documents`),
+  uploadContractDocument: (id: string, data: Omit<ContractDocument, 'id' | 'contractId' | 'uploadedBy' | 'uploadedByRole' | 'uploadedAt'>) =>
+    post<ContractDocument>(`/digital-contracts/${id}/documents`, data),
+  deleteContractDocument: (id: string, docId: string) =>
+    del(`/digital-contracts/${id}/documents?docId=${docId}`),
+
+  // Contract Templates
+  getContractTemplates: () => get<ContractTemplate[]>('/contract-templates'),
+  getContractTemplate: (id: string) => get<ContractTemplate>(`/contract-templates/${id}`),
+  createContractTemplate: (data: Omit<ContractTemplate, 'id' | 'isBuiltIn' | 'usageCount' | 'createdAt' | 'updatedAt'>) =>
+    post<ContractTemplate>('/contract-templates', data),
+  updateContractTemplate: (id: string, data: Partial<ContractTemplate>) =>
+    put<ContractTemplate>(`/contract-templates/${id}`, data),
+  deleteContractTemplate: (id: string) => del(`/contract-templates/${id}`),
 };

@@ -1,7 +1,7 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tenantApi } from '@/services/tenantApi';
-import type { MaintenanceTicket, Notification, Payment } from '@/types';
+import type { MaintenanceTicket, Notification, Payment, DigitalContract } from '@/types';
 
 export function useTenantProfile() {
   return useQuery({ queryKey: ['tenant', 'profile'], queryFn: tenantApi.getProfile });
@@ -138,4 +138,50 @@ export function useMarkTenantNoticeRead() {
     mutationFn: (id: string) => tenantApi.markNoticeRead(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['tenant', 'notices'] }),
   });
+}
+
+// ─── Tenant Digital Contracts ─────────────────────────────────────────────────
+
+export function useTenantDigitalContracts() {
+  return useQuery({
+    queryKey: ['tenant', 'digital-contracts'],
+    queryFn: tenantApi.getDigitalContracts,
+  });
+}
+
+export function useTenantDigitalContract(id: string) {
+  return useQuery({
+    queryKey: ['tenant', 'digital-contract', id],
+    queryFn: () => tenantApi.getDigitalContract(id),
+    enabled: !!id,
+  });
+}
+
+export function useSignTenantDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, signatureData }: { id: string; signatureData: string }) =>
+      tenantApi.signDigitalContract(id, signatureData),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['tenant', 'digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['tenant', 'digital-contract', id] });
+      qc.invalidateQueries({ queryKey: ['tenant', 'notifications'] });
+    },
+  });
+}
+
+export function useUploadTenantContractDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof tenantApi.uploadContractDocument>[1] }) =>
+      tenantApi.uploadContractDocument(id, data),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['tenant', 'digital-contract', id] });
+    },
+  });
+}
+
+export function useTenantPendingContractsCount() {
+  const { data } = useTenantDigitalContracts();
+  return data?.filter(c => ['sent', 'viewed', 'awaiting_signature'].includes(c.status)).length ?? 0;
 }

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   LayoutDashboard, Building2, FileText, Users, Wrench,
   CreditCard, Bell, Settings, LogOut, TrendingUp, ClipboardCheck,
-  Megaphone,
+  Megaphone, FileSignature,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
@@ -11,15 +11,16 @@ import { useUnreadCount } from '@/hooks/useApi';
 import { getInitials } from '@/lib/utils';
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'payments', label: 'Pagamentos', icon: CreditCard },
-  { id: 'properties', label: 'Imóveis', icon: Building2 },
-  { id: 'contracts', label: 'Contratos', icon: FileText },
-  { id: 'tenants', label: 'Inquilinos', icon: Users },
-  { id: 'maintenance', label: 'Manutenção', icon: Wrench },
-  { id: 'inspections', label: 'Vistorias', icon: ClipboardCheck },
-  { id: 'notices', label: 'Avisos & Deveres', icon: Megaphone },
-  { id: 'reports', label: 'Relatórios', icon: TrendingUp },
+  { id: 'dashboard',          label: 'Dashboard',          icon: LayoutDashboard },
+  { id: 'payments',           label: 'Pagamentos',          icon: CreditCard },
+  { id: 'properties',         label: 'Imóveis',             icon: Building2 },
+  { id: 'contracts',          label: 'Contratos',           icon: FileText },
+  { id: 'digital-contracts',  label: 'Contratos Digitais',  icon: FileSignature },
+  { id: 'tenants',            label: 'Inquilinos',          icon: Users },
+  { id: 'maintenance',        label: 'Manutenção',          icon: Wrench },
+  { id: 'inspections',        label: 'Vistorias',           icon: ClipboardCheck },
+  { id: 'notices',            label: 'Avisos & Deveres',    icon: Megaphone },
+  { id: 'reports',            label: 'Relatórios',          icon: TrendingUp },
 ];
 
 const bottomItems = [

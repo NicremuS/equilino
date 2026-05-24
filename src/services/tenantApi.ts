@@ -1,4 +1,4 @@
-import type { Tenant, Property, Contract, Payment, MaintenanceTicket, Notification, Notice } from '@/types';
+import type { Tenant, Property, Contract, Payment, MaintenanceTicket, Notification, Notice, DigitalContract } from '@/types';
 import { useAppStore } from '@/store/useAppStore';
 
 const BASE = '/api/tenant';
@@ -96,4 +96,12 @@ export const tenantApi = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ newPassword }),
     }, '/api/auth'),
+
+  // Digital contracts (tenant side)
+  getDigitalContracts: () => get<DigitalContract[]>('/digital-contracts'),
+  getDigitalContract: (id: string) => get<DigitalContract>(`/digital-contracts/${id}`),
+  signDigitalContract: (id: string, signatureData: string) =>
+    post<{ ok: boolean; status: string; signedAt: string }>(`/digital-contracts/${id}/sign`, { signatureData }),
+  uploadContractDocument: (id: string, data: { name: string; docType: string; fileData: string; mimeType: string; sizeBytes: number }) =>
+    post<{ id: string }>(`/digital-contracts/${id}/documents`, data),
 };

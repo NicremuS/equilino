@@ -16,6 +16,7 @@ import { ReportsScreen } from '@/components/screens/ReportsScreen';
 import { InspectionScreen } from '@/components/screens/InspectionScreen';
 import { NoticesScreen } from '@/components/screens/NoticesScreen';
 import { OwnerProfileScreen } from '@/components/screens/OwnerProfileScreen';
+import { DigitalContractsScreen } from '@/components/screens/DigitalContractsScreen';
 import { NotificationToast } from '@/components/shared/NotificationToast';
 
 type ScreenComponent = React.ComponentType;
@@ -33,6 +34,7 @@ const screenMap: Record<string, ScreenComponent> = {
   inspections: InspectionScreen,
   notices: NoticesScreen,
   profile: OwnerProfileScreen,
+  'digital-contracts': DigitalContractsScreen,
 };
 
 export function AppShell() {

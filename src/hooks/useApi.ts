@@ -1,7 +1,8 @@
 'use client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
-import type { Property, Tenant, Payment, Contract, MaintenanceTicket, Inspection, Notification, Notice } from '@/types';
+import type { Property, Tenant, Payment, Contract, MaintenanceTicket, Inspection, Notification, Notice, DigitalContract, ContractTemplate } from '@/types';
+import type { CreateDigitalContractInput } from '@/lib/schemas';
 
 // ── Queries ──────────────────────────────────────────────────────────────────
 
@@ -377,4 +378,134 @@ export function useDeleteNotice() {
 export function useUnreadCount() {
   const { data } = useNotifications();
   return data?.filter(n => !n.read).length ?? 0;
+}
+
+// ─── Digital Contracts ────────────────────────────────────────────────────────
+
+export const useDigitalContracts = (status?: string) =>
+  useQuery({
+    queryKey: ['digital-contracts', status ?? 'all'],
+    queryFn: () => api.getDigitalContracts(status),
+  });
+
+export const useDigitalContract = (id: string) =>
+  useQuery({
+    queryKey: ['digital-contract', id],
+    queryFn: () => api.getDigitalContract(id),
+    enabled: !!id,
+  });
+
+export function useCreateDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateDigitalContractInput) => api.createDigitalContract(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['digital-contracts'] }),
+  });
+}
+
+export function useUpdateDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<CreateDigitalContractInput> }) =>
+      api.updateDigitalContract(id, data),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useDeleteDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteDigitalContract(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['digital-contracts'] }),
+  });
+}
+
+export function useSendDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.sendDigitalContract(id),
+    onSuccess: (_d, id) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useSignDigitalContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, signatureData, signerRole }: { id: string; signatureData: string; signerRole: string }) =>
+      api.signDigitalContract(id, signatureData, signerRole),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+      qc.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
+export function useUpdateDigitalContractStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status, reason }: { id: string; status: string; reason?: string }) =>
+      api.updateDigitalContractStatus(id, status, reason),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contracts'] });
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useUploadContractDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof api.uploadContractDocument>[1] }) =>
+      api.uploadContractDocument(id, data),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+export function useDeleteContractDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, docId }: { id: string; docId: string }) =>
+      api.deleteContractDocument(id, docId),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: ['digital-contract', id] });
+    },
+  });
+}
+
+// ─── Contract Templates ───────────────────────────────────────────────────────
+
+export const useContractTemplates = () =>
+  useQuery({ queryKey: ['contract-templates'], queryFn: api.getContractTemplates });
+
+export const useContractTemplate = (id: string) =>
+  useQuery({
+    queryKey: ['contract-template', id],
+    queryFn: () => api.getContractTemplate(id),
+    enabled: !!id,
+  });
+
+export function useCreateContractTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Parameters<typeof api.createContractTemplate>[0]) =>
+      api.createContractTemplate(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['contract-templates'] }),
+  });
+}
+
+export function useDeleteContractTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteContractTemplate(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['contract-templates'] }),
+  });
 }

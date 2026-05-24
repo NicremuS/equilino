@@ -1,16 +1,16 @@
 'use client';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Building2, ClipboardCheck, Users, Wrench, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, Wrench, FileSignature, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
 
 const tabs = [
-  { id: 'dashboard',   label: 'Início',    icon: LayoutDashboard },
-  { id: 'properties',  label: 'Imóveis',   icon: Building2 },
-  { id: 'inspections', label: 'Vistorias', icon: ClipboardCheck },
-  { id: 'tenants',     label: 'Inquilinos', icon: Users },
-  { id: 'maintenance', label: 'Chamados',  icon: Wrench },
-  { id: 'notices',     label: 'Avisos',    icon: Megaphone },
+  { id: 'dashboard',          label: 'Início',    icon: LayoutDashboard },
+  { id: 'properties',         label: 'Imóveis',   icon: Building2 },
+  { id: 'digital-contracts',  label: 'Contratos', icon: FileSignature },
+  { id: 'tenants',            label: 'Inquilinos', icon: Users },
+  { id: 'maintenance',        label: 'Chamados',  icon: Wrench },
+  { id: 'notices',            label: 'Avisos',    icon: Megaphone },
 ];
 
 export function BottomNav() {

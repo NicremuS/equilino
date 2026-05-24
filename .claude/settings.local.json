@@ -50,7 +50,19 @@
       "Bash(Out-Null)",
       "Bash(New-Item -ItemType Directory -Force \"src\\\\app\\\\api\\\\tenant\\\\notifications\\\\[id]\")",
       "Bash(Write-Host \"dirs created\")",
-      "Bash(echo \"PID: $!\")"
+      "Bash(echo \"PID: $!\")",
+      "Bash(git push *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(git ls-remote *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
+      "Bash(git stash *)",
+      "Bash(git restore *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(echo \"PID=$!\")"
     ]
   }
 }
