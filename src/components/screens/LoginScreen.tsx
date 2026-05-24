@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, AlertCircle, UserCheck, Home, UserPlus } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, AlertCircle, UserCheck, Home, UserPlus, KeyRound } from 'lucide-react';
 import Link from 'next/link';
 import type { User } from '@/types';
 
@@ -244,6 +244,17 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
           >
             <UserPlus size={14} />
             Criar conta grátis — 7 dias de teste
+          </Link>
+        </div>
+
+        {/* Tenant portal link */}
+        <div className="mt-3 text-center animate-fade-up" style={{ animationDelay: '0.22s', animationFillMode: 'both' }}>
+          <Link
+            href="/portal"
+            className="inline-flex items-center gap-1.5 text-emerald-500/70 text-xs hover:text-emerald-400 transition-colors"
+          >
+            <KeyRound size={12} />
+            Sou inquilino — acessar portal
           </Link>
         </div>
       </div>
